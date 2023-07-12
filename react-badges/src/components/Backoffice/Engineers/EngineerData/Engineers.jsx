@@ -11,8 +11,12 @@ const Engineers = () => {
   const { loading, data } = useQuery(LOAD_ENGINEERS);
   const [engineers, setEngineers] = useState([]);
   const [name, setName] = useState("");
-  const [insert_engineers, { error }] = useMutation(CREATE_ENGINEERS_MUTATION);
-  const [deleteRelationEngineers] = useMutation(DELETE_ENGINEERS);
+  const [insertEngineers, { error }] = useMutation(CREATE_ENGINEERS_MUTATION, {
+    refetchQueries: [{ query: LOAD_ENGINEERS }]
+  });
+  const [deleteRelationEngineers] = useMutation(DELETE_ENGINEERS, {
+    refetchQueries: [{ query: LOAD_ENGINEERS }]
+  });
   // const navigate = useNavigate();
 
   if (error) {
@@ -27,7 +31,7 @@ const Engineers = () => {
   }, [data]);
 
   const addEngineer = () => {
-    insert_engineers({
+    insertEngineers({
       variables: {
         name: name
       }
@@ -53,13 +57,8 @@ const Engineers = () => {
           </div>
         );
       })}
-      <button onClick={addEngineer}>Create New</button>
-      <form
-        onSubmit={(e) => {
-          e.preventDefault();
-          addEngineer();
-        }}
-      >
+      <button>Create New</button>
+      <form>
         <br />
         <TextField
           type="text"
@@ -67,7 +66,7 @@ const Engineers = () => {
           value={name}
           onChange={(e) => setName(e.target.value)}
         />
-        <Button type="submit">Add</Button>
+        <Button onClick={addEngineer}>Add</Button>
       </form>
     </div>
   );
