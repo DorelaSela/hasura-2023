@@ -1,23 +1,18 @@
 import React, { useEffect, useState } from "react";
-import { Button, TextField } from "@mui/material";
-import { useQuery, gql } from "@apollo/client";
+import { Button } from "@mui/material";
+import { useQuery } from "@apollo/client";
 import { LOAD_ENGINEERS } from "../GraphQl/Queries";
-import { CREATE_ENGINEERS_MUTATION } from "../GraphQl/Mutations";
 import { DELETE_ENGINEERS } from "../GraphQl/Mutations";
 import { useMutation } from "@apollo/client";
 import { useNavigate } from "react-router-dom";
 
 const Engineers = () => {
-  const { loading, data } = useQuery(LOAD_ENGINEERS);
+  const { loading, data, error } = useQuery(LOAD_ENGINEERS);
   const [engineers, setEngineers] = useState([]);
-  const [name, setName] = useState("");
-  const [insertEngineers, { error }] = useMutation(CREATE_ENGINEERS_MUTATION, {
-    refetchQueries: [{ query: LOAD_ENGINEERS }]
-  });
   const [deleteRelationEngineers] = useMutation(DELETE_ENGINEERS, {
     refetchQueries: [{ query: LOAD_ENGINEERS }]
   });
-  // const navigate = useNavigate();
+  const navigate = useNavigate();
 
   if (error) {
     console.log(error);
@@ -30,22 +25,33 @@ const Engineers = () => {
     }
   }, [data]);
 
-  const addEngineer = () => {
-    insertEngineers({
-      variables: {
-        name: name
-      }
-    });
-    setName("");
-  };
-
   const deleteEngineers = (id) => {
     deleteRelationEngineers({
       variables: {
         id
       }
     });
+    // setEngineers(engineers.filter((engineer) => engineer.id !== id));
   };
+
+  // const deleteEngineers = async (id) => {
+  //   try {
+  //     const data = await deleteRelationEngineers({
+  //       variables: { id }
+  //     });
+  //     setEngineers(engineers.filter((engineer) => engineer.id !== id));
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
+
+  const handleNavigate = () => {
+    navigate("/engineers/create");
+  };
+
+  if (loading) {
+    return <p>Loading...</p>;
+  }
 
   return (
     <div>
@@ -57,17 +63,7 @@ const Engineers = () => {
           </div>
         );
       })}
-      <button>Create New</button>
-      <form>
-        <br />
-        <TextField
-          type="text"
-          label="Name"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-        />
-        <Button onClick={addEngineer}>Add</Button>
-      </form>
+      <button onClick={handleNavigate}>Create New</button>
     </div>
   );
 };

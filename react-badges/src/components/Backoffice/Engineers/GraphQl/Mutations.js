@@ -26,3 +26,16 @@ export const DELETE_ENGINEERS = gql`
     }
   }
 `;
+
+export const ADD_RELATIONS = gql`
+  mutation MyMutation($engineer: Int!, $manager: Int!) {
+    insert_users_relations_one(
+      object: { engineer: $engineer, manager: $manager }
+    ) {
+      engineer
+      manager
+      created_by
+      created_at
+    }
+  }
+`;

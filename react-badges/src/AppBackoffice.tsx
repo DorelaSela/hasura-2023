@@ -50,10 +50,10 @@ const AppBackoffice: React.FC = () => (
           path: "engineers",
           element: <Engineers />
         },
-        // {
-        //   path: "/engineer/create",
-        //   element: <CreateEngineers />
-        // },
+        {
+          path: "/engineers/create",
+          element: <CreateEngineers />
+        },
         {
           path: "badges",
           element: <h1>Badges</h1>

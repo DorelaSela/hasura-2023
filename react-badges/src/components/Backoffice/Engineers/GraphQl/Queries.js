@@ -8,3 +8,12 @@ export const LOAD_ENGINEERS = gql`
     }
   }
 `;
+
+export const GET_MANAGERS = gql`
+  query getManagers {
+    managers {
+      id
+      name
+    }
+  }
+`;
