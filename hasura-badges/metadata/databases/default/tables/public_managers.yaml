@@ -16,13 +16,15 @@ insert_permissions:
     permission:
       check: {}
       columns:
+        - is_deleted
         - name
 select_permissions:
   - role: backoffice
     permission:
       columns:
-        - name
         - id
+        - is_deleted
+        - name
       filter: {}
       limit: 10
       query_root_fields:
@@ -32,6 +34,7 @@ update_permissions:
   - role: backoffice
     permission:
       columns:
+        - is_deleted
         - name
       filter: {}
       check: {}

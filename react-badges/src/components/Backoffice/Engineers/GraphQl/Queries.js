@@ -5,6 +5,7 @@ export const LOAD_ENGINEERS = gql`
     engineers {
       id
       name
+      is_deleted
     }
   }
 `;

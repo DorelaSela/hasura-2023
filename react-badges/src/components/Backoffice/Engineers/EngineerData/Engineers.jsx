@@ -31,19 +31,7 @@ const Engineers = () => {
         id
       }
     });
-    // setEngineers(engineers.filter((engineer) => engineer.id !== id));
   };
-
-  // const deleteEngineers = async (id) => {
-  //   try {
-  //     const data = await deleteRelationEngineers({
-  //       variables: { id }
-  //     });
-  //     setEngineers(engineers.filter((engineer) => engineer.id !== id));
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // };
 
   const handleNavigate = () => {
     navigate("/engineers/create");
