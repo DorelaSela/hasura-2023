@@ -3,14 +3,14 @@
 TRUNCATE users RESTART IDENTITY CASCADE;
 ALTER SEQUENCE users_id_seq RESTART WITH 9;
 INSERT INTO "users" ("id", "name", "roles", "created_at", "modified_at", "is_deleted") VALUES
-(1, 'Luke Skywalker', '["engineer", "backoffice"]'::jsonb, NOW(), NOW(),FALSE),
-(2, 'Ian', '["engineer", "manager"]'::jsonb, NOW(), NOW(),FALSE),
-(3, 'Darth Vader', '["backoffice"]'::jsonb, NOW(), NOW(),FALSE),
-(4, 'Anakin Skywalker', '["engineer", "manager"]'::jsonb, NOW(), NOW(),FALSE),
-(5, 'Obi-Wan Kenobi', '["manager", "backoffice"]'::jsonb, NOW(), NOW(),FALSE),
-(6, 'Leia Organa', '["engineer", "manager", "backoffice"]'::jsonb, NOW(), NOW(),FALSE),
-(7, 'Yoda', '["engineer"]'::jsonb, NOW(), NOW(),FALSE),
-(8, 'Chewbacca', '["engineer"]'::jsonb, NOW(), NOW(),FALSE);
+(1, 'Luke Skywalker', '["engineer", "backoffice"]'::jsonb, NOW(), NOW(), FALSE),
+(2, 'Ian', '["engineer", "manager"]'::jsonb, NOW(), NOW(), FALSE),
+(3, 'Darth Vader', '["backoffice"]'::jsonb, NOW(), NOW(), FALSE),
+(4, 'Anakin Skywalker', '["engineer", "manager"]'::jsonb, NOW(), NOW(), FALSE),
+(5, 'Obi-Wan Kenobi', '["manager", "backoffice"]'::jsonb, NOW(), NOW(), FALSE),
+(6, 'Leia Organa', '["engineer", "manager", "backoffice"]'::jsonb, NOW(), NOW(), FALSE),
+(7, 'Yoda', '["engineer"]'::jsonb, NOW(), NOW(), FALSE),
+(8, 'Chewbacca', '["engineer"]'::jsonb, NOW(), NOW(), FALSE);
 
 -- Modify a User 
 -- (as test for generating an update in the audit trail)

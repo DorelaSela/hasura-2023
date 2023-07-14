@@ -77,3 +77,15 @@ $$
 LANGUAGE plpgsql;
 
 
+CREATE OR REPLACE FUNCTION get_managers_by_engineer(engineer_id INTEGER)
+  RETURNS SETOF public.users AS
+$$
+BEGIN
+  RETURN QUERY
+    SELECT u.*
+    FROM public.users_relations r
+    INNER JOIN public.users u ON r.manager = u.id
+    WHERE r.engineer = engineer_id;
+END;
+$$
+LANGUAGE plpgsql;
