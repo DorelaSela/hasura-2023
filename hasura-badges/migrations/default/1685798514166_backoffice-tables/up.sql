@@ -8,17 +8,16 @@ CREATE TABLE "users" (
 );
 
 CREATE VIEW "engineers" AS
-SELECT id, name , is_deleted
+SELECT id, name,is_deleted
 FROM users
-WHERE roles @> '["engineer"]'::jsonb
+WHERE roles @> '["engineer"]'::jsonb 
 AND is_deleted = FALSE;
 
 CREATE VIEW "managers" AS
-SELECT id, name , is_deleted
+SELECT id, name,is_deleted
 FROM users
 WHERE roles @> '["manager"]'::jsonb
 AND is_deleted = FALSE;
-
 
 CREATE TABLE public.users_relations (
   manager integer NOT NULL REFERENCES public.users(id),

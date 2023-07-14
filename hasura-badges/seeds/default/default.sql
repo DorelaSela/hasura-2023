@@ -3,7 +3,7 @@
 TRUNCATE users RESTART IDENTITY CASCADE;
 ALTER SEQUENCE users_id_seq RESTART WITH 9;
 INSERT INTO "users" ("id", "name", "roles", "created_at", "modified_at", "is_deleted") VALUES
-(1, 'Luke Skywalker', '["engineer", "backoffice"]'::jsonb, NOW(), NOW() ,FALSE),
+(1, 'Luke Skywalker', '["engineer", "backoffice"]'::jsonb, NOW(), NOW(),FALSE),
 (2, 'Ian', '["engineer", "manager"]'::jsonb, NOW(), NOW(),FALSE),
 (3, 'Darth Vader', '["backoffice"]'::jsonb, NOW(), NOW(),FALSE),
 (4, 'Anakin Skywalker', '["engineer", "manager"]'::jsonb, NOW(), NOW(),FALSE),

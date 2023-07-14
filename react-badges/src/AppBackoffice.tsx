@@ -13,6 +13,8 @@ import ManagerEngineer from "./views/backoffice/ManagerEngineer";
 import { DrawerMenu } from "./layouts/BasicLayout";
 import Managers from "./components/Backoffice/Manager/ManagerList/Managers";
 import AddManager from "./components/Backoffice/Manager/AddManager/AddManager";
+import Engineers from "./components/Backoffice/Engineers/EngineerData/Engineers";
+import CreateEngineers from "./components/Backoffice/Engineers/CreateEngineers/CreateEngineers";
 
 const menuItems = [
   {
@@ -52,7 +54,11 @@ const AppBackoffice: React.FC = () => (
         },
         {
           path: "engineers",
-          element: <h1>Engineer</h1>
+          element: <Engineers />
+        },
+        {
+          path: "/engineers/create",
+          element: <CreateEngineers />
         },
         {
           path: "badges",
