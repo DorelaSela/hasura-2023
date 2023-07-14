@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { Button } from "@mui/material";
 import { useQuery } from "@apollo/client";
-import { LOAD_ENGINEERS } from "../GraphQl/Queries";
-import { DELETE_ENGINEERS } from "../GraphQl/Mutations";
+import { LOAD_ENGINEERS } from "../../../../containers/state/EngineersQueries";
+import { DELETE_ENGINEERS } from "../../../../containers/state/EngineersQueries";
 import { useMutation } from "@apollo/client";
 import { useNavigate } from "react-router-dom";
 
@@ -51,7 +51,9 @@ const Engineers = () => {
           </div>
         );
       })}
-      <button onClick={handleNavigate}>Create New</button>
+      <Button color="error" onClick={handleNavigate}>
+        Create New
+      </Button>
     </div>
   );
 };

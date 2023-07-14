@@ -26,6 +26,15 @@ array_relationships:
         remote_table:
           name: manager_to_engineer_badge_candidature_proposals
           schema: public
+insert_permissions:
+  - role: backoffice
+    permission:
+      check: {}
+      columns:
+        - description
+        - id
+        - requirements
+        - title
 select_permissions:
   - role: backoffice
     permission:
@@ -41,3 +50,16 @@ select_permissions:
       query_root_fields:
         - select
       subscription_root_fields: []
+update_permissions:
+  - role: backoffice
+    permission:
+      columns:
+        - description
+        - requirements
+        - title
+      filter: {}
+      check: null
+delete_permissions:
+  - role: backoffice
+    permission:
+      filter: {}

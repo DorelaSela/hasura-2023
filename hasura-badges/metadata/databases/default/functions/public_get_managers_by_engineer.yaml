@@ -1,5 +1,5 @@
 function:
-  name: get_engineers_by_manager
+  name: get_managers_by_engineer
   schema: public
 configuration:
   custom_root_fields: {}

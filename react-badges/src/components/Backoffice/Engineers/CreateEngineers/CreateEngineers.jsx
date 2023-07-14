@@ -3,10 +3,12 @@ import React, { useState, useEffect } from "react";
 import { StepLabel, Step, Stepper } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { useQuery, useMutation } from "@apollo/client";
-import { GET_MANAGERS } from "../GraphQl/Queries";
-import { LOAD_ENGINEERS } from "../GraphQl/Queries";
-import { CREATE_ENGINEERS_MUTATION } from "../GraphQl/Mutations";
-import { ADD_RELATIONS } from "../GraphQl/Mutations";
+import {
+  GET_MANAGERS,
+  LOAD_ENGINEERS,
+  CREATE_ENGINEERS_MUTATION,
+  ADD_RELATIONS
+} from "../../../../containers/state/EngineersQueries";
 
 const CreateEngineers = () => {
   const [name, setName] = useState("");

@@ -1,5 +1,24 @@
 import { gql } from "@apollo/client";
 
+export const LOAD_ENGINEERS = gql`
+  query MyQuery {
+    engineers {
+      id
+      name
+      is_deleted
+    }
+  }
+`;
+
+export const GET_MANAGERS = gql`
+  query getManagers {
+    managers {
+      id
+      name
+    }
+  }
+`;
+
 export const CREATE_ENGINEERS_MUTATION = gql`
   mutation CreateEngineer($name: String!) {
     insert_users_one(
