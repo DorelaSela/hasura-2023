@@ -76,7 +76,6 @@ const CreateEngineers = () => {
             value={name}
             onChange={(e) => setName(e.target.value)}
           />
-          <Button onClick={handleBack}>Back</Button>
           <Button onClick={addEngineer}>Next</Button>
         </div>
       );

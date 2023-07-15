@@ -54,3 +54,12 @@ export const ADD_RELATIONS = gql`
     }
   }
 `;
+
+export const GET_MANAGERS_BY_ENGINEER = gql`
+  mutation getManagersByEngineer($id: Int!) {
+    get_managers_by_engineer(args: { engineer_id: $id }) {
+      name
+      id
+    }
+  }
+`;

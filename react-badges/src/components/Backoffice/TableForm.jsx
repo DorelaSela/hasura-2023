@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import PropTypes from "prop-types";
+
 import {
   Table,
   TableBody,
@@ -16,6 +16,7 @@ import {
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import { GET_ENGINEERS_BY_MANAGER } from "../../containers/state/ManagersQueries";
+import { GET_MANAGERS_BY_ENGINEER } from "../../containers/state/EngineersQueries";
 import { useMutation } from "@apollo/client";
 import TableRelations from "./TableRelations";
 
@@ -24,6 +25,7 @@ const TableForm = ({ data, onDelete, dataType }) => {
   const [engineers, setEngineers] = useState([]);
   const [managers, setManagers] = useState([]);
   const [getEngineersByManager] = useMutation(GET_ENGINEERS_BY_MANAGER);
+  const [getManagersByEngineer] = useMutation(GET_MANAGERS_BY_ENGINEER);
 
   const handleRowClick = async (index, id) => {
     if (openRows.includes(index)) {
@@ -97,7 +99,9 @@ const TableForm = ({ data, onDelete, dataType }) => {
                   >
                     <Box sx={{ margin: 1 }}>
                       <Typography variant="h6" gutterBottom component={"span"}>
-                        Manager Relations with Engineers
+                        {dataType === `engineer`
+                          ? "Engineer relations with managers"
+                          : "Manager relations with engineers"}
                       </Typography>
                       <Table>
                         <TableBody>
@@ -122,11 +126,6 @@ const TableForm = ({ data, onDelete, dataType }) => {
       </Table>
     </TableContainer>
   );
-};
-
-TableForm.propTypes = {
-  data: PropTypes.array.isRequired,
-  onDelete: PropTypes.func.isRequired
 };
 
 export default TableForm;

@@ -5,6 +5,7 @@ import { LOAD_ENGINEERS } from "../../../../containers/state/EngineersQueries";
 import { DELETE_ENGINEERS } from "../../../../containers/state/EngineersQueries";
 import { useMutation } from "@apollo/client";
 import { useNavigate } from "react-router-dom";
+import TableForm from "../../TableForm";
 
 const Engineers = () => {
   const { loading, data, error } = useQuery(LOAD_ENGINEERS);
@@ -43,14 +44,12 @@ const Engineers = () => {
 
   return (
     <div>
-      {engineers.map((engineer, index) => {
-        return (
-          <div key={index}>
-            <h3>{engineer.name}</h3>
-            <Button onClick={() => deleteEngineers(engineer.id)}>Delete</Button>
-          </div>
-        );
-      })}
+      <h2>Engineers List</h2>
+      <TableForm
+        data={engineers}
+        onDelete={deleteEngineers}
+        dataType="engineer"
+      />
       <Button color="error" onClick={handleNavigate}>
         Create New
       </Button>
