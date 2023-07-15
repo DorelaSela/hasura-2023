@@ -65,3 +65,12 @@ export const GET_ENGINEERS_BY_MANAGER = gql`
   }
 `;
 
+export const EDIT_MANAGER_NAME = gql`
+  mutation editManagersName($id: Int!, $name: String!) {
+    update_managers(where: { id: { _eq: $id } }, _set: { name: $name }) {
+      returning {
+        name
+      }
+    }
+  }
+`;

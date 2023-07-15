@@ -19,7 +19,7 @@ import { GET_ENGINEERS_BY_MANAGER } from "../../containers/state/ManagersQueries
 import { useMutation } from "@apollo/client";
 import TableRelations from "./TableRelations";
 
-const TableForm = ({ data, onDelete, dataType }) => {
+const TableForm = ({ data, onDelete, dataType , onEdit}) => {
   const [openRows, setOpenRows] = useState([]);
   const [engineers, setEngineers] = useState([]);
   const [managers, setManagers] = useState([]);
@@ -35,13 +35,14 @@ const TableForm = ({ data, onDelete, dataType }) => {
             variables: { id }
           });
           setEngineers(data.get_engineers_by_manager);
+          console.log(data);
         } else if (dataType === "engineer") {
           const { data } = await getManagersByEngineer({
             variables: { id }
           });
           setManagers(data.get_managers_by_engineer);
         }
-
+        
         setOpenRows([...openRows, index]);
       } catch (error) {
         console.log(error);
@@ -82,7 +83,7 @@ const TableForm = ({ data, onDelete, dataType }) => {
                   <Button onClick={() => onDelete(item.id)}>Delete</Button>
                 </TableCell>
                 <TableCell>
-                  <Button>Edit</Button>
+                  <Button onClick={() => onEdit(item.id)}>Edit</Button>
                 </TableCell>
               </TableRow>
               <TableRow>
