@@ -2,7 +2,8 @@ import React, { useEffect, useState } from "react";
 import { useQuery, useMutation } from "@apollo/client";
 import {
   ADD_RELATION,
-  GET_ENGINEERS
+  GET_ENGINEERS,
+  GET_ENGINEER_TEAM
 } from "../../../../containers/state/ManagersQueries";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@mui/material";
@@ -14,9 +15,22 @@ const AddRelation = () => {
   const [addRelation, { loading, error }] = useMutation(ADD_RELATION, {
     refetchQueries: [{ query: LOAD_MANAGERS }]
   });
-  const r1 = useQuery(GET_ENGINEERS);
   const { id: managerId } = useParams();
   const navigate = useNavigate();
+
+  const {
+    data: teamsData,
+    loading: teamsLoading,
+    error: teamsError
+  } = useQuery(GET_ENGINEER_TEAM, {
+    variables: { managerId: parseInt(managerId) }
+  });
+
+  const {
+    data: engineersData,
+    loading: engineersLoading,
+    error: engineersError
+  } = useQuery(GET_ENGINEERS);
 
   const handleCheckboxChange = (engineerId) => {
     if (engineerIds.includes(engineerId)) {
@@ -28,15 +42,7 @@ const AddRelation = () => {
 
   const handleSubmit = () => {
     if (engineerIds.length > 0) {
-      const uniqueEngineerIds = engineerIds.filter(
-        (engineerId) =>
-          !r1.data?.engineers?.some(
-            (engineer) =>
-              engineer.id === engineerId &&
-              engineer.relations.some((relation) => relation.managerId === id)
-          )
-      );
-      uniqueEngineerIds.forEach((engineerId) => {
+      engineerIds.forEach((engineerId) => {
         addRelation({
           variables: {
             manager: parseInt(managerId),
@@ -51,18 +57,24 @@ const AddRelation = () => {
     }
   };
 
-  if (loading || !r1.data?.engineers) {
+  if (teamsLoading || engineersLoading) {
     return <p>Loading...</p>;
   }
 
-  if (error) {
-    return <p>Error: {error.message}</p>;
+  if (teamsError || engineersError) {
+    return <p>Error: {teamsError?.message || engineersError?.message}</p>;
   }
+
+  const teams = teamsData?.engineering_teams[0]?.items;
+  const engineers = engineersData?.engineers;
+  const filteredEngineers = engineers.filter((engineer) =>
+    teams.every((team) => team.id !== engineer.id)
+  );
 
   return (
     <div>
       <h4>Engineers</h4>
-      {r1.data.engineers.map((record) => (
+      {filteredEngineers.map((record) => (
         <div key={record.id}>
           <input
             type="checkbox"

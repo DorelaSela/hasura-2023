@@ -88,3 +88,10 @@ export const DELETE_RELATION = gql`
   }
 `;
 
+export const GET_ENGINEER_TEAM = gql`
+  query getEngineeringTeam($managerId : Int!){
+    engineering_teams(where: {manager_id: {_eq: $managerId}}) {
+      items
+    }
+  }
+`;
