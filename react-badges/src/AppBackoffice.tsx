@@ -8,14 +8,13 @@ import {
 } from "@mui/icons-material";
 
 import AppEntrypoint, { BackofficeIcon } from "./containers/AppEntrypoint";
-import ManagerEngineer from "./views/backoffice/ManagerEngineer";
 
 import { DrawerMenu } from "./layouts/BasicLayout";
 import Managers from "./components/Backoffice/Manager/ManagerList/Managers";
 import AddManager from "./components/Backoffice/Manager/AddManager/AddManager";
+import EditManager from "./components/Backoffice/Manager/EditManager/EditManager";
 import Engineers from "./components/Backoffice/Engineers/EngineerData/Engineers";
 import CreateEngineers from "./components/Backoffice/Engineers/CreateEngineers/CreateEngineers";
-import Manager from "./components/Backoffice/Manager/Manager";
 import Badges from "./components/Backoffice/Badges/Badges";
 import CreateBadge from "./components/Backoffice/Badges/CreateBadge";
 
@@ -48,12 +47,15 @@ const AppBackoffice: React.FC = () => (
       [
         {
           path: "managers",
-          // element: <ManagerEngineer />
           element: <Managers />
         },
         {
           path: "/managers/create",
           element: <AddManager />
+        },
+        {
+          path: "managers/:id/edit",
+          element: <EditManager />
         },
         {
           path: "engineers",

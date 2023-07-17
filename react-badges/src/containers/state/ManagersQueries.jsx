@@ -74,3 +74,17 @@ export const EDIT_MANAGER_NAME = gql`
     }
   }
 `;
+
+export const DELETE_RELATION = gql`
+  mutation deleteRelations($idM: Int!, $idE: Int!) {
+    delete_users_relations(
+      where: { manager: { _eq: $idM }, engineer: { _eq: $idE } }
+    ) {
+      returning {
+        manager
+        engineer
+      }
+    }
+  }
+`;
+

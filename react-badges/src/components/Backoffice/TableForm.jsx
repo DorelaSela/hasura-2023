@@ -19,7 +19,7 @@ import { GET_ENGINEERS_BY_MANAGER } from "../../containers/state/ManagersQueries
 import { useMutation } from "@apollo/client";
 import TableRelations from "./TableRelations";
 
-const TableForm = ({ data, onDelete, dataType , onEdit}) => {
+const TableForm = ({ data, onDelete, dataType, onEdit, onDeleteRelation }) => {
   const [openRows, setOpenRows] = useState([]);
   const [engineers, setEngineers] = useState([]);
   const [managers, setManagers] = useState([]);
@@ -35,14 +35,13 @@ const TableForm = ({ data, onDelete, dataType , onEdit}) => {
             variables: { id }
           });
           setEngineers(data.get_engineers_by_manager);
-          console.log(data);
         } else if (dataType === "engineer") {
           const { data } = await getManagersByEngineer({
             variables: { id }
           });
           setManagers(data.get_managers_by_engineer);
         }
-        
+
         setOpenRows([...openRows, index]);
       } catch (error) {
         console.log(error);
@@ -98,14 +97,20 @@ const TableForm = ({ data, onDelete, dataType , onEdit}) => {
                   >
                     <Box sx={{ margin: 1 }}>
                       <Typography variant="h6" gutterBottom component={"span"}>
-                        Manager Relations with Engineers
+                        {dataType === "engineer"
+                          ? "Engineer relations with managers"
+                          : "Manager relations with engineers"}
                       </Typography>
                       <Table>
                         <TableBody>
                           <TableRow>
                             <TableCell colSpan={4}>
                               {dataType === "manager" ? (
-                                <TableRelations list={engineers} />
+                                <TableRelations
+                                  list={engineers}
+                                  managerId={item.id}
+                                  deleteRelation={onDeleteRelation}
+                                />
                               ) : (
                                 <TableRelations list={managers} />
                               )}

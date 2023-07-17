@@ -80,6 +80,10 @@ const AddManagers = () => {
     return <p>Loading...</p>;
   }
 
+  if (error) {
+    return <p>Error: {error.message}</p>;
+  }
+
   const renderForm = () => {
     if (activeStep === 0) {
       return (

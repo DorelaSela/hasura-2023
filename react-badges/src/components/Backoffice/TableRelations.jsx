@@ -1,14 +1,24 @@
 import React from "react";
 import {
+  Button,
   Table,
   TableBody,
   TableCell,
   TableContainer,
   TableHead,
-  TableRow
+  TableRow,
+  Typography
 } from "@mui/material";
 
-const TableRelations = ({ list }) => {
+const TableRelations = ({ list, managerId, deleteRelation }) => {
+  if (list.length === 0) {
+    return (
+      <Typography variant="body2" color="textSecondary">
+        No relations found.
+      </Typography>
+    );
+  }
+
   return (
     <TableContainer>
       <Table>
@@ -21,8 +31,11 @@ const TableRelations = ({ list }) => {
           {list.map((item, index) => (
             <TableRow key={index}>
               <TableCell>{item.name}</TableCell>
-              <TableCell>EDIT</TableCell>
-              <TableCell>Delete</TableCell>
+              <TableCell>
+                <Button onClick={() => deleteRelation(managerId, item.id)}>
+                  Delete
+                </Button>
+              </TableCell>
             </TableRow>
           ))}
         </TableBody>
