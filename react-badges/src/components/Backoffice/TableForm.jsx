@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-
 import {
   Table,
   TableBody,
@@ -19,13 +18,15 @@ import { GET_ENGINEERS_BY_MANAGER } from "../../containers/state/ManagersQueries
 import { GET_MANAGERS_BY_ENGINEER } from "../../containers/state/EngineersQueries";
 import { useMutation } from "@apollo/client";
 import TableRelations from "./TableRelations";
+import { useNavigate } from "react-router-dom";
 
-const TableForm = ({ data, onDelete, dataType }) => {
+const TableForm = ({ data, onDelete, dataType, onEdit }) => {
   const [openRows, setOpenRows] = useState([]);
   const [engineers, setEngineers] = useState([]);
   const [managers, setManagers] = useState([]);
   const [getEngineersByManager] = useMutation(GET_ENGINEERS_BY_MANAGER);
   const [getManagersByEngineer] = useMutation(GET_MANAGERS_BY_ENGINEER);
+  const navigate = useNavigate();
 
   const handleRowClick = async (index, id) => {
     if (openRows.includes(index)) {
@@ -84,7 +85,7 @@ const TableForm = ({ data, onDelete, dataType }) => {
                   <Button onClick={() => onDelete(item.id)}>Delete</Button>
                 </TableCell>
                 <TableCell>
-                  <Button>Edit</Button>
+                  <Button onClick={() => onEdit(item.id)}>Edit</Button>
                 </TableCell>
               </TableRow>
               <TableRow>

@@ -15,9 +15,9 @@ import Managers from "./components/Backoffice/Manager/ManagerList/Managers";
 import AddManager from "./components/Backoffice/Manager/AddManager/AddManager";
 import Engineers from "./components/Backoffice/Engineers/EngineerData/Engineers";
 import CreateEngineers from "./components/Backoffice/Engineers/CreateEngineers/CreateEngineers";
-import Manager from "./components/Backoffice/Manager/Manager";
 import Badges from "./components/Backoffice/Badges/Badges";
 import CreateBadge from "./components/Backoffice/Badges/CreateBadge";
+import EditEngineer from "./components/Backoffice/Engineers/EditEngineers/EditEngineer";
 
 const menuItems = [
   {
@@ -70,6 +70,10 @@ const AppBackoffice: React.FC = () => (
         {
           path: "/create",
           element: <CreateBadge />
+        },
+        {
+          path: "/engineers/edit/:id",
+          element: <EditEngineer />
         }
       ] as RouteProps[]
     }

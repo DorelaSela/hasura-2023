@@ -43,10 +43,6 @@ const CreateEngineers = () => {
     setActiveStep((prevStep) => prevStep + 1);
   };
 
-  const handleBack = () => {
-    setActiveStep((prevStep) => prevStep - 1);
-  };
-
   const handleSubmit = () => {
     addRelation({
       variables: {
@@ -90,12 +86,11 @@ const CreateEngineers = () => {
               </option>
             ))}
           </select>
-          <Button onClick={handleBack}>Back</Button>
           <Button onClick={handleSubmit}>Submit</Button>
         </div>
       );
     } else {
-      alert("Success");
+      alert("You should create a engineer");
     }
   };
 

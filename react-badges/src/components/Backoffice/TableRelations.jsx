@@ -18,14 +18,15 @@ const TableRelations = ({ list }) => {
       </Typography>
     );
   }
+
   return (
     <TableContainer>
       <Table>
         <TableHead>
           <TableRow>
             <TableCell>Name</TableCell>
-            <TableCell>Edit</TableCell>
             <TableCell>Delete</TableCell>
+            <TableCell>Edit</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -33,10 +34,10 @@ const TableRelations = ({ list }) => {
             <TableRow key={index}>
               <TableCell>{item.name}</TableCell>
               <TableCell>
-                <Button>EDIT</Button>
+                <Button>DELETE</Button>
               </TableCell>
               <TableCell>
-                <Button>DELETE</Button>
+                <Button>EDIT</Button>
               </TableCell>
             </TableRow>
           ))}

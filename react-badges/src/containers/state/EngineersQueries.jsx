@@ -63,3 +63,13 @@ export const GET_MANAGERS_BY_ENGINEER = gql`
     }
   }
 `;
+
+export const UPDATE_ENGINEERS = gql`
+  mutation updateEngineers($id: Int!, $name: String!) {
+    update_engineers(where: { id: { _eq: $id } }, _set: { name: $name }) {
+      returning {
+        name
+      }
+    }
+  }
+`;

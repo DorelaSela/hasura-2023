@@ -23,6 +23,7 @@ const Engineers = () => {
     if (data) {
       console.log(data);
       setEngineers(data.engineers);
+      console.log(data.engineers);
     }
   }, [data]);
 
@@ -35,7 +36,11 @@ const Engineers = () => {
   };
 
   const handleNavigate = () => {
-    navigate("/engineers/create");
+    navigate("/engineers/create/");
+  };
+
+  const handleEdit = (id) => {
+    navigate(`/engineers/edit/${id}`);
   };
 
   if (loading) {
@@ -49,6 +54,7 @@ const Engineers = () => {
         data={engineers}
         onDelete={deleteEngineers}
         dataType="engineer"
+        onEdit={handleEdit}
       />
       <Button color="error" onClick={handleNavigate}>
         Create New
