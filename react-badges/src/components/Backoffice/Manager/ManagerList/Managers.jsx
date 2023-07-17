@@ -8,14 +8,13 @@ import {
 import { useNavigate } from "react-router-dom";
 import TableForm from "../../TableForm";
 
-
 const Managers = () => {
   const { loading, data, error } = useQuery(LOAD_MANAGERS);
   const [managers, setManagers] = useState([]);
   const [deleteManager] = useMutation(DELETE_MANAGER);
-  const [deleteRelations] = useMutation(DELETE_RELATION , {
+  const [deleteRelations] = useMutation(DELETE_RELATION, {
     refetchQueries: [{ query: LOAD_MANAGERS }]
-  })
+  });
   const navigate = useNavigate();
 
   useEffect(() => {

@@ -9,8 +9,15 @@ import {
   TableRow,
   Typography
 } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 
 const TableRelations = ({ list, managerId, deleteRelation }) => {
+  const navigate = useNavigate();
+
+  const handleAddRelation = () => {
+    navigate(`/managers/${managerId}/addRelation`);
+  };
+
   if (list.length === 0) {
     return (
       <Typography variant="body2" color="textSecondary">
@@ -40,6 +47,8 @@ const TableRelations = ({ list, managerId, deleteRelation }) => {
           ))}
         </TableBody>
       </Table>
+      <br />
+      <Button onClick={handleAddRelation}>Add new relation</Button>
     </TableContainer>
   );
 };

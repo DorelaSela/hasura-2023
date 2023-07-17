@@ -46,12 +46,18 @@ const EditManager = () => {
 
   return (
     <div>
+      <br /> <br />
       <TextField
         type="text"
         label="Name"
         value={name}
         onChange={(e) => setName(e.target.value)}
       />
+      <br /> <br />
+      <TextField value={manager.id} label="ID" disabled />
+      <br /> <br />
+      <TextField value={manager.is_deleted} label="Is deleted" disabled />
+      <br /> <br />
       <Button variant="contained" onClick={handleEdit}>
         Done
       </Button>
