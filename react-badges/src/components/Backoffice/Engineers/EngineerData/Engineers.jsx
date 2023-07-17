@@ -1,8 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { Button } from "@mui/material";
 import { useQuery } from "@apollo/client";
-import { LOAD_ENGINEERS } from "../../../../containers/state/EngineersQueries";
-import { DELETE_ENGINEERS } from "../../../../containers/state/EngineersQueries";
+import {
+  LOAD_ENGINEERS,
+  DELETE_ENGINEERS,
+  DELETE_RELATIONS
+} from "../../../../containers/state/EngineersQueries";
 import { useMutation } from "@apollo/client";
 import { useNavigate } from "react-router-dom";
 import TableForm from "../../TableForm";
@@ -13,6 +16,7 @@ const Engineers = () => {
   const [deleteRelationEngineers] = useMutation(DELETE_ENGINEERS, {
     refetchQueries: [{ query: LOAD_ENGINEERS }]
   });
+  const [deleteRelations] = useMutation(DELETE_RELATIONS);
   const navigate = useNavigate();
 
   if (error) {
@@ -43,6 +47,15 @@ const Engineers = () => {
     navigate(`/engineers/edit/${id}`);
   };
 
+  const handleDeleteRelations = (engineerId, managerId) => {
+    deleteRelations({
+      variables: {
+        idE: engineerId,
+        idM: managerId
+      }
+    });
+  };
+
   if (loading) {
     return <p>Loading...</p>;
   }
@@ -55,6 +68,8 @@ const Engineers = () => {
         onDelete={deleteEngineers}
         dataType="engineer"
         onEdit={handleEdit}
+        onDeleteRelations={handleDeleteRelations}
+        engineerId={engineers.id}
       />
       <Button color="error" onClick={handleNavigate}>
         Create New

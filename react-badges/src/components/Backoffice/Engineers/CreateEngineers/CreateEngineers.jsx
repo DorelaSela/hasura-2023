@@ -1,4 +1,4 @@
-import { Button, Checkbox, FormControlLabel, TextField } from "@mui/material";
+import { Button, TextField } from "@mui/material";
 import React, { useState, useEffect } from "react";
 import { StepLabel, Step, Stepper } from "@mui/material";
 import { useNavigate } from "react-router-dom";
@@ -25,7 +25,7 @@ const CreateEngineers = () => {
   );
   const [addRelation] = useMutation(ADD_RELATIONS);
 
-  const steps = ["Step 1", "Step 2"];
+  const steps = ["Create name", "Choose relation"];
 
   if (error) {
     console.log(error);

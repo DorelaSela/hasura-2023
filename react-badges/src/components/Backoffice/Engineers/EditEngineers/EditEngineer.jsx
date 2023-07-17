@@ -2,7 +2,8 @@ import React, { useEffect, useState } from "react";
 import { useMutation, useQuery } from "@apollo/client";
 import {
   UPDATE_ENGINEERS,
-  LOAD_ENGINEERS
+  LOAD_ENGINEERS,
+  GET_MANAGERS
 } from "../../../../containers/state/EngineersQueries";
 import { Button, TextField } from "@mui/material";
 import { useNavigate, useParams } from "react-router-dom";
@@ -13,6 +14,7 @@ const EditEngineer = () => {
     refetchQueries: [{ query: LOAD_ENGINEERS }]
   });
   const { data } = useQuery(LOAD_ENGINEERS);
+  const getEngineers = useQuery(GET_MANAGERS);
   const { id } = useParams();
   const navigate = useNavigate();
 
@@ -25,6 +27,7 @@ const EditEngineer = () => {
 
   useEffect(() => {
     setName(findEngineer.name);
+    console.log(findEngineer);
   }, [findEngineer.name]);
 
   const handleSaveEdit = () => {
@@ -37,7 +40,7 @@ const EditEngineer = () => {
     navigate("/engineers");
   };
 
-  if (loading) {
+  if (loading || !getEngineers.data?.engineers) {
     return <p>Loading...</p>;
   }
 
@@ -47,12 +50,18 @@ const EditEngineer = () => {
 
   return (
     <div>
+      <br />
       <TextField
         value={name}
         type="text"
         label="Name"
         onChange={(e) => setName(e.target.value)}
       />
+      <br /> <br />
+      <TextField value={findEngineer.id} label="ID" disabled />
+      <br /> <br />
+      <TextField value={findEngineer.is_deleted} label="Is deleted" disabled />
+      <br /> <br />
       <Button onClick={handleSaveEdit}>Save</Button>
     </div>
   );

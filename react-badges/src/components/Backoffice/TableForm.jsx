@@ -18,15 +18,13 @@ import { GET_ENGINEERS_BY_MANAGER } from "../../containers/state/ManagersQueries
 import { GET_MANAGERS_BY_ENGINEER } from "../../containers/state/EngineersQueries";
 import { useMutation } from "@apollo/client";
 import TableRelations from "./TableRelations";
-import { useNavigate } from "react-router-dom";
 
-const TableForm = ({ data, onDelete, dataType, onEdit }) => {
+const TableForm = ({ data, onDelete, dataType, onEdit, onDeleteRelations }) => {
   const [openRows, setOpenRows] = useState([]);
   const [engineers, setEngineers] = useState([]);
   const [managers, setManagers] = useState([]);
   const [getEngineersByManager] = useMutation(GET_ENGINEERS_BY_MANAGER);
   const [getManagersByEngineer] = useMutation(GET_MANAGERS_BY_ENGINEER);
-  const navigate = useNavigate();
 
   const handleRowClick = async (index, id) => {
     if (openRows.includes(index)) {
@@ -100,7 +98,7 @@ const TableForm = ({ data, onDelete, dataType, onEdit }) => {
                   >
                     <Box sx={{ margin: 1 }}>
                       <Typography variant="h6" gutterBottom component={"span"}>
-                        {dataType === `engineer`
+                        {dataType === "engineer"
                           ? "Engineer relations with managers"
                           : "Manager relations with engineers"}
                       </Typography>
@@ -111,7 +109,11 @@ const TableForm = ({ data, onDelete, dataType, onEdit }) => {
                               {dataType === "manager" ? (
                                 <TableRelations list={engineers} />
                               ) : (
-                                <TableRelations list={managers} />
+                                <TableRelations
+                                  list={managers}
+                                  deleteRelations={onDeleteRelations}
+                                  engineerId={item.id}
+                                />
                               )}
                             </TableCell>
                           </TableRow>
