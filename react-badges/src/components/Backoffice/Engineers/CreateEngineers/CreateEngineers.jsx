@@ -15,7 +15,7 @@ const CreateEngineers = () => {
   const [activeStep, setActiveStep] = useState(0);
   const [managers, setManagers] = useState(null);
   const [id, setId] = useState(null);
-  const getEngineers = useQuery(GET_MANAGERS);
+  const getManagers = useQuery(GET_MANAGERS);
   const navigate = useNavigate();
   const [insertEngineers, { error, data }] = useMutation(
     CREATE_ENGINEERS_MUTATION,
@@ -80,7 +80,7 @@ const CreateEngineers = () => {
         <div>
           <h4>Managers</h4>
           <select onChange={(e) => setManagers(e.target.value)}>
-            {getEngineers.data.managers.map((record) => (
+            {getManagers.data.managers.map((record) => (
               <option key={record.id} value={record.id}>
                 {record.name}
               </option>

@@ -2,19 +2,20 @@ import React, { useEffect, useState } from "react";
 import { useMutation, useQuery } from "@apollo/client";
 import {
   UPDATE_ENGINEERS,
-  LOAD_ENGINEERS,
-  GET_MANAGERS
+  LOAD_ENGINEERS
 } from "../../../../containers/state/EngineersQueries";
 import { Button, TextField } from "@mui/material";
 import { useNavigate, useParams } from "react-router-dom";
 
 const EditEngineer = () => {
   const [name, setName] = useState("");
-  const [updateEngineers, { loading, error }] = useMutation(UPDATE_ENGINEERS, {
-    refetchQueries: [{ query: LOAD_ENGINEERS }]
-  });
-  const { data } = useQuery(LOAD_ENGINEERS);
-  const getEngineers = useQuery(GET_MANAGERS);
+  const [updateEngineers, { loading: updateLoading, error }] = useMutation(
+    UPDATE_ENGINEERS,
+    {
+      refetchQueries: [{ query: LOAD_ENGINEERS }]
+    }
+  );
+  const { data, loading } = useQuery(LOAD_ENGINEERS);
   const { id } = useParams();
   const navigate = useNavigate();
 
@@ -40,9 +41,9 @@ const EditEngineer = () => {
     navigate("/engineers");
   };
 
-  if (loading || !getEngineers.data?.engineers) {
-    return <p>Loading...</p>;
-  }
+  // if (loading || updateLoading) {
+  //   return <p>Loading...</p>;
+  // }
 
   if (error) {
     return <p>Error: {error.message}</p>;
