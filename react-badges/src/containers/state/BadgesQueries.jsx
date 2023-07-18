@@ -23,9 +23,10 @@ export const CREATE_BADGE_MUTATION = gql`
 `;
 
 export const CREATE_BADGE_VERSION = gql`
-  mutation MyMutation($id: Int!) {
-    create_badge_version(args: { badge_def_id: $id }) {
+  mutation MyMutation($id: Int!, $title: String!) {
+    create_badge_version(args: { title: $title, badge_def_id: $id }) {
       title
+      id
     }
   }
 `;

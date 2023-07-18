@@ -5,11 +5,12 @@ CREATE TABLE "badges_versions" (
   "title" VARCHAR(255),
   "description" TEXT,
   "requirements" JSONB,
+  "is_deleted" BOOLEAN NOT NULL,
   PRIMARY KEY ("id", "created_at")
 );
 
 CREATE VIEW "badges_versions_last" AS
-SELECT DISTINCT ON ("id") "id", "created_at", "created_by", "title", "description", "requirements"
+SELECT DISTINCT ON ("id") "id", "created_at", "created_by", "title", "description", "requirements", "is_deleted"
 FROM "badges_versions"
 ORDER BY "id", "created_at" DESC;
 
@@ -19,7 +20,8 @@ ORDER BY "id", "created_at" DESC;
 CREATE OR REPLACE FUNCTION "_create_badge_version"(
   "user_id" INTEGER,
   "badge_def_id" INTEGER,
-  "version_at" TIMESTAMP
+  "version_at" TIMESTAMP,
+  "is_deleted" BOOLEAN
 )
 RETURNS SETOF "badges_versions" AS $$
 BEGIN
@@ -30,7 +32,8 @@ BEGIN
     "description", 
     "requirements", 
     "created_at",
-    "created_by"
+    "created_by",
+    "is_deleted"
   )
   SELECT 
     "bd"."id", 
@@ -48,7 +51,8 @@ BEGIN
         '[]'::json
     ) AS "requirements",
     version_at, 
-    user_id
+    user_id,
+    is_deleted
   FROM "badges_definitions" "bd"
   LEFT JOIN "requirements_definitions" "rd" ON "bd"."id" = "rd"."badge_id"
   WHERE "bd"."id" = "badge_def_id"
@@ -60,12 +64,13 @@ END; $$ LANGUAGE plpgsql;
 -- (will receive the Hasura Session to figure out the user)
 CREATE OR REPLACE FUNCTION "create_badge_version"(
   "hasura_session" JSON,
-  "badge_def_id" INTEGER
+  "badge_def_id" INTEGER,
+  "is_deleted" BOOLEAN
 )
 RETURNS SETOF "badges_versions" AS $$
 DECLARE
   tenant_id integer := (hasura_session ->> 'x-hasura-tenant-id')::integer;
 BEGIN
   RETURN QUERY
-  SELECT * FROM _create_badge_version(tenant_id, badge_def_id, (SELECT now() AT TIME ZONE 'UTC'));
+  SELECT * FROM _create_badge_version(tenant_id, badge_def_id, (SELECT now() AT TIME ZONE 'UTC'), is_deleted);
 END; $$ LANGUAGE plpgsql;
