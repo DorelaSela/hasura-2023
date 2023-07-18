@@ -23,7 +23,6 @@ const TableRelations = ({ list, deleteRelations, engineerId }) => {
 
   const addRelations = () => {
     navigate(`/engineers/addRelations/${engineerId}`);
-    console.log(typeof id);
   };
 
   return (

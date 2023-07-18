@@ -9,34 +9,26 @@ import { useQuery, useMutation } from "@apollo/client";
 import { Button } from "@mui/material";
 
 const AddRelations = () => {
-  const { data: managersData } = useQuery(GET_MANAGERS);
   const [managerIds, setManagerIds] = useState([]);
+  const [addRelation, { loading, error }] = useMutation(ADD_RELATIONS);
   const { id: engineerId } = useParams();
-
-  console.log(engineerId);
-
-  const [getManagersByEngineer] = useMutation(GET_MANAGERS_BY_ENGINEER);
-
-  
-
-  const { data } = getManagersByEngineer({
-    variables: { engineerId }
-  });
-  console.log(data);
-
-  console.log(getManagersByEngineer.get_managers_by_engineer);
-  const [addRelation] = useMutation(ADD_RELATIONS);
-
   const navigate = useNavigate();
+  const [
+    getManagersByEngineer,
+    { data: teamsData, loading: teamsLoading, error: teamsError }
+  ] = useMutation(GET_MANAGERS_BY_ENGINEER);
 
-  // useEffect(() => {
-  //   if (managersData) {
-  //     const filteredManagers = managersData.managers.filter(
-  //       (manager) => !relatedManagers.includes(manager.id)
-  //     );
-  //     setFilteredManagers(filteredManagers);
-  //   }
-  // }, [managersData, engineerId]);
+  useEffect(() => {
+    getManagersByEngineer({
+      variables: { id: parseInt(engineerId) }
+    });
+  }, []);
+
+  const {
+    data: managersData,
+    loading: managersLoading,
+    error: managersError
+  } = useQuery(GET_MANAGERS);
 
   const handleCheckboxChange = (managerId) => {
     if (managerIds.includes(managerId)) {
@@ -46,7 +38,7 @@ const AddRelations = () => {
     }
   };
 
-  const handleSubmit = async () => {
+  const handleSubmit = () => {
     if (managerIds.length > 0) {
       managerIds.forEach((managerId) => {
         addRelation({
@@ -56,22 +48,32 @@ const AddRelations = () => {
           }
         });
       });
-
       navigate("/engineers");
     } else {
       console.log("No manager selected");
     }
   };
 
-  const teams = getManagersData?.getManagersByEngineer[0]?.items;
+  if (teamsLoading && managersLoading) {
+    return <p>Loading...</p>;
+  }
+
+  if (teamsError || managersError) {
+    return <p>Error: {teamsError?.message || managersError?.message}</p>;
+  }
+
+  const teams = teamsData?.get_managers_by_engineer;
   const managers = managersData?.managers;
-  const filteredManagers = managers.filter((manager) => {
-    teams.every((team) => team.id !== manager.id);
-  });
+  console.log(teams);
+  console.log(managers);
+  
+  const filteredManagers = managers.filter((manager) =>
+    teams.every((team) => team.id !== manager.id)
+  );
 
   return (
     <div>
-      <h4>Managers</h4>
+      <h4>Engineers</h4>
       {filteredManagers.map((record) => (
         <div key={record.id}>
           <input
@@ -83,7 +85,6 @@ const AddRelations = () => {
           <label htmlFor={record.id}>{record.name}</label>
         </div>
       ))}
-
       <Button onClick={handleSubmit}>Submit</Button>
     </div>
   );
