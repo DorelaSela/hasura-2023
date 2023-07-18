@@ -7,13 +7,12 @@ import {
 } from "../../../../containers/state/ManagersQueries";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@mui/material";
-import { LOAD_MANAGERS } from "../../../../containers/state/ManagersQueries";
 import { useParams } from "react-router-dom";
 
 const AddRelation = () => {
   const [engineerIds, setEngineerIds] = useState([]);
   const [addRelation, { loading, error }] = useMutation(ADD_RELATION, {
-    refetchQueries: [{ query: LOAD_MANAGERS }]
+    refetchQueries: [{ query: GET_ENGINEER_TEAM }]
   });
   const { id: managerId } = useParams();
   const navigate = useNavigate();
@@ -50,7 +49,6 @@ const AddRelation = () => {
           }
         });
       });
-
       navigate("/managers");
     } else {
       console.log("No engineer selected");

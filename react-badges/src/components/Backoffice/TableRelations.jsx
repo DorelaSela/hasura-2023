@@ -39,7 +39,7 @@ const TableRelations = ({ list, managerId, deleteRelation }) => {
             <TableRow key={index}>
               <TableCell>{item.name}</TableCell>
               <TableCell>
-                <Button onClick={() => deleteRelation(managerId, item.id)}>
+                <Button onClick={() => deleteRelation({managerId, id:item.id})}>
                   Delete
                 </Button>
               </TableCell>

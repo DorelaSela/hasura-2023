@@ -19,13 +19,7 @@ import { GET_ENGINEERS_BY_MANAGER } from "../../containers/state/ManagersQueries
 import { useMutation } from "@apollo/client";
 import TableRelations from "./TableRelations";
 
-const TableForm = ({
-  data,
-  onDelete,
-  dataType,
-  onEdit,
-  onDeleteRelation
-}) => {
+const TableForm = ({ data, onDelete, dataType, onEdit, onDeleteRelation }) => {
   const [openRows, setOpenRows] = useState([]);
   const [engineers, setEngineers] = useState([]);
   const [managers, setManagers] = useState([]);
@@ -53,6 +47,11 @@ const TableForm = ({
         console.log(error);
       }
     }
+  };
+  
+  const deleteRelation = ({ managerId, id }) => {
+    onDeleteRelation(managerId, id);
+    setEngineers((oldEng) => oldEng.filter((eng) => eng.id != id));
   };
 
   return (
@@ -115,7 +114,7 @@ const TableForm = ({
                                 <TableRelations
                                   list={engineers}
                                   managerId={item.id}
-                                  deleteRelation={onDeleteRelation}
+                                  deleteRelation={deleteRelation}
                                 />
                               ) : (
                                 <TableRelations list={managers} />
