@@ -8,30 +8,34 @@ import { Box, Button, Card, Typography, Fab } from "@mui/material";
 import { Link } from "react-router-dom";
 
 const Badges = () => {
-  const { data } = useQuery(LOAD_BADGES);
+  const { data, loading, error } = useQuery(LOAD_BADGES);
   const [badges, setBadges] = useState([]);
-  const [deleteBadge, { loading, error }] = useMutation(DELETE_BADGE, {
-    refetchQueries: [{ query: LOAD_BADGES }]
-  });
+
+  const [deleteBadge, { loading: deleteLoading, error: deleteError }] =
+    useMutation(DELETE_BADGE);
 
   useEffect(() => {
     if (data) {
-      console.log(data);
-      setBadges(data.badges_versions_last);
+      setBadges(data.badges_versions_last || []);
     }
   }, [data]);
 
-  console.log(data);
-
-  const deleteBadgeHandler = (id) => {
+  const deleteBadgeHandler = (badgeId) => {
     deleteBadge({
       variables: {
-        badge_def_id: id,
-        is_deleted: true
-      }
-    });
-    console.log(id);
-   
+        badge_def_id: badgeId
+      },
+      refetchQueries: [{ query: LOAD_BADGES }]
+    })
+      .then((result) => {
+        console.log(
+          "Badge deleted successfully:",
+          result.data.create_badge_version
+        );
+      })
+      .catch((error) => {
+        console.error("Error deleting badge:", error);
+      });
   };
 
   if (loading) {

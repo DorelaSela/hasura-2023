@@ -2,7 +2,7 @@ import { gql } from "@apollo/client";
 
 export const LOAD_BADGES = gql`
   query LoadBadges {
-    badges_versions_last {
+    badges_versions_last(where: { is_deleted: { _eq: false } }) {
       title
       description
       id

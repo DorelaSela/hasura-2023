@@ -36,8 +36,7 @@ const CreateBadge = () => {
     if (data) {
       create_badges_version({
         variables: {
-          id: data?.insert_badges_definitions?.returning[0]?.id,
-          is_deleted: false
+          id: data?.insert_badges_definitions?.returning[0]?.id
         }
       });
       navigate("/badges");
