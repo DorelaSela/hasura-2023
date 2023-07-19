@@ -11,21 +11,15 @@ import {
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 
-const TableRelations = ({
-  list,
-  managerId,
-  engineerId,
-  deleteRelation,
-  dataType
-}) => {
+const TableRelations = ({ list, relationId, deleteRelations, dataType }) => {
   const navigate = useNavigate();
 
   const handleAddRelation = () => {
-    navigate(`/managers/${managerId}/addRelation`);
+    navigate(`/managers/${relationId}/addRelation`);
   };
 
   const addRelations = () => {
-    navigate(`/engineers/addRelations/${engineerId}`);
+    navigate(`/engineers/addRelations/${relationId}`);
   };
 
   if (list.length === 0) {
@@ -51,15 +45,15 @@ const TableRelations = ({
             <TableRow key={index}>
               <TableCell>{item.name}</TableCell>
               <TableCell>
-                {dataType === "manager" ? (
+                {dataType === "engineer" ? (
                   <Button
-                    onClick={() => deleteRelation({ managerId, id: item.id })}
+                    onClick={() => deleteRelations({ relationId, id: item.id })}
                   >
-                    Delete
+                    DELETE
                   </Button>
                 ) : (
                   <Button
-                    onClick={() => deleteRelation({ engineerId, id: item.id })}
+                    onClick={() => deleteRelations({ relationId, id: item.id })}
                   >
                     Delete
                   </Button>
@@ -69,12 +63,9 @@ const TableRelations = ({
           ))}
         </TableBody>
       </Table>
+      <Button onClick={addRelations}>Add Relation</Button>
       <br />
-      {dataType === "manager" ? (
-        <Button onClick={handleAddRelation}>Add new relation</Button>
-      ) : (
-        <Button onClick={addRelations}>Add new relation</Button>
-      )}
+      <Button onClick={handleAddRelation}>Add new relation</Button>
     </TableContainer>
   );
 };

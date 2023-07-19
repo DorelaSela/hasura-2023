@@ -69,7 +69,6 @@ const Engineers = () => {
         dataType="engineer"
         onEdit={handleEdit}
         onDeleteRelations={handleDeleteRelations}
-        engineerId={engineers.id}
       />
       <Button color="error" onClick={handleNavigate}>
         Create New

@@ -49,10 +49,14 @@ const TableForm = ({ data, onDelete, dataType, onEdit, onDeleteRelations }) => {
       }
     }
   };
-  
-  const deleteRelation = ({ managerId, id }) => {
-    onDeleteRelations(managerId, id);
-    setEngineers((oldEng) => oldEng.filter((eng) => eng.id != id));
+
+  const deleteRelation = ({ relationId, id }) => {
+    onDeleteRelations(relationId, id);
+    if (dataType === "manager") {
+      setEngineers((oldEng) => oldEng.filter((eng) => eng.id != id));
+    } else {
+      setManagers((oldMng) => oldMng.filter((mng) => mng.id != id));
+    }
   };
 
   return (
@@ -114,15 +118,15 @@ const TableForm = ({ data, onDelete, dataType, onEdit, onDeleteRelations }) => {
                               {dataType === "manager" ? (
                                 <TableRelations
                                   list={engineers}
-                                  managerId={item.id}
-                                  deleteRelation={deleteRelation}
+                                  relationId={item.id}
+                                  deleteRelations={deleteRelation}
                                   dataType={dataType}
                                 />
                               ) : (
                                 <TableRelations
                                   list={managers}
-                                  deleteRelation={onDeleteRelations}
-                                  engineerId={item.id}
+                                  relationId={item.id}
+                                  deleteRelations={deleteRelation}
                                   dataType={dataType}
                                 />
                               )}
