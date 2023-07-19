@@ -12,7 +12,6 @@ CREATE TABLE "badges_versions" (
 CREATE VIEW "badges_versions_last" AS
 SELECT DISTINCT ON ("id") "id", "created_at", "created_by", "title", "description", "requirements" , "is_deleted"
 FROM "badges_versions"
-WHERE "is_deleted" = FALSE
 ORDER BY "id", "created_at" DESC;
 
 -- Private version of the function

@@ -23,8 +23,8 @@ export const CREATE_BADGE_MUTATION = gql`
 `;
 
 export const CREATE_BADGE_VERSION = gql`
-  mutation MyMutation($id: Int!, $is_deleted: Boolean!) {
-    create_badge_version(args: { badge_def_id: $id, is_deleted: $is_deleted }) {
+  mutation MyMutation($id: Int!) {
+    create_badge_version(args: { badge_def_id: $id, is_deleted: false }) {
       title
       id
     }
