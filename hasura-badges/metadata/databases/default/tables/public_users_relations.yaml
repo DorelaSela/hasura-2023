@@ -41,6 +41,14 @@ select_permissions:
         - select
       subscription_root_fields:
         - select
+update_permissions:
+  - role: backoffice
+    permission:
+      columns:
+        - engineer
+        - manager
+      filter: {}
+      check: {}
 delete_permissions:
   - role: backoffice
     permission:
