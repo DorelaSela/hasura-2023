@@ -55,8 +55,8 @@ CREATE TABLE "badges_definitions" (
 CREATE TABLE "requirements_definitions" (
   "id" SERIAL PRIMARY KEY,
   "badge_id" INTEGER REFERENCES "badges_definitions"("id") ON DELETE RESTRICT,
-  "title"  JSONB,
-  "description"  JSONB,
+  "title"  VARCHAR(255) NOT NULL,
+  "description"  TEXT NOT NULL,
   "created_at" TIMESTAMP NOT NULL DEFAULT now(),
   "created_by" INTEGER REFERENCES "users"("id") ON DELETE RESTRICT,
   "modified_at" TIMESTAMP NOT NULL DEFAULT now(),
