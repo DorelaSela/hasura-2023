@@ -9,15 +9,18 @@ import {
 
 import AppEntrypoint, { BackofficeIcon } from "./containers/AppEntrypoint";
 import ManagerEngineer from "./views/backoffice/ManagerEngineer";
+
 import { DrawerMenu } from "./layouts/BasicLayout";
 import Managers from "./components/Backoffice/Manager/ManagerList/Managers";
 import AddManager from "./components/Backoffice/Manager/AddManager/AddManager";
+import EditManager from "./components/Backoffice/Manager/EditManager/EditManager";
 import Engineers from "./components/Backoffice/Engineers/EngineerData/Engineers";
 import CreateEngineers from "./components/Backoffice/Engineers/CreateEngineers/CreateEngineers";
 import Badges from "./components/Backoffice/Badges/Badges";
 import CreateBadge from "./components/Backoffice/Badges/CreateBadge";
 import EditEngineer from "./components/Backoffice/Engineers/EditEngineers/EditEngineer";
 import AddRelations from "./components/Backoffice/Engineers/AddRelations/AddRelations";
+import AddRelation from "./components/Backoffice/Manager/AddRelation/AddRelation";
 
 const menuItems = [
   {
@@ -48,12 +51,19 @@ const AppBackoffice: React.FC = () => (
       [
         {
           path: "managers",
-          // element: <ManagerEngineer />
           element: <Managers />
         },
         {
           path: "/managers/create",
           element: <AddManager />
+        },
+        {
+          path: "managers/:id/edit",
+          element: <EditManager />
+        },
+        {
+          path: "managers/:id/addRelation",
+          element: <AddRelation />
         },
         {
           path: "engineers",

@@ -11,8 +11,13 @@ import {
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 
-const TableRelations = ({ list, deleteRelations, engineerId }) => {
+const TableRelations = ({ list, managerId, deleteRelation }) => {
   const navigate = useNavigate();
+
+  const handleAddRelation = () => {
+    navigate(`/managers/${managerId}/addRelation`);
+  };
+
   if (list.length === 0) {
     return (
       <Typography variant="body2" color="textSecondary">
@@ -40,18 +45,16 @@ const TableRelations = ({ list, deleteRelations, engineerId }) => {
             <TableRow key={index}>
               <TableCell>{item.name}</TableCell>
               <TableCell>
-                <Button onClick={() => deleteRelations(engineerId, item.id)}>
-                  DELETE
+                <Button onClick={() => deleteRelation({managerId, id:item.id})}>
+                  Delete
                 </Button>
-              </TableCell>
-              <TableCell>
-                <Button>EDIT</Button>
               </TableCell>
             </TableRow>
           ))}
         </TableBody>
       </Table>
-      <Button onClick={addRelations}>Add Relation</Button>
+      <br />
+      <Button onClick={handleAddRelation}>Add new relation</Button>
     </TableContainer>
   );
 };

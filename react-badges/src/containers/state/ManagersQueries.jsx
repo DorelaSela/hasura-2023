@@ -65,3 +65,33 @@ export const GET_ENGINEERS_BY_MANAGER = gql`
   }
 `;
 
+export const EDIT_MANAGER_NAME = gql`
+  mutation editManagersName($id: Int!, $name: String!) {
+    update_managers(where: { id: { _eq: $id } }, _set: { name: $name }) {
+      returning {
+        name
+      }
+    }
+  }
+`;
+
+export const DELETE_RELATION = gql`
+  mutation deleteRelations($idM: Int!, $idE: Int!) {
+    delete_users_relations(
+      where: { manager: { _eq: $idM }, engineer: { _eq: $idE } }
+    ) {
+      returning {
+        manager
+        engineer
+      }
+    }
+  }
+`;
+
+export const GET_ENGINEER_TEAM = gql`
+  query getEngineeringTeam($managerId : Int!){
+    engineering_teams(where: {manager_id: {_eq: $managerId}}) {
+      items
+    }
+  }
+`;
