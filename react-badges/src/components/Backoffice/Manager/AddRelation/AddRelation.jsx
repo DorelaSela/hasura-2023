@@ -3,7 +3,7 @@ import { useQuery, useMutation } from "@apollo/client";
 import {
   ADD_RELATION,
   GET_ENGINEERS,
-  GET_ENGINEER_TEAM
+  GET_ENGINEERS_BY_MANAGER
 } from "../../../../containers/state/ManagersQueries";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@mui/material";
@@ -11,19 +11,20 @@ import { useParams } from "react-router-dom";
 
 const AddRelation = () => {
   const [engineerIds, setEngineerIds] = useState([]);
-  const [addRelation] = useMutation(ADD_RELATION, {
-    refetchQueries: [{ query: GET_ENGINEER_TEAM }]
-  });
+  const [addRelation] = useMutation(ADD_RELATION);
   const { id: managerId } = useParams();
   const navigate = useNavigate();
 
-  const {
-    data: teamsData,
-    loading: teamsLoading,
-    error: teamsError
-  } = useQuery(GET_ENGINEER_TEAM, {
-    variables: { managerId: parseInt(managerId) }
-  });
+  const [
+    getEngineersByManager,
+    { data: teamsData, loading: teamsLoading, error: teamsError }
+  ] = useMutation(GET_ENGINEERS_BY_MANAGER);
+
+  useEffect(() => {
+    getEngineersByManager({
+      variables: { id: parseInt(managerId) }
+    });
+  }, []);
 
   const {
     data: engineersData,
@@ -63,26 +64,30 @@ const AddRelation = () => {
     return <p>Error: {teamsError?.message || engineersError?.message}</p>;
   }
 
-  const teams = teamsData?.engineering_teams[0]?.items;
+  const teams = teamsData?.get_engineers_by_manager;
   const engineers = engineersData?.engineers;
-  const filteredEngineers = engineers.filter((engineer) =>
-    teams.every((team) => team.id !== engineer.id)
+  const filteredEngineers = engineers?.filter((engineer) =>
+    teams?.every((team) => team.id !== engineer.id)
   );
 
   return (
     <div>
-      <h4>Engineers</h4>
-      {filteredEngineers.map((record) => (
-        <div key={record.id}>
-          <input
-            type="checkbox"
-            id={record.id}
-            value={record.id}
-            onChange={(e) => handleCheckboxChange(e.target.value)}
-          />
-          <label htmlFor={record.id}>{record.name}</label>
-        </div>
-      ))}
+      <h4>Managers</h4>
+      {filteredEngineers ? (
+        filteredEngineers.map((record) => (
+          <div key={record.id}>
+            <input
+              type="checkbox"
+              id={record.id}
+              value={record.id}
+              onChange={(e) => handleCheckboxChange(e.target.value)}
+            />
+            <label htmlFor={record.id}>{record.name}</label>
+          </div>
+        ))
+      ) : (
+        <p>No managers available</p>
+      )}
       <Button onClick={handleSubmit}>Submit</Button>
     </div>
   );
