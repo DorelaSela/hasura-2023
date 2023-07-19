@@ -65,10 +65,10 @@ BEGIN
   RETURNING *;
 END; $$ LANGUAGE plpgsql;
 
--- Public version of the function
+-- Public version of the function)
 
--- (will receive the Hasura Session to figure out the user)
 
+-- (will receive the Hasura Session to figure out the user
 CREATE OR REPLACE FUNCTION "create_badge_version"(
   "hasura_session" JSON,
   "badge_def_id" INTEGER,
