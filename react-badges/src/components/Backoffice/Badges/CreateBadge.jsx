@@ -1,4 +1,11 @@
-import { InputLabel, TextField } from "@mui/material";
+import {
+  Button,
+  Card,
+  CardContent,
+  TextField,
+  Typography,
+  Box
+} from "@mui/material";
 import { useEffect, useState } from "react";
 import { useMutation } from "@apollo/client";
 import {
@@ -29,7 +36,8 @@ const CreateBadge = () => {
     if (data) {
       create_badges_version({
         variables: {
-          id: data?.insert_badges_definitions?.returning[0]?.id
+          id: data?.insert_badges_definitions?.returning[0]?.id,
+          is_deleted: false
         }
       });
       navigate("/badges");
@@ -37,7 +45,7 @@ const CreateBadge = () => {
   }, [data]);
 
   const onSubmit = (formData) => {
-    const { title, description, id } = formData;
+    const { title, description } = formData;
     insert_badges_definitions({
       variables: {
         title: title,
@@ -53,31 +61,44 @@ const CreateBadge = () => {
   if (error) {
     return <p>Error: {error.message}</p>;
   }
-  // console.log("dataaaaaa", data);
 
   return (
-    <>
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <div>
-          <TextField
-            label="Title"
-            name="title"
-            {...register("title", {
-              required: true
-            })}
-          />
-          <TextField
-            label="Description"
-            name="description"
-            {...register("description", {
-              required: true
-            })}
-          />
-
-          <button type="submit">Add</button>
-        </div>
-      </form>
-    </>
+    <Card sx={{ padding: "16px", marginBottom: "16px", margin: "16px" }}>
+      <CardContent>
+        <Typography sx={{ marginBottom: "8px" }} variant="h1">
+          Create Badge
+        </Typography>
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              gap: "8px",
+              justifyContent: "space-evenly"
+            }}
+          >
+            <TextField
+              label="Title"
+              name="title"
+              {...register("title", {
+                required: true
+              })}
+              sx={{ marginBottom: "8px" }}
+            />
+            <TextField
+              label="Description"
+              name="description"
+              {...register("description", {
+                required: true
+              })}
+              sx={{ marginBottom: "8px" }}
+            />
+            <Button type="submit">Add</Button>
+          </Box>
+        </form>
+      </CardContent>
+    </Card>
   );
 };
+
 export default CreateBadge;

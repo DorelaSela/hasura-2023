@@ -23,22 +23,21 @@ export const CREATE_BADGE_MUTATION = gql`
 `;
 
 export const CREATE_BADGE_VERSION = gql`
-  mutation MyMutation($id: Int!) {
-    create_badge_version(args: { badge_def_id: $id }) {
+  mutation MyMutation($id: Int!, $is_deleted: Boolean!) {
+    create_badge_version(args: { badge_def_id: $id, is_deleted: $is_deleted }) {
       title
+      id
     }
   }
 `;
 
 export const DELETE_BADGE = gql`
-  mutation MyMutation($id: Int!) {
-    delete_requirements_definitions(
-      where: { badges_definition: { id: { _eq: $id } } }
+  mutation deleteBadge($badge_def_id: Int!) {
+    create_badge_version(
+      args: { badge_def_id: $badge_def_id, is_deleted: true }
     ) {
-      affected_rows
-    }
-    delete_badges_definitions(where: { id: { _eq: $id } }) {
-      affected_rows
+      id
+      is_deleted
     }
   }
 `;
