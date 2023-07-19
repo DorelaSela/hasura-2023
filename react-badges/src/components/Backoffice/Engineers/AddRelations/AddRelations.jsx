@@ -54,7 +54,7 @@ const AddRelations = () => {
     }
   };
 
-  if (teamsLoading && managersLoading) {
+  if (teamsLoading || managersLoading) {
     return <p>Loading...</p>;
   }
 
@@ -62,29 +62,31 @@ const AddRelations = () => {
     return <p>Error: {teamsError?.message || managersError?.message}</p>;
   }
 
+
   const teams = teamsData?.get_managers_by_engineer;
   const managers = managersData?.managers;
-  console.log(teams);
-  console.log(managers);
-  
-  const filteredManagers = managers.filter((manager) =>
-    teams.every((team) => team.id !== manager.id)
+  const filteredManagers = managers?.filter((manager) =>
+    teams?.every((team) => team.id !== manager.id)
   );
 
   return (
     <div>
       <h4>Engineers</h4>
-      {filteredManagers.map((record) => (
-        <div key={record.id}>
-          <input
-            type="checkbox"
-            id={record.id}
-            value={record.id}
-            onChange={(e) => handleCheckboxChange(e.target.value)}
-          />
-          <label htmlFor={record.id}>{record.name}</label>
-        </div>
-      ))}
+      {filteredManagers ? (
+        filteredManagers.map((record) => (
+          <div key={record.id}>
+            <input
+              type="checkbox"
+              id={record.id}
+              value={record.id}
+              onChange={(e) => handleCheckboxChange(e.target.value)}
+            />
+            <label htmlFor={record.id}>{record.name}</label>
+          </div>
+        ))
+      ) : (
+        <p>No managers available</p>
+      )}
       <Button onClick={handleSubmit}>Submit</Button>
     </div>
   );
