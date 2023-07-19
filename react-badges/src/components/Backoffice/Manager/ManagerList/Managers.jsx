@@ -68,7 +68,7 @@ const Managers = () => {
         onDelete={handleDelete}
         dataType="manager"
         onEdit={handleEdit}
-        onDeleteRelation={handleDeleteRelation}
+        onDeleteRelations={handleDeleteRelation}
       />
       <button onClick={handleNavigate}>Create Manager</button>
     </div>
