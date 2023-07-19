@@ -86,3 +86,17 @@ export const DELETE_RELATIONS = gql`
     }
   }
 `;
+
+export const EDIT_RELATIONS = gql`
+  mutation editRelations($idE: Int!, $oldM: Int!, $newM: Int!) {
+    update_users_relations(
+      where: { engineer: { _eq: $idE }, manager: { _eq: $oldM } }
+      _set: { manager: $newM }
+    ) {
+      returning {
+        manager
+        engineer
+      }
+    }
+  }
+`;
