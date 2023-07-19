@@ -11,7 +11,7 @@ import { useParams } from "react-router-dom";
 
 const AddRelation = () => {
   const [engineerIds, setEngineerIds] = useState([]);
-  const [addRelation, { loading, error }] = useMutation(ADD_RELATION, {
+  const [addRelation] = useMutation(ADD_RELATION, {
     refetchQueries: [{ query: GET_ENGINEER_TEAM }]
   });
   const { id: managerId } = useParams();

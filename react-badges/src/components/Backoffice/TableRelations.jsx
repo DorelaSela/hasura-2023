@@ -24,9 +24,17 @@ const TableRelations = ({ list, relationId, deleteRelations, dataType }) => {
 
   if (list.length === 0) {
     return (
-      <Typography variant="body2" color="textSecondary">
-        No relations found.
-      </Typography>
+      <div>
+        <Typography variant="body2" color="textSecondary">
+          No Relation Found
+        </Typography>
+        <br></br>
+        {dataType === "manager" ? (
+          <Button onClick={handleAddRelation}>Add new relation</Button>
+        ) : (
+          <Button onClick={addRelations}>Add new relation</Button>
+        )}
+      </div>
     );
   }
 
@@ -63,9 +71,11 @@ const TableRelations = ({ list, relationId, deleteRelations, dataType }) => {
           ))}
         </TableBody>
       </Table>
-      <Button onClick={addRelations}>Add Relation</Button>
-      <br />
-      <Button onClick={handleAddRelation}>Add new relation</Button>
+      {dataType === "manager" ? (
+        <Button onClick={handleAddRelation}>Add new relation</Button>
+      ) : (
+        <Button onClick={addRelations}>Add new relation</Button>
+      )}
     </TableContainer>
   );
 };
