@@ -41,15 +41,18 @@ const AddRelations = () => {
   const handleSubmit = () => {
     if (managerIds.length > 0) {
       managerIds.forEach((managerId) => {
-        addRelation({
-          variables: {
-            engineer: parseInt(engineerId),
-            manager: managerId
-          }
-        });
+        if (managerId !== engineerId) {
+          addRelation({
+            variables: {
+              engineer: parseInt(engineerId),
+              manager: managerId
+            }
+          });
+        }
       });
       navigate("/engineers");
     } else {
+      navigate("/engineers");
       console.log("No manager selected");
     }
   };
@@ -62,7 +65,6 @@ const AddRelations = () => {
     return <p>Error: {teamsError?.message || managersError?.message}</p>;
   }
 
-
   const teams = teamsData?.get_managers_by_engineer;
   const managers = managersData?.managers;
   const filteredManagers = managers?.filter((manager) =>
@@ -73,17 +75,23 @@ const AddRelations = () => {
     <div>
       <h4>Engineers</h4>
       {filteredManagers ? (
-        filteredManagers.map((record) => (
-          <div key={record.id}>
-            <input
-              type="checkbox"
-              id={record.id}
-              value={record.id}
-              onChange={(e) => handleCheckboxChange(e.target.value)}
-            />
-            <label htmlFor={record.id}>{record.name}</label>
-          </div>
-        ))
+        filteredManagers.map((record) => {
+          const isDifferentEngineer = parseInt(engineerId) !== record.id;
+          if (!isDifferentEngineer) {
+            return null;
+          }
+          return (
+            <div key={record.id}>
+              <input
+                type="checkbox"
+                id={record.id}
+                value={record.id}
+                onChange={(e) => handleCheckboxChange(e.target.value)}
+              />
+              <label htmlFor={record.id}>{record.name}</label>
+            </div>
+          );
+        })
       ) : (
         <p>No managers available</p>
       )}

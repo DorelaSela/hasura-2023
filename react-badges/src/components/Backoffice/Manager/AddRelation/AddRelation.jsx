@@ -43,15 +43,18 @@ const AddRelation = () => {
   const handleSubmit = () => {
     if (engineerIds.length > 0) {
       engineerIds.forEach((engineerId) => {
-        addRelation({
-          variables: {
-            manager: parseInt(managerId),
-            engineer: engineerId
-          }
-        });
+        if (managerId !== engineerId) {
+          addRelation({
+            variables: {
+              manager: parseInt(managerId),
+              engineer: engineerId
+            }
+          });
+        }
       });
       navigate("/managers");
     } else {
+      navigate("/managers");
       console.log("No engineer selected");
     }
   };
@@ -74,17 +77,23 @@ const AddRelation = () => {
     <div>
       <h4>Managers</h4>
       {filteredEngineers ? (
-        filteredEngineers.map((record) => (
-          <div key={record.id}>
-            <input
-              type="checkbox"
-              id={record.id}
-              value={record.id}
-              onChange={(e) => handleCheckboxChange(e.target.value)}
-            />
-            <label htmlFor={record.id}>{record.name}</label>
-          </div>
-        ))
+        filteredEngineers.map((record) => {
+          const isDifferentManager = parseInt(managerId) !== record.id;
+          if (!isDifferentManager) {
+            return null;
+          }
+          return (
+            <div key={record.id}>
+              <input
+                type="checkbox"
+                id={record.id}
+                value={record.id}
+                onChange={(e) => handleCheckboxChange(e.target.value)}
+              />
+              <label htmlFor={record.id}>{record.name}</label>
+            </div>
+          );
+        })
       ) : (
         <p>No managers available</p>
       )}
