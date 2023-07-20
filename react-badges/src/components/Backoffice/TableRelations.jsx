@@ -45,7 +45,7 @@ const TableRelations = ({ list, relationId, deleteRelations, dataType }) => {
           <TableRow>
             <TableCell>Name</TableCell>
             <TableCell>Delete</TableCell>
-            <TableCell>Edit</TableCell>
+            {dataType === "engineer" && <TableCell>Edit</TableCell>}
           </TableRow>
         </TableHead>
         <TableBody>

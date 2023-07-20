@@ -80,6 +80,7 @@ const CreateEngineers = () => {
         <div>
           <h4>Managers</h4>
           <select onChange={(e) => setManagers(e.target.value)}>
+            <option value="">Select a Manager</option>
             {getManagers.data.managers.map((record) => (
               <option key={record.id} value={record.id}>
                 {record.name}

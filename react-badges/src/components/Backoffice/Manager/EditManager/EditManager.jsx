@@ -18,13 +18,13 @@ const EditManager = () => {
   });
   const { loading, error, data } = useQuery(LOAD_MANAGERS);
 
-  const manager = data.managers.find((manager) => manager.id === parseInt(id));
+  const manager = data?.managers?.find(
+    (manager) => manager.id === parseInt(id)
+  );
 
   useEffect(() => {
-    setName(manager.name);
-  }, [manager.name]);
-
-  console.log(data.managers);
+    setName(manager?.name);
+  }, [manager?.name]);
 
   const handleEdit = () => {
     editManagersName({
