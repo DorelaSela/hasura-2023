@@ -6,6 +6,7 @@ import {
 } from "../../../containers/state/BadgesQueries";
 import { Box, Button, Card, Typography, Fab } from "@mui/material";
 import { Link } from "react-router-dom";
+import EditStep1 from "./EditStep1";
 
 const Badges = () => {
   const { data, loading, error } = useQuery(LOAD_BADGES);
@@ -99,6 +100,7 @@ const Badges = () => {
         >
           <h1>+</h1>
         </Fab>
+        <EditStep1 badges={badges} />
       </Box>
     </div>
   );

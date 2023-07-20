@@ -84,7 +84,7 @@ const AppBackoffice: React.FC = () => (
         },
         {
           path: "/edit",
-          element: <EditBadge />
+          element: <EditBadge  />
         },
         {
           path: "/engineers/edit/:id",

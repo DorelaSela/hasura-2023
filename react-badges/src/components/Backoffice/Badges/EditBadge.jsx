@@ -20,7 +20,7 @@ import { useForm } from "react-hook-form";
 import EditStep1 from "./EditStep1";
 import EditStep2 from "./EditStep2";
 
-const CreateBadge = () => {
+const EditBadge = () => {
   const {
     register,
     handleSubmit,
@@ -29,14 +29,7 @@ const CreateBadge = () => {
 
   const navigate = useNavigate();
   const { badgeId } = useParams;
-
   const [currentStep, setCurrentStep] = useState(1);
-
-  const [badgeTitle, setBadgeTitle] = useState();
-  const [badgeDescription, setBadgeDescription] = useState();
-  const [requirementDescription, setRequirementDescription] = useState();
-  const [requirementTitle, setRequirementTitle] = useState();
-
   const [insert_badges_definitions, { loading, error, data }] = useMutation(
     EDIT_BADGE,
     { refetchQueries: [{ query: LOAD_BADGES }] }
@@ -45,32 +38,12 @@ const CreateBadge = () => {
   const showStep = (step) => {
     switch (step) {
       case 1:
-        return <EditStep1 setCurrentStep={setCurrentStep} />;
+        return <EditStep1 setCurrentStep={setCurrentStep}  />;
       case 2:
-        return <EditStep2 setCurrentStep={setCurrentStep} />;
+        return <EditStep2 setCurrentStep={setCurrentStep}  />;
       default:
         return null;
     }
-  };
-
-  const onSubmit = (formData) => {
-    const {
-      badgeTitle,
-      badgeDescription,
-      requirementDescription,
-      requirementTitle
-    } = formData;
-    insert_badges_definitions({
-      variables: {
-        badgeId: parseInt(badgeId),
-        badgeTitle: badgeTitle,
-        badgeDescription: badgeDescription,
-        requirementDescription,
-        requirementDescription,
-        requirementTitle,
-        requirementTitle
-      }
-    });
   };
 
   if (loading) {
@@ -110,4 +83,4 @@ const CreateBadge = () => {
   );
 };
 
-export default CreateBadge;
+export default EditBadge;

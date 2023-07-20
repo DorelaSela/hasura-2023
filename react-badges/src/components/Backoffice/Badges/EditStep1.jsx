@@ -21,8 +21,15 @@ const EditStep1 = ({ setCurrentStep, badges }) => {
     setValue
   } = useForm();
 
-  const [title, setTitle] = useState(badges.title);
-  const [description, setDescription] = useState(badges.description);
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
+
+  useEffect(() => {
+    if (badges) {
+      setTitle(badges.title);
+      setDescription(badges.description);
+    }
+  }, [badges]);
 
   const firstStepSubmit = (data) => {
     setCurrentStep(2);
@@ -32,8 +39,18 @@ const EditStep1 = ({ setCurrentStep, badges }) => {
   return (
     <>
       <form onSubmit={handleSubmit(firstStepSubmit)}>
-        <TextField />
-        <TextField />
+        <TextField
+          label="Title"
+          name="title"
+          defaultValue={title}
+          {...register("title", { required: true })}
+        />
+        <TextField
+          label="Description"
+          name="description"
+          defaultValue={description}
+          {...register("description", { required: true })}
+        />
         <Tooltip title="Next">
           <Button
             className="button"
