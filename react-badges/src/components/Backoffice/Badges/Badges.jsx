@@ -10,7 +10,6 @@ import { Link } from "react-router-dom";
 const Badges = () => {
   const { data, loading, error } = useQuery(LOAD_BADGES);
   const [badges, setBadges] = useState([]);
-
   const [deleteBadge, { loading: deleteLoading, error: deleteError }] =
     useMutation(DELETE_BADGE);
 
@@ -80,6 +79,9 @@ const Badges = () => {
                 </Box>
                 <Button onClick={() => deleteBadgeHandler(badge.id)}>
                   Delete
+                </Button>
+                <Button component={Link} to="/edit">
+                  Edit
                 </Button>
               </Card>
             );

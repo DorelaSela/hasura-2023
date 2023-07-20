@@ -21,6 +21,7 @@ import CreateBadge from "./components/Backoffice/Badges/CreateBadge";
 import EditEngineer from "./components/Backoffice/Engineers/EditEngineers/EditEngineer";
 import AddRelations from "./components/Backoffice/Engineers/AddRelations/AddRelations";
 import AddRelation from "./components/Backoffice/Manager/AddRelation/AddRelation";
+import EditBadge from "./components/Backoffice/Badges/EditBadge";
 
 const menuItems = [
   {
@@ -80,6 +81,10 @@ const AppBackoffice: React.FC = () => (
         {
           path: "/create",
           element: <CreateBadge />
+        },
+        {
+          path: "/edit",
+          element: <EditBadge />
         },
         {
           path: "/engineers/edit/:id",
