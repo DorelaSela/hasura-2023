@@ -9,11 +9,12 @@ import {
   Typography,
   Box,
   Collapse,
-  IconButton,
-  Button
+  IconButton
 } from "@mui/material";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
+import DeleteIcon from "@mui/icons-material/Delete";
+import EditIcon from "@mui/icons-material/Edit";
 import { GET_ENGINEERS_BY_MANAGER } from "../../containers/state/ManagersQueries";
 import { GET_MANAGERS_BY_ENGINEER } from "../../containers/state/EngineersQueries";
 import { useMutation } from "@apollo/client";
@@ -89,10 +90,20 @@ const TableForm = ({ data, onDelete, dataType, onEdit, onDeleteRelations }) => {
                 </TableCell>
                 <TableCell>{item.name}</TableCell>
                 <TableCell>
-                  <Button onClick={() => onDelete(item.id)}>Delete</Button>
+                  <IconButton
+                    color="error"
+                    onClick={() => onDelete(item.id)}
+                  >
+                    <DeleteIcon />
+                  </IconButton>
                 </TableCell>
                 <TableCell>
-                  <Button onClick={() => onEdit(item.id)}>Edit</Button>
+                  <IconButton
+                    color="primary"
+                    onClick={() => onEdit(item.id)}
+                  >
+                    <EditIcon />
+                  </IconButton>
                 </TableCell>
               </TableRow>
               <TableRow>

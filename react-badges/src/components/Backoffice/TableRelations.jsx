@@ -7,8 +7,11 @@ import {
   TableContainer,
   TableHead,
   TableRow,
-  Typography
+  Typography,
+  IconButton
 } from "@mui/material";
+import DeleteIcon from "@mui/icons-material/Delete";
+import EditIcon from "@mui/icons-material/Edit";
 import { useNavigate } from "react-router-dom";
 
 const TableRelations = ({ list, relationId, deleteRelations, dataType }) => {
@@ -54,17 +57,19 @@ const TableRelations = ({ list, relationId, deleteRelations, dataType }) => {
               <TableCell>{item.name}</TableCell>
               <TableCell>
                 {dataType === "engineer" ? (
-                  <Button
+                  <IconButton
+                    color="error"
                     onClick={() => deleteRelations({ relationId, id: item.id })}
                   >
-                    DELETE
-                  </Button>
+                    <DeleteIcon />
+                  </IconButton>
                 ) : (
-                  <Button
+                  <IconButton
+                    color="error"
                     onClick={() => deleteRelations({ relationId, id: item.id })}
                   >
-                    Delete
-                  </Button>
+                    <DeleteIcon />
+                  </IconButton>
                 )}
               </TableCell>
             </TableRow>
