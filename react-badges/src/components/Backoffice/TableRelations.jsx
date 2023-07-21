@@ -77,7 +77,11 @@ const TableRelations = ({ list, relationId, deleteRelations, dataType }) => {
                 )}
               </TableCell>
               <TableCell>
-                <Button onClick={editRelations}>EDIT</Button>
+                {dataType === "engineer" && (
+                  <IconButton color="primary" onClick={editRelations}>
+                    <EditIcon />
+                  </IconButton>
+                )}
               </TableCell>
             </TableRow>
           ))}
