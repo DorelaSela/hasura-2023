@@ -25,6 +25,10 @@ const TableRelations = ({ list, relationId, deleteRelations, dataType }) => {
     navigate(`/engineers/addRelations/${relationId}`);
   };
 
+  const editRelations = () => {
+    navigate(`/engineers/editRelations/${relationId}`);
+  };
+
   if (list.length === 0) {
     return (
       <div>
@@ -71,6 +75,9 @@ const TableRelations = ({ list, relationId, deleteRelations, dataType }) => {
                     <DeleteIcon />
                   </IconButton>
                 )}
+              </TableCell>
+              <TableCell>
+                <Button onClick={editRelations}>EDIT</Button>
               </TableCell>
             </TableRow>
           ))}

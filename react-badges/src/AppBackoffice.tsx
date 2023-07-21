@@ -21,6 +21,7 @@ import CreateBadge from "./components/Backoffice/Badges/CreateBadge";
 import EditEngineer from "./components/Backoffice/Engineers/EditEngineers/EditEngineer";
 import AddRelations from "./components/Backoffice/Engineers/AddRelations/AddRelations";
 import AddRelation from "./components/Backoffice/Manager/AddRelation/AddRelation";
+import EditRelations from "./components/Backoffice/Engineers/EditRelations/EditRelations";
 
 const menuItems = [
   {
@@ -74,20 +75,24 @@ const AppBackoffice: React.FC = () => (
           element: <CreateEngineers />
         },
         {
-          path: "badges",
-          element: <Badges />
-        },
-        {
-          path: "/create",
-          element: <CreateBadge />
-        },
-        {
           path: "/engineers/edit/:id",
           element: <EditEngineer />
         },
         {
           path: "/engineers/addRelations/:id",
           element: <AddRelations />
+        },
+        {
+          path: "/engineers/editRelations/:id",
+          element: <EditRelations />
+        },
+        {
+          path: "badges",
+          element: <Badges />
+        },
+        {
+          path: "/create",
+          element: <CreateBadge />
         }
       ] as RouteProps[]
     }
