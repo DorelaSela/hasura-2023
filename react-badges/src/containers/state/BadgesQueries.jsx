@@ -44,41 +44,24 @@ export const DELETE_BADGE = gql`
 `;
 
 export const EDIT_BADGE = gql`
-  mutation MyMutation(
-    $badgeId: Int!
-    $badgeTitle: String
-    $badgeDescription: String
-    $requirementId: Int
-    $requirementTitle: String
-    $requirementDescription: String
-  ) {
+  mutation EditBadge($id: Int!, $title: String!, $description: String!) {
     update_badges_definitions(
-      where: { id: { _eq: $badgeId } }
-      _set: { description: $badgeDescription, title: $badgeTitle }
+      where: { id: { _eq: $id } }
+      _set: { description: $description, title: $title }
     ) {
       affected_rows
     }
-    update_requirements_definitions(
-      where: { badge_id: { _eq: $badgeId }, id: { _eq: $requirementId } }
-      _set: { description: $requirementDescription, title: $requirementTitle }
-    ) {
-      affected_rows
+    create_badge_version(args: { badge_def_id: $id, is_deleted: false }) {
+      id
     }
-    delete_requirements_definitions(
-      where: { id: { _eq: $requirementId }, badge_id: { _eq: $badgeId } }
-    ) {
-      affected_rows
-    }
-    insert_requirements_definitions(
-      objects: {
-        badge_id: $badgeId
-        title: $requirementTitle
-        description: $requirementDescription
-      }
-    ) {
-      affected_rows
-    }
-    create_badge_version(args: { badge_def_id: $badgeId, is_deleted: true }) {
+  }
+`;
+
+export const LOAD_BADGE = gql`
+  query MyQuery($id: Int!) {
+    badges_versions_last(where: { id: { _eq: $id } }) {
+      title
+      description
       id
     }
   }

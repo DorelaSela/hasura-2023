@@ -5,11 +5,15 @@ import {
   DELETE_BADGE
 } from "../../../containers/state/BadgesQueries";
 import { Box, Button, Card, Typography, Fab } from "@mui/material";
-import { Link } from "react-router-dom";
-import EditStep1 from "./EditStep1";
+import { Link, useParams, useNavigate } from "react-router-dom";
 
 const Badges = () => {
+  const navigate = useNavigate();
   const { data, loading, error } = useQuery(LOAD_BADGES);
+  const { id: badgeId } = useParams();
+  // const badge = data.badges_versions_last.find(
+  //   (badge) => badge.id === parseInt(id)
+  // );
   const [badges, setBadges] = useState([]);
   const [deleteBadge, { loading: deleteLoading, error: deleteError }] =
     useMutation(DELETE_BADGE);
@@ -38,6 +42,10 @@ const Badges = () => {
       });
   };
 
+  const handleEditClick = (id) => {
+    navigate(`/edit/${id}`);
+  };
+
   if (loading) {
     return <p>Loading...</p>;
   }
@@ -51,6 +59,7 @@ const Badges = () => {
       <Box>
         {badges &&
           badges.map((badge, index) => {
+            console.log(badge);
             return (
               <Card
                 key={index}
@@ -81,9 +90,7 @@ const Badges = () => {
                 <Button onClick={() => deleteBadgeHandler(badge.id)}>
                   Delete
                 </Button>
-                <Button component={Link} to="/edit">
-                  Edit
-                </Button>
+                <Button onClick={() => handleEditClick(badge.id)}>Edit</Button>
               </Card>
             );
           })}
@@ -100,7 +107,6 @@ const Badges = () => {
         >
           <h1>+</h1>
         </Fab>
-        <EditStep1 badges={badges} />
       </Box>
     </div>
   );

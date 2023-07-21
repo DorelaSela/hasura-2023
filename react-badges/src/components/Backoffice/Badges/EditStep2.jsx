@@ -1,24 +1,11 @@
-import {
-  Button,
-  Card,
-  CardContent,
-  TextField,
-  Typography,
-  Box,
-  Step,
-  StepLabel,
-  Stepper,
-  Tooltip
-} from "@mui/material";
+import { Button, TextField, Tooltip } from "@mui/material";
 import { useForm } from "react-hook-form";
 
-const EditStep2 = ({ setCurrentStep }) => {
+const EditStep2 = ({ setCurrentStep, badgesData }) => {
   const {
-    register,
     handleSubmit,
     reset,
-    formState: { errors },
-    setValue
+    formState: { errors }
   } = useForm();
 
   const currentStep = 2;

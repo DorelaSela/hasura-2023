@@ -1,46 +1,37 @@
 import {
-  Button,
   Card,
   CardContent,
-  TextField,
   Typography,
   Box,
   Step,
   StepLabel,
   Stepper
 } from "@mui/material";
-import { useEffect, useState } from "react";
-import { useMutation } from "@apollo/client";
+import { useState } from "react";
+import { useMutation, useQuery } from "@apollo/client";
 import {
   EDIT_BADGE,
   LOAD_BADGES
 } from "../../../containers/state/BadgesQueries";
-import { useNavigate, useParams } from "react-router-dom";
-import { useForm } from "react-hook-form";
+import { useParams } from "react-router-dom";
 import EditStep1 from "./EditStep1";
 import EditStep2 from "./EditStep2";
 
 const EditBadge = () => {
-  const {
-    register,
-    handleSubmit,
-    formState: { errors }
-  } = useForm();
-
-  const navigate = useNavigate();
-  const { badgeId } = useParams;
+  const { data: badgesData, loading, error } = useQuery(LOAD_BADGES);
+  const { id : badgeId } = useParams();
   const [currentStep, setCurrentStep] = useState(1);
-  const [insert_badges_definitions, { loading, error, data }] = useMutation(
-    EDIT_BADGE,
-    { refetchQueries: [{ query: LOAD_BADGES }] }
-  );
 
   const showStep = (step) => {
     switch (step) {
       case 1:
-        return <EditStep1 setCurrentStep={setCurrentStep}  />;
+        return (
+          <EditStep1 setCurrentStep={setCurrentStep} badgesData={badgesData} badgeId={badgeId} />
+        );
       case 2:
-        return <EditStep2 setCurrentStep={setCurrentStep}  />;
+        return (
+          <EditStep2 setCurrentStep={setCurrentStep} badgesData={badgesData} />
+        );
       default:
         return null;
     }
