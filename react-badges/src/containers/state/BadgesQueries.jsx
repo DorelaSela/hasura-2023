@@ -46,6 +46,7 @@ export const CREATE_BADGE_VERSION = gql`
     }
   }
 `;
+
 export const DELETE_BADGE = gql`
   mutation deleteBadge($badge_def_id: Int!) {
     create_badge_version(
@@ -76,6 +77,35 @@ export const LOAD_BADGE = gql`
     badges_versions_last(where: { id: { _eq: $id } }) {
       title
       description
+      requirements
+      id
+    }
+  }
+`;
+
+export const UPDATE_REQUIREMENTS_MUTATION = gql`
+  mutation UpdateRequirements(
+    $badgeId: Int!
+    $newDescription: String!
+    $newTitle: String!
+  ) {
+    update_requirements_definitions_many(
+      updates: {
+        where: { badge_id: { _eq: $badgeId } }
+        _set: { description: $newDescription, title: $newTitle }
+      }
+    ) {
+      affected_rows
+    }
+  }
+`;
+
+export const LOAD_REQUIREMENT = gql`
+  query loadRequirement($badgeId: Int!) {
+    requirements_definitions(where: { badge_id: { _eq: $badgeId } }) {
+      badge_id
+      description
+      title
       id
     }
   }

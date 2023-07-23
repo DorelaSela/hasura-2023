@@ -4,7 +4,9 @@ import { useForm } from "react-hook-form";
 import { useMutation, useQuery } from "@apollo/client";
 import {
   LOAD_BADGES,
-  LOAD_BADGE
+  LOAD_REQUIREMENT,
+  LOAD_BADGE,
+  UPDATE_REQUIREMENTS_MUTATION
 } from "../../../containers/state/BadgesQueries";
 import { EDIT_BADGE } from "../../../containers/state/BadgesQueries";
 
@@ -16,12 +18,10 @@ const EditStep2 = ({ setCurrentStep, badgeId }) => {
     formState: { errors }
   } = useForm();
 
-  const [EditBadge, { loading: editLoading, error: editError }] = useMutation(
-    EDIT_BADGE,
-    {
+  const [UpdateRequirements, { loading: editLoading, error: editError }] =
+    useMutation(UPDATE_REQUIREMENTS_MUTATION, {
       refetchQueries: [{ query: LOAD_BADGES }]
-    }
-  );
+    });
 
   const { data, loading } = useQuery(LOAD_BADGE, {
     variables: {
@@ -31,20 +31,21 @@ const EditStep2 = ({ setCurrentStep, badgeId }) => {
 
   useEffect(() => {
     if (data && data.badges_versions_last) {
-      const { requirements } = data?.badges_versions_last[0];
+      const {  description, requirements } =
+        data?.badges_versions_last[0];
       setValue("requirements", requirements);
+      setValue("description", description);
+      console.log(data);
     }
   }, [data]);
-  console.log(data);
-  if (loading) {
-    return <p>Loading...</p>;
-  }
 
   const secondStepSubmit = async (formData) => {
     try {
-      await EditBadge({
+      await UpdateRequirements({
         variables: {
-          requirements: formData.requirements
+          badgeId: badgeId,
+          newTitle: formData.newTitle,
+          newDescription: formData.newDescription
         }
       });
       console.log(formData);
@@ -54,15 +55,46 @@ const EditStep2 = ({ setCurrentStep, badgeId }) => {
     }
   };
 
+  if (loading) {
+    return <p>Loading...</p>;
+  }
+
   return (
     <>
+    {data ? (
       <form onSubmit={handleSubmit(secondStepSubmit)}>
+        {Object.keys(data?.badges_versions_last[0]?.requirements).map((key, index) => {
+          const requirement = data?.badges_versions_last[0]?.requirements[key];
+          return (
+            <div key={index}>
+              <TextField
+                label={`Requirement ${index + 1} Title`}
+                name={`requirements.${key}.title`}
+                multiline
+                rows={1}
+                defaultValue={requirement.title}
+                {...register(`requirements.${key}.title`, { required: true })}
+                style={{ marginBottom: "16px", width: "100%" }}
+              />
+              <TextField
+                label={`Requirement ${index + 1} Description`}
+                name={`requirements.${key}.description`}
+                multiline
+                rows={1}
+                defaultValue={requirement.description}
+                {...register(`requirements.${key}.description`, { required: true })}
+                style={{ marginBottom: "16px", width: "100%" }}
+              />
+            </div>
+          );
+        })}
         <TextField
-          label="Title"
-          name="requirements"
+          label="Description"
+          name="description"
           multiline
           rows={1}
-          {...register("requirements", { required: true })}
+          defaultValue={data?.badges_versions_last[0]?.description}
+          {...register("description", { required: true })}
           style={{ marginBottom: "16px", width: "100%" }}
         />
         <Tooltip title="Submit">
@@ -76,7 +108,10 @@ const EditStep2 = ({ setCurrentStep, badgeId }) => {
           </Button>
         </Tooltip>
       </form>
-    </>
+    ) : (
+      <p>Loading...</p>
+    )}
+  </>
   );
 };
 export default EditStep2;

@@ -1,12 +1,12 @@
-import { Button, TextField, TextareaAutosize, Tooltip } from "@mui/material";
-import React, { useState, useEffect } from "react";
+import { Button, TextField, Tooltip } from "@mui/material";
+import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useMutation, useQuery } from "@apollo/client";
 import {
   LOAD_BADGES,
-  LOAD_BADGE
+  LOAD_BADGE,
+  EDIT_BADGE
 } from "../../../containers/state/BadgesQueries";
-import { EDIT_BADGE } from "../../../containers/state/BadgesQueries";
 
 const EditStep1 = ({ setCurrentStep, badgeId }) => {
   const {
@@ -22,7 +22,6 @@ const EditStep1 = ({ setCurrentStep, badgeId }) => {
       refetchQueries: [{ query: LOAD_BADGES }]
     }
   );
-
   const { data, loading } = useQuery(LOAD_BADGE, {
     variables: {
       id: badgeId
@@ -37,10 +36,6 @@ const EditStep1 = ({ setCurrentStep, badgeId }) => {
       console.log(data);
     }
   }, [data]);
-
-  if (loading) {
-    return <p>Loading...</p>;
-  }
 
   const firstStepSubmit = async (formData) => {
     try {
@@ -57,6 +52,11 @@ const EditStep1 = ({ setCurrentStep, badgeId }) => {
       console.log("Error updating badge:", error);
     }
   };
+
+  if (loading) {
+    return <p>Loading...</p>;
+  }
+
   return (
     <>
       <form
