@@ -10,7 +10,8 @@ import { useEffect, useState } from "react";
 import { useMutation } from "@apollo/client";
 import {
   CREATE_BADGE_MUTATION,
-  LOAD_BADGES
+  LOAD_BADGES,
+  CREATE_BADGE_VERSION
 } from "../../../containers/state/BadgesQueries";
 import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
@@ -27,24 +28,32 @@ const CreateBadge = () => {
     CREATE_BADGE_MUTATION,
     { refetchQueries: [{ query: LOAD_BADGES }] }
   );
+  const [create_badge_version] = useMutation(CREATE_BADGE_VERSION, {
+    refetchQueries: [{ query: LOAD_BADGES }]
+  });
 
   useEffect(() => {
     if (data) {
-      insert_badges_definitions({
+      create_badge_version({
         variables: {
           id: data?.insert_badges_definitions?.returning[0]?.id
         }
       });
+
       navigate("/badges");
     }
   }, [data]);
 
   const onSubmit = (formData) => {
-    const { title, description } = formData;
+    const { title, description, requirementTitle, requirementDescription } =
+      formData;
+
     insert_badges_definitions({
       variables: {
         title: title,
-        description: description
+        description: description,
+        requirementTitle: requirementTitle,
+        requirementDescription: requirementDescription
       }
     });
   };
@@ -84,6 +93,22 @@ const CreateBadge = () => {
               label="Description"
               name="description"
               {...register("description", {
+                required: true
+              })}
+              sx={{ marginBottom: "8px" }}
+            />
+            <TextField
+              label="Requirement Title"
+              name="requirementTitle"
+              {...register("requirementTitle", {
+                required: true
+              })}
+              sx={{ marginBottom: "8px" }}
+            />
+            <TextField
+              label="Requirement Title"
+              name="requirementDescription"
+              {...register("requirementDescription", {
                 required: true
               })}
               sx={{ marginBottom: "8px" }}

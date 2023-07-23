@@ -12,7 +12,7 @@ export const LOAD_BADGES = gql`
 `;
 
 export const CREATE_BADGE_MUTATION = gql`
-  mutation InsertBadge(
+  mutation MyMutation(
     $title: String!
     $description: String!
     $requirementTitle: String!
@@ -24,17 +24,28 @@ export const CREATE_BADGE_MUTATION = gql`
         title: $title
         badges_definitions_requirements_definitions: {
           data: {
-            description: $requirementDescription
             title: $requirementTitle
+            description: $requirementDescription
           }
         }
       }
     ) {
       affected_rows
+      returning {
+        id
+      }
     }
   }
 `;
-
+export const CREATE_BADGE_VERSION = gql`
+  mutation MyMutation($id: Int!) {
+    create_badge_version(args: { badge_def_id: $id, is_deleted: false }) {
+      title
+      id
+      requirements
+    }
+  }
+`;
 export const DELETE_BADGE = gql`
   mutation deleteBadge($badge_def_id: Int!) {
     create_badge_version(
@@ -69,4 +80,3 @@ export const LOAD_BADGE = gql`
     }
   }
 `;
-
