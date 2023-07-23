@@ -30,7 +30,7 @@ const EditBadge = () => {
         );
       case 2:
         return (
-          <EditStep2 setCurrentStep={setCurrentStep} badgesData={badgesData} />
+          <EditStep2 setCurrentStep={setCurrentStep} badgesData={badgesData} badgeId={badgeId}/>
         );
       default:
         return null;

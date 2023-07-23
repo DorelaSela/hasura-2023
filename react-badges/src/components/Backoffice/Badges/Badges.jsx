@@ -9,18 +9,20 @@ import { Link, useParams, useNavigate } from "react-router-dom";
 
 const Badges = () => {
   const navigate = useNavigate();
-  const { data, loading, error } = useQuery(LOAD_BADGES);
-  const { id: badgeId } = useParams();
-  // const badge = data.badges_versions_last.find(
-  //   (badge) => badge.id === parseInt(id)
-  // );
+  const [showRequirements, setShowRequirements] = useState({});
   const [badges, setBadges] = useState([]);
-  const [deleteBadge, { loading: deleteLoading, error: deleteError }] =
-    useMutation(DELETE_BADGE);
+  const [requirement, setRequirements] = useState([]);
+  const [deleteBadge] = useMutation(DELETE_BADGE);
+  const { data, loading, error } = useQuery(LOAD_BADGES);
 
   useEffect(() => {
     if (data) {
       setBadges(data.badges_versions_last || []);
+      const initialVisibility = {};
+      data.badges_versions_last.forEach((badge) => {
+        initialVisibility[badge.id] = false;
+      });
+      setShowRequirements(initialVisibility);
     }
   }, [data]);
 
@@ -46,6 +48,13 @@ const Badges = () => {
     navigate(`/edit/${id}`);
   };
 
+  const toggleRequirements = (badgeId) => {
+    setShowRequirements((prevState) => ({
+      ...prevState,
+      [badgeId]: !prevState[badgeId]
+    }));
+  };
+
   if (loading) {
     return <p>Loading...</p>;
   }
@@ -53,6 +62,7 @@ const Badges = () => {
   if (error) {
     return <p>Error: {error.message}</p>;
   }
+  console.log(data?.badges_versions_last[0]?.title);
 
   return (
     <div>
@@ -81,16 +91,31 @@ const Badges = () => {
                 >
                   <Typography variant="h1"> {badge.title}</Typography>
                   <Typography>{badge.description}</Typography>
-                  {/* <ol>
-                {badge.requirements.map((requirement, index) => (
-                  <li key={index}>{requirement.description}</li>
-                ))}
-              </ol> */}
                 </Box>
                 <Button onClick={() => deleteBadgeHandler(badge.id)}>
                   Delete
                 </Button>
                 <Button onClick={() => handleEditClick(badge.id)}>Edit</Button>
+                <Button onClick={() => toggleRequirements(badge.id)}>
+                  {requirement[badge.id]
+                    ? "Hide Requirements"
+                    : "Show Requirements"}
+                </Button>
+                {showRequirements[badge.id] && 
+                 ( <div>
+                    <Typography variant="h2">Requirements:</Typography>
+                    <ul>
+                      {JSON.parse(
+                        data?.badges_versions_last[0]?.requirements
+                      ).map((requirement, index) => (
+                        <li key={index}>
+                          <Typography>{requirement.title}</Typography>
+                          <Typography>{requirement.description}</Typography>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>)
+                }
               </Card>
             );
           })}

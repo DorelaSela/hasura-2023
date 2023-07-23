@@ -1,4 +1,4 @@
-import { Button, TextField, Tooltip } from "@mui/material";
+import { Button, TextField, TextareaAutosize, Tooltip } from "@mui/material";
 import React, { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useMutation, useQuery } from "@apollo/client";
@@ -13,8 +13,6 @@ const EditStep1 = ({ setCurrentStep, badgeId }) => {
     register,
     handleSubmit,
     setValue,
-    getValues,
-    watch,
     formState: { errors }
   } = useForm();
 
@@ -48,7 +46,7 @@ const EditStep1 = ({ setCurrentStep, badgeId }) => {
     try {
       await EditBadge({
         variables: {
-          id: 1,
+          id: badgeId,
           title: formData.title,
           description: formData.description
         }
@@ -61,16 +59,31 @@ const EditStep1 = ({ setCurrentStep, badgeId }) => {
   };
   return (
     <>
-      <form onSubmit={handleSubmit(firstStepSubmit)}>
+      <form
+        onSubmit={handleSubmit(firstStepSubmit)}
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          maxWidth: "200px",
+          margin: "auto"
+        }}
+      >
         <TextField
           label="Title"
           name="title"
+          multiline
+          rows={1}
           {...register("title", { required: true })}
+          style={{ marginBottom: "16px", width: "100%" }}
         />
         <TextField
           label="Description"
           name="description"
+          multiline
+          rows={4}
           {...register("description", { required: true })}
+          style={{ marginBottom: "16px", width: "100%" }}
         />
         <Tooltip title="Next">
           <Button

@@ -10,8 +10,7 @@ import { useEffect, useState } from "react";
 import { useMutation } from "@apollo/client";
 import {
   CREATE_BADGE_MUTATION,
-  LOAD_BADGES,
-  CREATE_BADGE_VERSION
+  LOAD_BADGES
 } from "../../../containers/state/BadgesQueries";
 import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
@@ -28,13 +27,10 @@ const CreateBadge = () => {
     CREATE_BADGE_MUTATION,
     { refetchQueries: [{ query: LOAD_BADGES }] }
   );
-  const [create_badges_version] = useMutation(CREATE_BADGE_VERSION, {
-    refetchQueries: [{ query: LOAD_BADGES }]
-  });
 
   useEffect(() => {
     if (data) {
-      create_badges_version({
+      insert_badges_definitions({
         variables: {
           id: data?.insert_badges_definitions?.returning[0]?.id
         }
