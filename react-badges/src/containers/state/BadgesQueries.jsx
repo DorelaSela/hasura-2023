@@ -80,6 +80,9 @@ export const LOAD_BADGE = gql`
       requirements
       id
     }
+    requirements_definitions(where: { badge_id: { _eq: $id } }) {
+      id
+    }
   }
 `;
 
@@ -91,14 +94,24 @@ export const UPDATE_REQUIREMENTS_MUTATION = gql`
     $id: Int!
   ) {
     update_requirements_definitions_many(
-      updates: {
-        where: { badge_id: { _eq: $badgeId } }
-        _set: { description: $newDescription, title: $newTitle }
-      }
+      updates: [
+        {
+          where: { badge_id: { _eq: $badgeId }, id: { _eq: $id } }
+          _set: { description: $newDescription, title: $newTitle }
+        }
+      ]
     ) {
       affected_rows
     }
-    create_badge_version(args: { badge_def_id: $id, is_deleted: false }) {
+    create_badge_version(args: { badge_def_id: $badgeId, is_deleted: false }) {
+      id
+    }
+  }
+`;
+
+export const LOAD_REQUIREMENT_ID = gql`
+  query MyQuery($badge_id: Int!) {
+    requirements_definitions(where: { badge_id: { _eq: $badge_id } }) {
       id
     }
   }

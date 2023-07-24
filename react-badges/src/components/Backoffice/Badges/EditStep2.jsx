@@ -1,28 +1,39 @@
-import { Button, TextField, TextareaAutosize, Tooltip } from "@mui/material";
+import { Button, TextField, Tooltip } from "@mui/material";
 import React, { useState, useEffect } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, useFieldArray } from "react-hook-form";
 import { useMutation, useQuery } from "@apollo/client";
 import {
-  LOAD_BADGES,
   LOAD_BADGE,
-  UPDATE_REQUIREMENTS_MUTATION
+  UPDATE_REQUIREMENTS_MUTATION,
+  LOAD_REQUIREMENT_ID,
+  LOAD_BADGES
 } from "../../../containers/state/BadgesQueries";
 import { useNavigate } from "react-router-dom";
+import { getVariableValues } from "graphql";
 
 const EditStep2 = ({ setCurrentStep, badgeId }) => {
   const {
     register,
     handleSubmit,
     setValue,
-    watch,
-    formState: { errors }
+    getValues,
+    formState: { errors },
+    control
   } = useForm();
   const navigate = useNavigate();
+
+  const [requirementId, setRequirementId] = useState([]);
 
   const [UpdateRequirements, { loading: editLoading, error: editError }] =
     useMutation(UPDATE_REQUIREMENTS_MUTATION, {
       refetchQueries: [{ query: LOAD_BADGES }]
     });
+
+  const { data: reqData, loading: reqLoading } = useQuery(LOAD_REQUIREMENT_ID, {
+    variables: {
+      badge_id: badgeId
+    }
+  });
 
   const { data, loading } = useQuery(LOAD_BADGE, {
     variables: {
@@ -31,11 +42,22 @@ const EditStep2 = ({ setCurrentStep, badgeId }) => {
   });
 
   useEffect(() => {
+    if (reqData && reqData.requirements_definitions) {
+      const ids = reqData.requirements_definitions.map((req) => req.id);
+      setRequirementId(ids);
+    }
+  }, [reqData]);
+
+  console.log(requirementId);
+
+  const { fields, append } = useFieldArray({
+    control, // Replace "control" with your actual form control object
+    name: "requirements"
+  });
+
+  useEffect(() => {
     if (data && data.badges_versions_last) {
-      const { title, description, requirements } =
-        data?.badges_versions_last[0];
-      setValue("title", title);
-      setValue("description", description);
+      const { requirements } = data.badges_versions_last[0];
       if (requirements) {
         const parsedRequirements = JSON.parse(requirements);
         parsedRequirements.forEach((requirement, index) => {
@@ -47,33 +69,26 @@ const EditStep2 = ({ setCurrentStep, badgeId }) => {
         });
       }
     }
-    // console.log(data?.badges_versions_last[0]?.requirements);
   }, [data]);
 
   const secondStepSubmit = async (formData) => {
     try {
-      // First, update the badge's title and description
-      await UpdateRequirements({
-        variables: {
-          id: badgeId,
-          title: formData.title,
-          description: formData.description
-        }
-      });
+      // Assuming you have access to the 'requirementIds' state
+      requirementId.forEach(async (id, index) => {
+        const newDescription = formData.requirements[index].description;
+        const newTitle = formData.requirements[index].title;
 
-      // Next, prepare the requirements data for the mutation
-      const requirementsData = formData.requirements.map((req) => ({
-        id: req.id,
-        title: req.title,
-        description: req.description
-      }));
+        // Call the mutation with the current 'id', 'badgeId', 'newDescription', and 'newTitle'
+        await UpdateRequirements({
+          variables: {
+            id: id,
+            badgeId: badgeId,
+            newDescription: newDescription,
+            newTitle: newTitle
+          }
+        });
 
-      // Finally, update the requirements with the new data
-      await UpdateRequirements({
-        variables: {
-          badgeId: badgeId,
-          requirements: requirementsData
-        }
+        console.log(`Requirement with id ${id} updated.`);
       });
 
       console.log("Badge and Requirements updated:", formData);
@@ -84,32 +99,15 @@ const EditStep2 = ({ setCurrentStep, badgeId }) => {
     }
   };
 
-  if (loading) {
+  if (loading || reqLoading) {
     return <p>Loading...</p>;
   }
 
   return (
     <>
       <form onSubmit={handleSubmit(secondStepSubmit)}>
-        <TextField
-          label="Title"
-          name="title"
-          multiline
-          rows={1}
-          {...register("title", { required: true })}
-          style={{ marginBottom: "16px", width: "100%" }}
-        />
-        <TextField
-          label="Description"
-          name="description"
-          multiline
-          rows={5}
-          {...register("description", { required: true })}
-          style={{ marginBottom: "16px", width: "100%" }}
-        />
-        {/* Render the input fields for requirements */}
-        {watch("requirements", []).map((req, index) => (
-          <React.Fragment key={index}>
+        {fields.map((req, index) => (
+          <React.Fragment key={req.id}>
             <TextField
               label={`Requirement ${index + 1} Title`}
               name={`requirements[${index}].title`}
@@ -130,6 +128,11 @@ const EditStep2 = ({ setCurrentStep, badgeId }) => {
             />
           </React.Fragment>
         ))}
+        <Tooltip title="Add Requirement" onClick={() => append({})}>
+          <Button variant="outlined" color="primary">
+            Add Requirement
+          </Button>
+        </Tooltip>
         <Tooltip title="Submit">
           <Button
             className="button"
@@ -144,4 +147,5 @@ const EditStep2 = ({ setCurrentStep, badgeId }) => {
     </>
   );
 };
+
 export default EditStep2;

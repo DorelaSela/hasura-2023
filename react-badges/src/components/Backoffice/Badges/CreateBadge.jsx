@@ -112,7 +112,9 @@ const CreateBadge = () => {
               })}
               sx={{ marginBottom: "8px" }}
             />
-            <Button type="submit">Add</Button>
+            <Box>
+              <Button type="submit">Add</Button>
+            </Box>
           </Box>
         </form>
       </CardContent>
