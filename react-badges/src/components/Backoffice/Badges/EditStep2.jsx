@@ -6,7 +6,8 @@ import {
   LOAD_BADGE,
   UPDATE_REQUIREMENTS_MUTATION,
   LOAD_REQUIREMENT_ID,
-  LOAD_BADGES
+  LOAD_BADGES,
+  DELETE_REQUIREMENT
 } from "../../../containers/state/BadgesQueries";
 import { useNavigate } from "react-router-dom";
 import { getVariableValues } from "graphql";
@@ -24,10 +25,12 @@ const EditStep2 = ({ setCurrentStep, badgeId }) => {
 
   const [requirementId, setRequirementId] = useState([]);
 
-  const [UpdateRequirements, { loading: editLoading, error: editError }] =
-    useMutation(UPDATE_REQUIREMENTS_MUTATION, {
-      refetchQueries: [{ query: LOAD_BADGES }]
-    });
+  const [UpdateRequirements] = useMutation(UPDATE_REQUIREMENTS_MUTATION, {
+    refetchQueries: [{ query: LOAD_BADGES }]
+  });
+  const [deleteRequirements] = useMutation(DELETE_REQUIREMENT, {
+    refetchQueries: [{ query: LOAD_BADGES }]
+  });
 
   const { data: reqData, loading: reqLoading } = useQuery(LOAD_REQUIREMENT_ID, {
     variables: {
@@ -50,7 +53,7 @@ const EditStep2 = ({ setCurrentStep, badgeId }) => {
 
   console.log(requirementId);
 
-  const { fields, append } = useFieldArray({
+  const { fields, remove, append } = useFieldArray({
     control, // Replace "control" with your actual form control object
     name: "requirements"
   });
@@ -71,14 +74,19 @@ const EditStep2 = ({ setCurrentStep, badgeId }) => {
     }
   }, [data]);
 
+  const deleteReq = (id) => {
+    deleteRequirements({
+      variables: {
+        id
+      }
+    });
+  };
   const secondStepSubmit = async (formData) => {
     try {
-      // Assuming you have access to the 'requirementIds' state
       requirementId.forEach(async (id, index) => {
         const newDescription = formData.requirements[index].description;
         const newTitle = formData.requirements[index].title;
 
-        // Call the mutation with the current 'id', 'badgeId', 'newDescription', and 'newTitle'
         await UpdateRequirements({
           variables: {
             id: id,
@@ -106,7 +114,7 @@ const EditStep2 = ({ setCurrentStep, badgeId }) => {
   if (loading || reqLoading) {
     return <p>Loading...</p>;
   }
-
+  console.log(fields);
   return (
     <>
       <form onSubmit={handleSubmit(secondStepSubmit)}>
@@ -114,7 +122,7 @@ const EditStep2 = ({ setCurrentStep, badgeId }) => {
           <React.Fragment key={req.id}>
             <TextField
               label={`Requirement ${index + 1} Title`}
-              name={`requirements[${req.id}].title`}
+              name={`requirements[${index}].title`}
               multiline
               rows={1}
               {...register(`requirements[${index}].title`, { required: true })}
@@ -122,14 +130,26 @@ const EditStep2 = ({ setCurrentStep, badgeId }) => {
             />
             <TextField
               label={`Requirement ${index + 1} Description`}
-              name={`requirements[${req.id}].description`}
+              name={`requirements[${index}].description`}
               multiline
-              rows={1}
+              rows={2}
               {...register(`requirements[${index}].description`, {
                 required: true
               })}
               style={{ marginBottom: "16px", width: "100%" }}
             />
+            <Tooltip title="Remove Requirement">
+              <Button
+                variant="outlined"
+                color="primary"
+                onClick={() => {
+                  remove(index);
+                  () => deleteReq(req.id);
+                }}
+              >
+                -
+              </Button>
+            </Tooltip>
           </React.Fragment>
         ))}
         <Tooltip title="Add Requirement" onClick={() => append({})}>
