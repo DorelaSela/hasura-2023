@@ -88,6 +88,7 @@ export const UPDATE_REQUIREMENTS_MUTATION = gql`
     $badgeId: Int!
     $newDescription: String!
     $newTitle: String!
+    $id: Int!
   ) {
     update_requirements_definitions_many(
       updates: {
@@ -97,15 +98,7 @@ export const UPDATE_REQUIREMENTS_MUTATION = gql`
     ) {
       affected_rows
     }
-  }
-`;
-
-export const LOAD_REQUIREMENT = gql`
-  query loadRequirement($badgeId: Int!) {
-    requirements_definitions(where: { badge_id: { _eq: $badgeId } }) {
-      badge_id
-      description
-      title
+    create_badge_version(args: { badge_def_id: $id, is_deleted: false }) {
       id
     }
   }
