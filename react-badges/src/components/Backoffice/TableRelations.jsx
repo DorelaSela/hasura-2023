@@ -25,8 +25,8 @@ const TableRelations = ({ list, relationId, deleteRelations, dataType }) => {
     navigate(`/engineers/addRelations/${relationId}`);
   };
 
-  const editRelations = () => {
-    navigate(`/engineers/editRelations/${relationId}`);
+  const editRelations = (id) => {
+    navigate(`/engineers/editRelations/${relationId}/${id}`);
   };
 
   if (list.length === 0) {
@@ -78,7 +78,10 @@ const TableRelations = ({ list, relationId, deleteRelations, dataType }) => {
               </TableCell>
               <TableCell>
                 {dataType === "engineer" && (
-                  <IconButton color="primary" onClick={editRelations}>
+                  <IconButton
+                    color="primary"
+                    onClick={() => editRelations(item.id)}
+                  >
                     <EditIcon />
                   </IconButton>
                 )}
@@ -88,9 +91,17 @@ const TableRelations = ({ list, relationId, deleteRelations, dataType }) => {
         </TableBody>
       </Table>
       {dataType === "manager" ? (
-        <Button onClick={handleAddRelation}>Add new relation</Button>
+        <Button onClick={handleAddRelation} variant="contained"  className="button-table" >
+          Add new relation
+        </Button>
       ) : (
-        <Button onClick={addRelations}>Add new relation</Button>
+        <Button
+          onClick={addRelations}
+          variant="contained"
+          className="button-table"
+        >
+          Add new relation
+        </Button>
       )}
     </TableContainer>
   );

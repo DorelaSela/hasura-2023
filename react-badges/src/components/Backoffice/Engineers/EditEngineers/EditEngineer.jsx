@@ -41,16 +41,16 @@ const EditEngineer = () => {
     navigate("/engineers");
   };
 
-  // if (loading || updateLoading) {
-  //   return <p>Loading...</p>;
-  // }
+  if (loading || updateLoading) {
+    return <p>Loading...</p>;
+  }
 
   if (error) {
     return <p>Error: {error.message}</p>;
   }
 
   return (
-    <div>
+    <div className="edit-textfield">
       <br />
       <TextField
         value={name}
@@ -63,7 +63,9 @@ const EditEngineer = () => {
       <br /> <br />
       <TextField value={findEngineer.is_deleted} label="Is deleted" disabled />
       <br /> <br />
-      <Button onClick={handleSaveEdit}>Save</Button>
+      <Button onClick={handleSaveEdit} variant="contained" color="success">
+        Save
+      </Button>
     </div>
   );
 };

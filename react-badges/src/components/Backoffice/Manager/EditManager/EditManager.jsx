@@ -58,8 +58,8 @@ const EditManager = () => {
       <br /> <br />
       <TextField value={manager.is_deleted} label="Is deleted" disabled />
       <br /> <br />
-      <Button variant="contained" onClick={handleEdit}>
-        Done
+      <Button variant="contained" onClick={handleEdit} color="success">
+        Save
       </Button>
     </div>
   );

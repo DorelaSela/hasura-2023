@@ -6,7 +6,7 @@ import {
   GET_ENGINEERS_BY_MANAGER
 } from "../../../../containers/state/ManagersQueries";
 import { useNavigate } from "react-router-dom";
-import { Button } from "@mui/material";
+import { Button, Checkbox, FormControlLabel } from "@mui/material";
 import { useParams } from "react-router-dom";
 
 const AddRelation = () => {
@@ -75,7 +75,7 @@ const AddRelation = () => {
 
   return (
     <div>
-      <h4>Managers</h4>
+      <h4>Engineers</h4>
       {filteredEngineers ? (
         filteredEngineers.map((record) => {
           const isDifferentManager = parseInt(managerId) !== record.id;
@@ -84,20 +84,24 @@ const AddRelation = () => {
           }
           return (
             <div key={record.id}>
-              <input
-                type="checkbox"
-                id={record.id}
-                value={record.id}
-                onChange={(e) => handleCheckboxChange(e.target.value)}
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={engineerIds.includes(record.id)}
+                    onChange={() => handleCheckboxChange(record.id)}
+                  />
+                }
+                label={record.name}
               />
-              <label htmlFor={record.id}>{record.name}</label>
             </div>
           );
         })
       ) : (
-        <p>No managers available</p>
+        <p>No engineers available</p>
       )}
-      <Button onClick={handleSubmit}>Submit</Button>
+      <Button onClick={handleSubmit} variant="contained" color="success">
+        Submit
+      </Button>
     </div>
   );
 };

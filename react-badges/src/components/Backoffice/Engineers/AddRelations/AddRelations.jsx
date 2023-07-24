@@ -6,7 +6,7 @@ import {
   GET_MANAGERS_BY_ENGINEER
 } from "../../../../containers/state/EngineersQueries";
 import { useQuery, useMutation } from "@apollo/client";
-import { Button } from "@mui/material";
+import { Button, Checkbox, FormControlLabel } from "@mui/material";
 
 const AddRelations = () => {
   const [managerIds, setManagerIds] = useState([]);
@@ -73,7 +73,7 @@ const AddRelations = () => {
 
   return (
     <div>
-      <h4>Engineers</h4>
+      <h4>Managers</h4>
       {filteredManagers ? (
         filteredManagers.map((record) => {
           const isDifferentEngineer = parseInt(engineerId) !== record.id;
@@ -82,20 +82,24 @@ const AddRelations = () => {
           }
           return (
             <div key={record.id}>
-              <input
-                type="checkbox"
-                id={record.id}
-                value={record.id}
-                onChange={(e) => handleCheckboxChange(e.target.value)}
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={managerIds.includes(record.id)}
+                    onChange={() => handleCheckboxChange(record.id)}
+                  />
+                }
+                label={record.name}
               />
-              <label htmlFor={record.id}>{record.name}</label>
             </div>
           );
         })
       ) : (
         <p>No managers available</p>
       )}
-      <Button onClick={handleSubmit}>Submit</Button>
+      <Button onClick={handleSubmit} color="success" variant="contained">
+        Submit
+      </Button>
     </div>
   );
 };

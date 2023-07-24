@@ -1,6 +1,15 @@
-import { Button, TextField } from "@mui/material";
 import React, { useState, useEffect } from "react";
-import { StepLabel, Step, Stepper } from "@mui/material";
+import {
+  TextField,
+  StepLabel,
+  Step,
+  Stepper,
+  Button,
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select
+} from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { useQuery, useMutation } from "@apollo/client";
 import {
@@ -13,7 +22,7 @@ import {
 const CreateEngineers = () => {
   const [name, setName] = useState("");
   const [activeStep, setActiveStep] = useState(0);
-  const [managers, setManagers] = useState(null);
+  const [managers, setManagers] = useState("");
   const [id, setId] = useState(null);
   const getManagers = useQuery(GET_MANAGERS);
   const navigate = useNavigate();
@@ -70,24 +79,49 @@ const CreateEngineers = () => {
             type="text"
             label="Name"
             value={name}
+            className="create-textfield"
             onChange={(e) => setName(e.target.value)}
           />
-          <Button onClick={addEngineer}>Next</Button>
+          <Button
+            onClick={addEngineer}
+            variant="contained"
+            className="next-button"
+          >
+            Next
+          </Button>
         </div>
       );
     } else if (activeStep === 1) {
       return (
         <div>
           <h4>Managers</h4>
-          <select onChange={(e) => setManagers(e.target.value)}>
-            <option value="">Select a Manager</option>
-            {getManagers.data.managers.map((record) => (
-              <option key={record.id} value={record.id}>
-                {record.name}
-              </option>
-            ))}
-          </select>
-          <Button onClick={handleSubmit}>Submit</Button>
+          <FormControl fullWidth variant="outlined">
+            <InputLabel>Select a Manager</InputLabel>
+            <Select
+              value={managers}
+              onChange={(e) => setManagers(e.target.value)}
+              label="Select a Manager"
+              className="manager-select"
+            >
+              <MenuItem value="">
+                <em>Select a Manager</em>
+              </MenuItem>
+              {getManagers.data.managers.map((record) => (
+                <MenuItem key={record.id} value={record.id}>
+                  {record.name}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+          <Button
+            onClick={handleSubmit}
+            variant="contained"
+            style={{
+              margin: "1rem"
+            }}
+          >
+            Submit
+          </Button>
         </div>
       );
     } else {
@@ -97,7 +131,13 @@ const CreateEngineers = () => {
 
   return (
     <div>
-      <Stepper alternativeLabel activeStep={activeStep}>
+      <Stepper
+        alternativeLabel
+        activeStep={activeStep}
+        style={{
+          margin: "1.5rem"
+        }}
+      >
         {steps.map((label) => (
           <Step key={label}>
             <StepLabel>{label}</StepLabel>

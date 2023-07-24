@@ -6,7 +6,15 @@ import {
   GET_ENGINEERS
 } from "../../../../containers/state/ManagersQueries";
 import { useNavigate } from "react-router-dom";
-import { StepLabel, Step, Stepper, TextField, Button } from "@mui/material";
+import {
+  StepLabel,
+  Step,
+  Stepper,
+  TextField,
+  Button,
+  Checkbox,
+  FormControlLabel
+} from "@mui/material";
 import { LOAD_MANAGERS } from "../../../../containers/state/ManagersQueries";
 
 const AddManagers = () => {
@@ -26,7 +34,7 @@ const AddManagers = () => {
     }
   }, [data]);
 
-  const steps = ["Step1", "Step2"];
+  const steps = ["Create name", "Choose relation"];
   const r1 = useQuery(GET_ENGINEERS);
   const navigate = useNavigate();
 
@@ -90,11 +98,18 @@ const AddManagers = () => {
         <div>
           <TextField
             type="text"
+            className="create-textfield"
             label="Name"
             value={name}
             onChange={(e) => setName(e.target.value)}
           />
-          <Button onClick={handleAddManager}>Next</Button>
+          <Button
+            variant="contained"
+            onClick={handleAddManager}
+            className="next-button"
+          >
+            Next
+          </Button>
         </div>
       );
     } else if (activeStep === 1) {
@@ -112,7 +127,9 @@ const AddManagers = () => {
               <label htmlFor={record.id}>{record.name}</label>
             </div>
           ))}
-          <Button onClick={handleSubmit}>Submit</Button>
+          <Button variant="contained" color="success" onClick={handleSubmit}>
+            Submit
+          </Button>
         </div>
       );
     } else {
@@ -122,7 +139,13 @@ const AddManagers = () => {
 
   return (
     <div>
-      <Stepper alternativeLabel activeStep={activeStep}>
+      <Stepper
+        alternativeLabel
+        activeStep={activeStep}
+        style={{
+          margin: "1rem"
+        }}
+      >
         {steps.map((label) => (
           <Step key={label}>
             <StepLabel>{label}</StepLabel>
