@@ -80,6 +80,9 @@ export const LOAD_BADGE = gql`
       requirements
       id
     }
+    requirements_definitions(where: { badge_id: { _eq: $id } }) {
+      id
+    }
   }
 `;
 
@@ -91,14 +94,59 @@ export const UPDATE_REQUIREMENTS_MUTATION = gql`
     $id: Int!
   ) {
     update_requirements_definitions_many(
-      updates: {
-        where: { badge_id: { _eq: $badgeId } }
-        _set: { description: $newDescription, title: $newTitle }
-      }
+      updates: [
+        {
+          where: { badge_id: { _eq: $badgeId }, id: { _eq: $id } }
+          _set: { description: $newDescription, title: $newTitle }
+        }
+      ]
     ) {
       affected_rows
     }
-    create_badge_version(args: { badge_def_id: $id, is_deleted: false }) {
+  }
+`;
+
+export const LOAD_REQUIREMENT_ID = gql`
+  query MyQuery($badge_id: Int!) {
+    requirements_definitions(where: { badge_id: { _eq: $badge_id } }) {
+      id
+    }
+  }
+`;
+
+const INSERT_REQUIREMENT_MUTATION = gql`
+  mutation InsertRequirement(
+    $description: String!
+    $title: String!
+    $badgeId: Int!
+  ) {
+    insert_requirements_definitions(
+      objects: { description: $description, title: $title, badge_id: $badgeId }
+    ) {
+      affected_rows
+      returning {
+        badge_id
+        description
+        title
+      }
+    }
+  }
+`;
+
+export const DELETE_REQUIREMENT = gql`
+  mutation MyMutation($id: Int!) {
+    delete_requirements_definitions(where: { badge_id: { _eq: $id } }) {
+      affected_rows
+    }
+  }
+`;
+
+export const CREATE_VERSION_AFTER = gql`
+  mutation MyMutation($badge_def_id: Int!) {
+    create_badge_version(
+      args: { badge_def_id: $badge_def_id, is_deleted: false }
+    ) {
+      title
       id
     }
   }
