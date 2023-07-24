@@ -99,6 +99,10 @@ const EditStep2 = ({ setCurrentStep, badgeId }) => {
     }
   };
 
+  useEffect(() => {
+    append({});
+  }, [append]);
+
   if (loading || reqLoading) {
     return <p>Loading...</p>;
   }
@@ -110,7 +114,7 @@ const EditStep2 = ({ setCurrentStep, badgeId }) => {
           <React.Fragment key={req.id}>
             <TextField
               label={`Requirement ${index + 1} Title`}
-              name={`requirements[${index}].title`}
+              name={`requirements[${req.id}].title`}
               multiline
               rows={1}
               {...register(`requirements[${index}].title`, { required: true })}
@@ -118,7 +122,7 @@ const EditStep2 = ({ setCurrentStep, badgeId }) => {
             />
             <TextField
               label={`Requirement ${index + 1} Description`}
-              name={`requirements[${index}].description`}
+              name={`requirements[${req.id}].description`}
               multiline
               rows={1}
               {...register(`requirements[${index}].description`, {
