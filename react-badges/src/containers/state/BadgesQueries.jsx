@@ -87,19 +87,10 @@ export const LOAD_BADGE = gql`
 `;
 
 export const UPDATE_REQUIREMENTS_MUTATION = gql`
-  mutation UpdateRequirements(
-    $badgeId: Int!
-    $newDescription: String!
-    $newTitle: String!
-    $id: Int!
-  ) {
-    update_requirements_definitions_many(
-      updates: [
-        {
-          where: { badge_id: { _eq: $badgeId }, id: { _eq: $id } }
-          _set: { description: $newDescription, title: $newTitle }
-        }
-      ]
+  mutation MyMutation($id: Int!, $description: String!, $title: String!) {
+    update_requirements_definitions(
+      where: { id: { _eq: $id } }
+      _set: { description: $description, title: $title }
     ) {
       affected_rows
     }
@@ -114,7 +105,7 @@ export const LOAD_REQUIREMENT_ID = gql`
   }
 `;
 
-const INSERT_REQUIREMENT_MUTATION = gql`
+export const INSERT_REQUIREMENT_MUTATION = gql`
   mutation InsertRequirement(
     $description: String!
     $title: String!

@@ -33,7 +33,6 @@ const EditStep1 = ({ setCurrentStep, badgeId }) => {
       const { title, description } = data?.badges_versions_last[0];
       setValue("title", title);
       setValue("description", description);
-      console.log(data);
     }
   }, [data]);
 
@@ -46,7 +45,6 @@ const EditStep1 = ({ setCurrentStep, badgeId }) => {
           description: formData.description
         }
       });
-      console.log(formData);
       setCurrentStep(2);
     } catch (error) {
       console.log("Error updating badge:", error);
@@ -62,11 +60,10 @@ const EditStep1 = ({ setCurrentStep, badgeId }) => {
       <form
         onSubmit={handleSubmit(firstStepSubmit)}
         style={{
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          maxWidth: "200px",
-          margin: "auto"
+          // display: "flex",
+          // flexDirection: "column",
+          // alignItems: "center",
+       
         }}
       >
         <TextField

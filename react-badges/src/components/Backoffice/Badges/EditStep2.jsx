@@ -1,4 +1,12 @@
-import { Button, TextField, Tooltip } from "@mui/material";
+import {
+  Button,
+  TextField,
+  Tooltip,
+  Grid,
+  Box,
+  Typography,
+  Fab
+} from "@mui/material";
 import React, { useState, useEffect } from "react";
 import { useForm, useFieldArray } from "react-hook-form";
 import { useMutation, useQuery } from "@apollo/client";
@@ -7,10 +15,10 @@ import {
   UPDATE_REQUIREMENTS_MUTATION,
   LOAD_REQUIREMENT_ID,
   LOAD_BADGES,
-  DELETE_REQUIREMENT
+  DELETE_REQUIREMENT,
+  INSERT_REQUIREMENT_MUTATION
 } from "../../../containers/state/BadgesQueries";
 import { useNavigate } from "react-router-dom";
-import { getVariableValues } from "graphql";
 
 const EditStep2 = ({ setCurrentStep, badgeId }) => {
   const {
@@ -25,9 +33,14 @@ const EditStep2 = ({ setCurrentStep, badgeId }) => {
 
   const [requirementId, setRequirementId] = useState([]);
 
-  const [UpdateRequirements] = useMutation(UPDATE_REQUIREMENTS_MUTATION, {
+  const [updateRequirements] = useMutation(UPDATE_REQUIREMENTS_MUTATION, {
     refetchQueries: [{ query: LOAD_BADGES }]
   });
+
+  const [insertRequirement] = useMutation(INSERT_REQUIREMENT_MUTATION, {
+    refetchQueries: [{ query: LOAD_BADGES }]
+  });
+
   const [deleteRequirements] = useMutation(DELETE_REQUIREMENT, {
     refetchQueries: [{ query: LOAD_BADGES }]
   });
@@ -44,19 +57,46 @@ const EditStep2 = ({ setCurrentStep, badgeId }) => {
     }
   });
 
+  const createRequirement = async (formData) => {
+    const { description, title } = formData;
+    try {
+      await insertRequirement({
+        variables: {
+          badgeId: badgeId,
+          title: title,
+          description: description
+        }
+      });
+
+      console.log("Requirement created:", { title, description });
+    } catch (error) {
+      console.log("Error creating requirement:", error);
+    }
+  };
+
+  const deleteReq = (id) => {
+    deleteRequirements({
+      variables: {
+        id
+      }
+    });
+  };
+
+  const { fields, remove, append } = useFieldArray({
+    control,
+    name: "requirements"
+  });
+
+  useEffect(() => {
+    append({});
+  }, [append]);
+
   useEffect(() => {
     if (reqData && reqData.requirements_definitions) {
       const ids = reqData.requirements_definitions.map((req) => req.id);
       setRequirementId(ids);
     }
   }, [reqData]);
-
-  console.log(requirementId);
-
-  const { fields, remove, append } = useFieldArray({
-    control, // Replace "control" with your actual form control object
-    name: "requirements"
-  });
 
   useEffect(() => {
     if (data && data.badges_versions_last) {
@@ -74,31 +114,21 @@ const EditStep2 = ({ setCurrentStep, badgeId }) => {
     }
   }, [data]);
 
-  const deleteReq = (id) => {
-    deleteRequirements({
-      variables: {
-        id
-      }
-    });
-  };
   const secondStepSubmit = async (formData) => {
     try {
       requirementId.forEach(async (id, index) => {
-        const newDescription = formData.requirements[index].description;
-        const newTitle = formData.requirements[index].title;
+        const description = formData.requirements[index].description;
+        const title = formData.requirements[index].title;
 
-        await UpdateRequirements({
+        await updateRequirements({
           variables: {
             id: id,
-            badgeId: badgeId,
-            newDescription: newDescription,
-            newTitle: newTitle
+            description: description,
+            title: title
           }
         });
-
-        console.log(`Requirement with id ${id} updated.`);
       });
-
+      console.log(formData.requirements[0].title);
       console.log("Badge and Requirements updated:", formData);
       setCurrentStep(2);
       navigate("/badges");
@@ -107,69 +137,100 @@ const EditStep2 = ({ setCurrentStep, badgeId }) => {
     }
   };
 
-  useEffect(() => {
-    append({});
-  }, [append]);
-
   if (loading || reqLoading) {
     return <p>Loading...</p>;
   }
-  console.log(fields);
+
   return (
     <>
       <form onSubmit={handleSubmit(secondStepSubmit)}>
         {fields.map((req, index) => (
-          <React.Fragment key={req.id}>
-            <TextField
-              label={`Requirement ${index + 1} Title`}
-              name={`requirements[${index}].title`}
-              multiline
-              rows={1}
-              {...register(`requirements[${index}].title`, { required: true })}
-              style={{ marginBottom: "16px", width: "100%" }}
-            />
-            <TextField
-              label={`Requirement ${index + 1} Description`}
-              name={`requirements[${index}].description`}
-              multiline
-              rows={2}
-              {...register(`requirements[${index}].description`, {
-                required: true
-              })}
-              style={{ marginBottom: "16px", width: "100%" }}
-            />
-            <Tooltip title="Remove Requirement">
+          <Box key={req.id} mb={3}>
+            <Grid container spacing={2} alignItems="center">
+              <Grid item xs={12} sm={5}>
+                <TextField
+                  label={`Requirement ${index + 1} Title`}
+                  name={`requirements[${index}].title`}
+                  multiline
+                  rows={1}
+                  {...register(`requirements[${index}].title`, {
+                    required: true
+                  })}
+                  fullWidth
+                  variant="outlined"
+                />
+              </Grid>
+              <Grid item xs={12} sm={5}>
+                <TextField
+                  label={`Requirement ${index + 1} Description`}
+                  name={`requirements[${index}].description`}
+                  multiline
+                  rows={2}
+                  {...register(`requirements[${index}].description`, {
+                    required: true
+                  })}
+                  fullWidth
+                  variant="outlined"
+                />
+              </Grid>
+              <Grid item xs={2} sm={1}>
+                <Tooltip title="Remove Requirement">
+                  <Button
+                    variant="outlined"
+                    color="primary"
+                    onClick={() => {
+                      deleteReq(getValues(`requirements[${index}].id`));
+                      remove(index);
+                    }}
+                    style={{ width: "100%" }}
+                  >
+                    Remove
+                  </Button>
+                </Tooltip>
+              </Grid>
+            </Grid>
+          </Box>
+        ))}
+        <Box mt={2}>
+          <Typography
+            variant="h4"
+            sx={{
+              margin: "auto",
+              marginTop: "-10px",
+              width: "fit-content",
+              cursor: "pointer"
+            }}
+            onClick={() => append({ title: "", description: "" })}
+          >
+            <Fab
+              color="primary"
+              aria-label="add"
+              style={{
+                position: "fixed",
+                bottom: "16px",
+                right: "16px"
+              }}
+            >
+              <h1>+</h1>
+            </Fab>
+          </Typography>
+        </Box>
+        <Box mt={2}>
+          <Grid container justifyContent="center">
+            <Tooltip title="Submit">
               <Button
+                className="button"
+                type="submit"
                 variant="outlined"
                 color="primary"
-                onClick={() => {
-                  remove(index);
-                  () => deleteReq(req.id);
-                }}
               >
-                -
+                Submit
               </Button>
             </Tooltip>
-          </React.Fragment>
-        ))}
-        <Tooltip title="Add Requirement" onClick={() => append({})}>
-          <Button variant="outlined" color="primary">
-            Add Requirement
-          </Button>
-        </Tooltip>
-        <Tooltip title="Submit">
-          <Button
-            className="button"
-            type="submit"
-            variant="outlined"
-            color="primary"
-          >
-            Finish
-          </Button>
-        </Tooltip>
+          </Grid>
+        </Box>
       </form>
     </>
   );
 };
-
 export default EditStep2;
