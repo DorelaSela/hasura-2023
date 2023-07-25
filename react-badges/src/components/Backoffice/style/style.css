@@ -12,7 +12,7 @@ h2 {
 }
 
 .edit-textfield {
-  margin-top: 3rem;
+  padding: 3rem;
 }
 
 .manager-select {
@@ -39,4 +39,9 @@ h2 {
   position: relative;
   margin: 2rem;
   margin-left: 60rem;
+}
+
+.edit-relations,
+.add-relation {
+  padding: 2rem;
 }

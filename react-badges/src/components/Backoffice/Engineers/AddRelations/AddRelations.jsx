@@ -72,7 +72,7 @@ const AddRelations = () => {
   );
 
   return (
-    <div>
+    <div className="add-relation">
       <h2>Available Managers</h2>
       {filteredManagers ? (
         filteredManagers.map((record) => {

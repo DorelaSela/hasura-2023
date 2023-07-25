@@ -45,7 +45,7 @@ const EditManager = () => {
   }
 
   return (
-    <div>
+    <div className="edit-textfield">
       <br /> <br />
       <TextField
         type="text"

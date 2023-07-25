@@ -74,7 +74,7 @@ const AddRelation = () => {
   );
 
   return (
-    <div>
+    <div className="add-relation">
       <h2>Available Engineers</h2>
       {filteredEngineers ? (
         filteredEngineers.map((record) => {

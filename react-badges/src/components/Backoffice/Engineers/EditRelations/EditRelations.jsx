@@ -84,7 +84,7 @@ const EditRelations = () => {
   console.log(selectedManagerId);
 
   return (
-    <div>
+    <div className="edit-relations">
       <h2>Edit Relations</h2>
       <h3>Engineer: {engineer.name}</h3>
       <h3>Current Manager: {currentManager?.managers[0].name}</h3>
