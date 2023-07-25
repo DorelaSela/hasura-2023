@@ -109,7 +109,7 @@ const Badges = () => {
                 {showRequirements[badge.id] && (
                   <div>
                     <Typography variant="h2">Requirements:</Typography>
-                    <ul>
+                    <ol>
                       {badge.requirements
                         ?.sort((a, b) => a.id - b.id) // Sort the requirements by requirement.id
                         .map((requirement, index) => (
@@ -118,7 +118,7 @@ const Badges = () => {
                             <Typography>{requirement.description}</Typography>
                           </li>
                         ))}
-                    </ul>
+                    </ol>
                   </div>
                 )}
               </Card>
