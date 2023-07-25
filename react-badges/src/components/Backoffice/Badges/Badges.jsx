@@ -32,7 +32,7 @@ const Badges = () => {
       });
       setShowRequirements(initialVisibility);
     }
-  }, [data]);
+  }, [data, data?.badges_versions_last]);
 
   const deleteBadgeHandler = (badgeId) => {
     deleteBadge({

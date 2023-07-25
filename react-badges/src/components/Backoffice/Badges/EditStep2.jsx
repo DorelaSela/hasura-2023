@@ -72,7 +72,7 @@ const EditStep2 = ({ setCurrentStep, badgeId }) => {
         });
       }
     }
-  }, [data]);
+  }, [data.badges_versions_last, data]);
 
   const deleteReq = (id) => {
     deleteRequirements({
@@ -118,40 +118,47 @@ const EditStep2 = ({ setCurrentStep, badgeId }) => {
   return (
     <>
       <form onSubmit={handleSubmit(secondStepSubmit)}>
-        {fields.map((req, index) => (
-          <React.Fragment key={req.id}>
-            <TextField
-              label={`Requirement ${index + 1} Title`}
-              name={`requirements[${index}].title`}
-              multiline
-              rows={1}
-              {...register(`requirements[${index}].title`, { required: true })}
-              style={{ marginBottom: "16px", width: "100%" }}
-            />
-            <TextField
-              label={`Requirement ${index + 1} Description`}
-              name={`requirements[${index}].description`}
-              multiline
-              rows={2}
-              {...register(`requirements[${index}].description`, {
-                required: true
-              })}
-              style={{ marginBottom: "16px", width: "100%" }}
-            />
-            <Tooltip title="Remove Requirement">
-              <Button
-                variant="outlined"
-                color="primary"
-                onClick={() => {
-                  remove(index);
-                  () => deleteReq(req.id);
-                }}
-              >
-                -
-              </Button>
-            </Tooltip>
-          </React.Fragment>
-        ))}
+        {fields.map((req, index) => {
+          if (index < fields.length - 1) {
+            return (
+              <React.Fragment key={req.id}>
+                <TextField
+                  label={`Requirement ${index + 1} Title`}
+                  name={`requirements[${index}].title`}
+                  multiline
+                  rows={1}
+                  {...register(`requirements[${index}].title`, {
+                    required: true
+                  })}
+                  style={{ marginBottom: "16px", width: "100%" }}
+                />
+                <TextField
+                  label={`Requirement ${index + 1} Description`}
+                  name={`requirements[${index}].description`}
+                  multiline
+                  rows={2}
+                  {...register(`requirements[${index}].description`, {
+                    required: true
+                  })}
+                  style={{ marginBottom: "16px", width: "100%" }}
+                />
+                <Tooltip title="Remove Requirement">
+                  <Button
+                    variant="outlined"
+                    color="primary"
+                    onClick={() => {
+                      remove(index);
+                      deleteReq(req.id);
+                    }}
+                  >
+                    -
+                  </Button>
+                </Tooltip>
+              </React.Fragment>
+            );
+          }
+          return null;
+        })}
         <Tooltip title="Add Requirement" onClick={() => append({})}>
           <Button variant="outlined" color="primary">
             Add Requirement

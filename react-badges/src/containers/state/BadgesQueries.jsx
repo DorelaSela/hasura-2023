@@ -66,9 +66,6 @@ export const EDIT_BADGE = gql`
     ) {
       affected_rows
     }
-    create_badge_version(args: { badge_def_id: $id, is_deleted: false }) {
-      id
-    }
   }
 `;
 
@@ -102,6 +99,9 @@ export const UPDATE_REQUIREMENTS_MUTATION = gql`
       ]
     ) {
       affected_rows
+    }
+    create_badge_version(args: { badge_def_id: $badgeId, is_deleted: false }) {
+      id
     }
   }
 `;
