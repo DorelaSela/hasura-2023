@@ -19,17 +19,14 @@ const EditEngineer = () => {
   const { id } = useParams();
   const navigate = useNavigate();
 
-  console.log("Dataaaaa", data);
-  console.log("ID", id);
-
-  const findEngineer = data.engineers.find(
-    (engineer) => engineer.id === parseInt(id)
-  );
-
   useEffect(() => {
-    setName(findEngineer.name);
-    console.log(findEngineer);
-  }, [findEngineer.name]);
+    if (data) {
+      const currEngineer = data.engineers.find((item) => item.id == id);
+      if (currEngineer) {
+        setName(currEngineer.name);
+      }
+    }
+  }, [data]);
 
   const handleSaveEdit = () => {
     updateEngineers({
@@ -49,6 +46,14 @@ const EditEngineer = () => {
     return <p>Error: {error.message}</p>;
   }
 
+  const getEngineerbyId = (() => {
+    const engineerArray = [...data?.engineers];
+    const findEngineer = engineerArray.find(
+      (engineer) => engineer.id === parseInt(id)
+    );
+    return findEngineer;
+  })();
+
   return (
     <div className="edit-textfield">
       <br />
@@ -59,9 +64,13 @@ const EditEngineer = () => {
         onChange={(e) => setName(e.target.value)}
       />
       <br /> <br />
-      <TextField value={findEngineer.id} label="ID" disabled />
+      <TextField value={getEngineerbyId.id} label="ID" disabled />
       <br /> <br />
-      <TextField value={findEngineer.is_deleted} label="Is deleted" disabled />
+      <TextField
+        value={getEngineerbyId.is_deleted}
+        label="Is deleted"
+        disabled
+      />
       <br /> <br />
       <Button onClick={handleSaveEdit} variant="contained" color="success">
         Save

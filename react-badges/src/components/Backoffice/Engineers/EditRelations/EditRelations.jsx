@@ -17,14 +17,18 @@ import {
 import { useParams, useNavigate } from "react-router-dom";
 
 const EditRelations = () => {
-  const [editRelations, { loading }] = useMutation(EDIT_RELATIONS);
+  const [editRelations, { loading, error }] = useMutation(EDIT_RELATIONS);
   const { data: engineersData } = useQuery(LOAD_ENGINEERS);
 
   const { data: managersData, loading: managerLoading } =
     useQuery(GET_MANAGERS);
   const { id: engineerId } = useParams();
   const { managerId: managerId } = useParams();
-  const { data: currentManager } = useQuery(GET_MANAGERS_WITH_ID, {
+  const {
+    data: currentManager,
+    loading: currentManagerLoading,
+    error: errorManager
+  } = useQuery(GET_MANAGERS_WITH_ID, {
     variables: {
       id: parseInt(managerId)
     }
@@ -40,8 +44,12 @@ const EditRelations = () => {
     }
   });
 
-  if (userLoading || managerLoading || loading) {
+  if (userLoading || managerLoading || currentManagerLoading || loading) {
     return <p>Loading...</p>;
+  }
+
+  if (error || errorManager) {
+    return <p>Error: {error?.message || errorManager?.message}</p>;
   }
 
   const engineer = engineersData?.engineers?.find(
