@@ -70,8 +70,12 @@ const Engineers = () => {
         onEdit={handleEdit}
         onDeleteRelations={handleDeleteRelations}
       />
-      <Button variant="contained" onClick={handleNavigate}>
-        Create New
+      <Button
+        variant="contained"
+        onClick={handleNavigate}
+        className="createnew-button"
+      >
+        Create New Engineer
       </Button>
     </div>
   );

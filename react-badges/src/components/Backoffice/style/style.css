@@ -4,6 +4,7 @@ h2 {
 
 .custom-table {
   padding-left: 3rem;
+  border: 0.5px solid #ccc;
 }
 
 .button-table {
@@ -33,4 +34,10 @@ h2 {
   position: relative;
   margin-top: 7rem;
   margin-left: -13rem;
+}
+
+.createnew-button {
+  position: relative;
+  margin: 2rem;
+  margin-left: 60rem;
 }

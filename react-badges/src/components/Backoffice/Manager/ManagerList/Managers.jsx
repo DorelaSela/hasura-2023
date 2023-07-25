@@ -71,8 +71,12 @@ const Managers = () => {
         onEdit={handleEdit}
         onDeleteRelations={handleDeleteRelation}
       />
-      <Button variant="contained" onClick={handleNavigate}>
-        Create Manager
+      <Button
+        variant="contained"
+        onClick={handleNavigate}
+        className="createnew-button"
+      >
+        Create New Manager
       </Button>
     </div>
   );
