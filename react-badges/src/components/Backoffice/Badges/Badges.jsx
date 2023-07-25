@@ -32,7 +32,7 @@ const Badges = () => {
       });
       setShowRequirements(initialVisibility);
     }
-  }, [data]);
+  }, [data, data?.badges_versions_last]);
 
   const deleteBadgeHandler = (badgeId) => {
     deleteBadge({
@@ -100,21 +100,24 @@ const Badges = () => {
                 </Button>
                 <Button onClick={() => handleEditClick(badge.id)}>Edit</Button>
                 <Button onClick={() => toggleRequirements(badge.id)}>
-                  {requirement[badge.badgeId]
+                  {showRequirements[badge.id]
                     ? "Hide Requirements"
                     : "Show Requirements"}
                 </Button>
                 {showRequirements[badge.id] && (
                   <div>
                     <Typography variant="h2">Requirements:</Typography>
-                    <ul>
-                      {badge.requirements.map((requirement, index) => (
-                        <li key={index}>
-                          <Typography>{requirement.title}</Typography>
-                          <Typography>{requirement.description}</Typography>
-                        </li>
-                      ))}
-                    </ul>
+                    <ol>
+                      {badge.requirements
+                        .slice() // Create a copy of the array to avoid mutating the original data
+                        .sort((a, b) => a.id - b.id) // Sort the requirements by their IDs
+                        .map((requirement, index) => (
+                          <li key={index}>
+                            <Typography>{requirement.title}</Typography>
+                            <Typography>{requirement.description}</Typography>
+                          </li>
+                        ))}
+                    </ol>
                   </div>
                 )}
               </Card>

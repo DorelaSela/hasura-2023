@@ -66,9 +66,6 @@ export const EDIT_BADGE = gql`
     ) {
       affected_rows
     }
-    create_badge_version(args: { badge_def_id: $id, is_deleted: false }) {
-      id
-    }
   }
 `;
 
@@ -87,12 +84,21 @@ export const LOAD_BADGE = gql`
 `;
 
 export const UPDATE_REQUIREMENTS_MUTATION = gql`
-  mutation MyMutation($id: Int!, $description: String!, $title: String!) {
+  mutation UpdateRequirements(
+    $badgeId: Int!
+    $newDescription: String!
+    $newTitle: String!
+    $id: Int!
+  ) {
     update_requirements_definitions(
-      where: { id: { _eq: $id } }
-      _set: { description: $description, title: $title }
+      where: { badge_id: { _eq: $badgeId }, id: { _eq: $id } }
+      _set: { description: $newDescription, title: $newTitle }
     ) {
       affected_rows
+    }
+
+    create_badge_version(args: { badge_def_id: $badgeId, is_deleted: false }) {
+      id
     }
   }
 `;
@@ -126,8 +132,11 @@ export const INSERT_REQUIREMENT_MUTATION = gql`
 
 export const DELETE_REQUIREMENT = gql`
   mutation MyMutation($id: Int!) {
-    delete_requirements_definitions(where: { badge_id: { _eq: $id } }) {
+    delete_requirements_definitions(where: { id: { _eq: $id } }) {
       affected_rows
+    }
+    create_badge_version(args: { badge_def_id: $id, is_deleted: false }) {
+      id
     }
   }
 `;

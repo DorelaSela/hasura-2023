@@ -1,12 +1,4 @@
-import {
-  Button,
-  TextField,
-  Tooltip,
-  Grid,
-  Box,
-  Typography,
-  Fab
-} from "@mui/material";
+import { Button, TextField, Tooltip } from "@mui/material";
 import React, { useState, useEffect } from "react";
 import { useForm, useFieldArray } from "react-hook-form";
 import { useMutation, useQuery } from "@apollo/client";
@@ -15,8 +7,7 @@ import {
   UPDATE_REQUIREMENTS_MUTATION,
   LOAD_REQUIREMENT_ID,
   LOAD_BADGES,
-  DELETE_REQUIREMENT,
-  INSERT_REQUIREMENT_MUTATION
+  DELETE_REQUIREMENT
 } from "../../../containers/state/BadgesQueries";
 import { useNavigate } from "react-router-dom";
 
@@ -32,15 +23,11 @@ const EditStep2 = ({ setCurrentStep, badgeId }) => {
   const navigate = useNavigate();
 
   const [requirementId, setRequirementId] = useState([]);
+  const [requirementsArray, setRequirementsArray] = useState([]);
 
-  const [updateRequirements] = useMutation(UPDATE_REQUIREMENTS_MUTATION, {
+  const [UpdateRequirements] = useMutation(UPDATE_REQUIREMENTS_MUTATION, {
     refetchQueries: [{ query: LOAD_BADGES }]
   });
-
-  const [insertRequirement] = useMutation(INSERT_REQUIREMENT_MUTATION, {
-    refetchQueries: [{ query: LOAD_BADGES }]
-  });
-
   const [deleteRequirements] = useMutation(DELETE_REQUIREMENT, {
     refetchQueries: [{ query: LOAD_BADGES }]
   });
@@ -57,39 +44,12 @@ const EditStep2 = ({ setCurrentStep, badgeId }) => {
     }
   });
 
-  const createRequirement = async (formData) => {
-    const { description, title } = formData;
-    try {
-      await insertRequirement({
-        variables: {
-          badgeId: badgeId,
-          title: title,
-          description: description
-        }
-      });
-
-      console.log("Requirement created:", { title, description });
-    } catch (error) {
-      console.log("Error creating requirement:", error);
-    }
-  };
-
-  const deleteReq = (id) => {
-    deleteRequirements({
-      variables: {
-        id
-      }
-    });
-  };
-
   const { fields, remove, append } = useFieldArray({
     control,
     name: "requirements"
   });
 
-  useEffect(() => {
-    append({});
-  }, [append]);
+  console.log(requirementId);
 
   useEffect(() => {
     if (reqData && reqData.requirements_definitions) {
@@ -109,26 +69,49 @@ const EditStep2 = ({ setCurrentStep, badgeId }) => {
             `requirements[${index}].description`,
             requirement.description
           );
+          setValue(`requirements[${index}].id`, requirement.id);
         });
+        setRequirementsArray(parsedRequirements);
       }
     }
-  }, [data]);
+  }, [data.badges_versions_last, data]);
+
+  useEffect(() => {
+    append({});
+  }, [append]);
+
+  const deleteReq = (id) => {
+    deleteRequirements({
+      variables: {
+        id: id
+      }
+    })
+      .then((result) => {
+        console.log(`Successfully deleted requirement with ID: ${id}`);
+      })
+      .catch((error) => {
+        console.error("Error deleting requirement:", error);
+      });
+  };
 
   const secondStepSubmit = async (formData) => {
     try {
       requirementId.forEach(async (id, index) => {
-        const description = formData.requirements[index].description;
-        const title = formData.requirements[index].title;
+        const newDescription = formData.requirements[index].description;
+        const newTitle = formData.requirements[index].title;
 
-        await updateRequirements({
+        await UpdateRequirements({
           variables: {
             id: id,
-            description: description,
-            title: title
+            badgeId: badgeId,
+            newDescription: newDescription,
+            newTitle: newTitle
           }
         });
+
+        console.log(`Requirement with id ${id} updated.`);
       });
-      console.log(formData.requirements[0].title);
+
       console.log("Badge and Requirements updated:", formData);
       setCurrentStep(2);
       navigate("/badges");
@@ -140,14 +123,14 @@ const EditStep2 = ({ setCurrentStep, badgeId }) => {
   if (loading || reqLoading) {
     return <p>Loading...</p>;
   }
-
+  console.log(fields);
   return (
     <>
       <form onSubmit={handleSubmit(secondStepSubmit)}>
-        {fields.map((req, index) => (
-          <Box key={req.id} mb={3}>
-            <Grid container spacing={2} alignItems="center">
-              <Grid item xs={12} sm={5}>
+        {requirementsArray.map((req, index) => {
+          if (index < fields.length - 1) {
+            return (
+              <React.Fragment key={req.id}>
                 <TextField
                   label={`Requirement ${index + 1} Title`}
                   name={`requirements[${index}].title`}
@@ -156,11 +139,8 @@ const EditStep2 = ({ setCurrentStep, badgeId }) => {
                   {...register(`requirements[${index}].title`, {
                     required: true
                   })}
-                  fullWidth
-                  variant="outlined"
+                  style={{ marginBottom: "16px", width: "100%" }}
                 />
-              </Grid>
-              <Grid item xs={12} sm={5}>
                 <TextField
                   label={`Requirement ${index + 1} Description`}
                   name={`requirements[${index}].description`}
@@ -169,68 +149,43 @@ const EditStep2 = ({ setCurrentStep, badgeId }) => {
                   {...register(`requirements[${index}].description`, {
                     required: true
                   })}
-                  fullWidth
-                  variant="outlined"
+                  style={{ marginBottom: "16px", width: "100%" }}
                 />
-              </Grid>
-              <Grid item xs={2} sm={1}>
                 <Tooltip title="Remove Requirement">
                   <Button
                     variant="outlined"
                     color="primary"
                     onClick={() => {
-                      deleteReq(getValues(`requirements[${index}].id`));
+                      () => deleteReq(getValues(`requirements[${index}].id`));
                       remove(index);
                     }}
-                    style={{ width: "100%" }}
                   >
-                    Remove
+                    -
                   </Button>
                 </Tooltip>
-              </Grid>
-            </Grid>
-          </Box>
-        ))}
-        <Box mt={2}>
-          <Typography
-            variant="h4"
-            sx={{
-              margin: "auto",
-              marginTop: "-10px",
-              width: "fit-content",
-              cursor: "pointer"
-            }}
-            onClick={() => append({ title: "", description: "" })}
+              </React.Fragment>
+            );
+          }
+          return null;
+        })}
+        <Tooltip title="Add Requirement" onClick={() => append({})}>
+          <Button variant="outlined" color="primary">
+            Add Requirement
+          </Button>
+        </Tooltip>
+        <Tooltip title="Submit">
+          <Button
+            className="button"
+            type="submit"
+            variant="outlined"
+            color="primary"
           >
-            <Fab
-              color="primary"
-              aria-label="add"
-              style={{
-                position: "fixed",
-                bottom: "16px",
-                right: "16px"
-              }}
-            >
-              <h1>+</h1>
-            </Fab>
-          </Typography>
-        </Box>
-        <Box mt={2}>
-          <Grid container justifyContent="center">
-            <Tooltip title="Submit">
-              <Button
-                className="button"
-                type="submit"
-                variant="outlined"
-                color="primary"
-              >
-                Submit
-              </Button>
-            </Tooltip>
-          </Grid>
-        </Box>
+            Finish
+          </Button>
+        </Tooltip>
       </form>
     </>
   );
 };
+
 export default EditStep2;
