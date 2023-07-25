@@ -24,9 +24,10 @@ const CreateEngineers = () => {
   const [activeStep, setActiveStep] = useState(0);
   const [managers, setManagers] = useState("");
   const [id, setId] = useState(null);
+  const [error, setError] = useState(false);
   const getManagers = useQuery(GET_MANAGERS);
   const navigate = useNavigate();
-  const [insertEngineers, { error, data }] = useMutation(
+  const [insertEngineers, { error: errorEnginneers, data }] = useMutation(
     CREATE_ENGINEERS_MUTATION,
     {
       refetchQueries: [{ query: LOAD_ENGINEERS }]
@@ -36,7 +37,7 @@ const CreateEngineers = () => {
 
   const steps = ["Create name", "Choose relation"];
 
-  if (error) {
+  if (errorEnginneers) {
     console.log(error);
   }
 
@@ -52,23 +53,37 @@ const CreateEngineers = () => {
     setActiveStep((prevStep) => prevStep + 1);
   };
 
+  const handleInputChange = (e) => {
+    setName(e.target.value);
+    setError(false);
+  };
+
   const handleSubmit = () => {
-    addRelation({
-      variables: {
-        engineer: id,
-        manager: managers
-      }
-    });
-    navigate("/engineers");
+    if (!managers) {
+      navigate("/engineers");
+    } else {
+      addRelation({
+        variables: {
+          engineer: id,
+          manager: managers
+        }
+      });
+      navigate("/engineers");
+    }
   };
 
   const addEngineer = () => {
-    insertEngineers({
-      variables: {
-        name: name
-      }
-    });
-    handleNext();
+    if (!name) {
+      setError(true);
+    } else {
+      insertEngineers({
+        variables: {
+          name: name
+        }
+      }).then(() => {
+        handleNext();
+      });
+    }
   };
 
   const renderForm = () => {
@@ -80,7 +95,9 @@ const CreateEngineers = () => {
             label="Name"
             value={name}
             className="create-textfield"
-            onChange={(e) => setName(e.target.value)}
+            onChange={handleInputChange}
+            error={error}
+            helperText={error ? "Please enter a name" : ""}
           />
           <Button
             onClick={addEngineer}
@@ -94,7 +111,7 @@ const CreateEngineers = () => {
     } else if (activeStep === 1) {
       return (
         <div>
-          <h4>Managers</h4>
+          <h2>Available Managers</h2>
           <FormControl fullWidth variant="outlined">
             <InputLabel>Select a Manager</InputLabel>
             <Select

@@ -21,10 +21,14 @@ const AddManagers = () => {
   const [name, setName] = useState("");
   const [activeStep, setActiveStep] = useState(0);
   const [engineerIds, setEngineerIds] = useState([]);
+  const [error, setError] = useState(false);
   const [addManager, { data }] = useMutation(ADD_MANAGER);
-  const [addRelation, { loading, error }] = useMutation(ADD_RELATION, {
-    refetchQueries: [{ query: LOAD_MANAGERS }]
-  });
+  const [addRelation, { loading, error: relationError }] = useMutation(
+    ADD_RELATION,
+    {
+      refetchQueries: [{ query: LOAD_MANAGERS }]
+    }
+  );
   const [id, setId] = useState(null);
 
   useEffect(() => {
@@ -42,13 +46,22 @@ const AddManagers = () => {
     setActiveStep((prevStep) => prevStep + 1);
   };
 
+  const handleInputChange = (e) => {
+    setName(e.target.value);
+    setError(false);
+  };
   const handleAddManager = () => {
-    addManager({
-      variables: {
-        name: name
-      }
-    });
-    handleNext();
+    if (!name) {
+      setError(true);
+    } else {
+      addManager({
+        variables: {
+          name: name
+        }
+      }).then(() => {
+        handleNext();
+      });
+    }
   };
 
   const handleCheckboxChange = (engineerId) => {
@@ -80,7 +93,7 @@ const AddManagers = () => {
 
       navigate("/managers");
     } else {
-      console.log("No engineer selected");
+      navigate("/managers");
     }
   };
 
@@ -88,7 +101,7 @@ const AddManagers = () => {
     return <p>Loading...</p>;
   }
 
-  if (error) {
+  if (relationError) {
     return <p>Error: {error.message}</p>;
   }
 
@@ -101,7 +114,9 @@ const AddManagers = () => {
             className="create-textfield"
             label="Name"
             value={name}
-            onChange={(e) => setName(e.target.value)}
+            onChange={handleInputChange}
+            error={error}
+            helperText={error ? "Please enter a name" : ""}
           />
           <Button
             variant="contained"
@@ -115,7 +130,7 @@ const AddManagers = () => {
     } else if (activeStep === 1) {
       return (
         <div>
-          <h4>Engineers</h4>
+          <h2>Available Engineers</h2>
           {r1.data.engineers.map((record) => (
             <div key={record.id}>
               <input
@@ -127,7 +142,7 @@ const AddManagers = () => {
               <label htmlFor={record.id}>{record.name}</label>
             </div>
           ))}
-          <Button variant="contained" color="success" onClick={handleSubmit}>
+          <Button variant="contained" onClick={handleSubmit}>
             Submit
           </Button>
         </div>

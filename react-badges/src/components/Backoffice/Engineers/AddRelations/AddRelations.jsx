@@ -73,7 +73,7 @@ const AddRelations = () => {
 
   return (
     <div>
-      <h4>Managers</h4>
+      <h2>Available Managers</h2>
       {filteredManagers ? (
         filteredManagers.map((record) => {
           const isDifferentEngineer = parseInt(engineerId) !== record.id;
