@@ -18,13 +18,15 @@ const EditManager = () => {
   });
   const { loading, error, data } = useQuery(LOAD_MANAGERS);
 
-  const manager = data.managers.find((manager) => manager.id === parseInt(id));
+  const manager = data?.managers?.find(
+    (manager) => manager.id === parseInt(id)
+  );
 
   useEffect(() => {
-    setName(manager.name);
-  }, [manager.name]);
-
-  console.log(data.managers);
+    if (data?.managers && manager?.name) {
+      setName(manager?.name);
+    }
+  }, [data?.managers, manager]);
 
   const handleEdit = () => {
     editManagersName({
@@ -54,9 +56,9 @@ const EditManager = () => {
         onChange={(e) => setName(e.target.value)}
       />
       <br /> <br />
-      <TextField value={manager.id} label="ID" disabled />
+      <TextField value={manager?.id} label="ID" disabled />
       <br /> <br />
-      <TextField value={manager.is_deleted} label="Is deleted" disabled />
+      <TextField value={manager?.is_deleted} label="Is deleted" disabled />
       <br /> <br />
       <Button variant="contained" onClick={handleEdit}>
         Done

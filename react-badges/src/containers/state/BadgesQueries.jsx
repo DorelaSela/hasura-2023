@@ -90,13 +90,9 @@ export const UPDATE_REQUIREMENTS_MUTATION = gql`
     $newTitle: String!
     $id: Int!
   ) {
-    update_requirements_definitions_many(
-      updates: [
-        {
-          where: { badge_id: { _eq: $badgeId }, id: { _eq: $id } }
-          _set: { description: $newDescription, title: $newTitle }
-        }
-      ]
+    update_requirements_definitions(
+      where: { badge_id: { _eq: $badgeId }, id: { _eq: $id } }
+      _set: { description: $newDescription, title: $newTitle }
     ) {
       affected_rows
     }

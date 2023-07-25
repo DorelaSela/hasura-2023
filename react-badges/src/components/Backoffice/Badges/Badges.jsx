@@ -16,14 +16,16 @@ const Badges = () => {
   const { data, loading, error } = useQuery(LOAD_BADGES);
 
   useEffect(() => {
-    if (data) {
-      const badgesWithRequirements = data.badges_versions_last.map((badge) => {
-        const requirements = JSON.parse(badge.requirements);
-        return {
-          ...badge,
-          requirements: requirements
-        };
-      });
+    if (data && data?.badges_versions_last) {
+      const badgesWithRequirements = data?.badges_versions_last?.map(
+        (badge) => {
+          const requirements = JSON.parse(badge?.requirements);
+          return {
+            ...badge,
+            requirements: requirements
+          };
+        }
+      );
       setBadges(badgesWithRequirements || []);
 
       const initialVisibility = {};
@@ -72,7 +74,7 @@ const Badges = () => {
     <div>
       <Box>
         {badges &&
-          badges.map((badge, index) => {
+          badges?.map((badge, index) => {
             return (
               <Card
                 key={index}
@@ -108,12 +110,14 @@ const Badges = () => {
                   <div>
                     <Typography variant="h2">Requirements:</Typography>
                     <ul>
-                      {badge.requirements.map((requirement, index) => (
-                        <li key={index}>
-                          <Typography>{requirement.title}</Typography>
-                          <Typography>{requirement.description}</Typography>
-                        </li>
-                      ))}
+                      {badge.requirements
+                        ?.sort((a, b) => a.id - b.id) // Sort the requirements by requirement.id
+                        .map((requirement, index) => (
+                          <li key={index}>
+                            <Typography>{requirement.title}</Typography>
+                            <Typography>{requirement.description}</Typography>
+                          </li>
+                        ))}
                     </ul>
                   </div>
                 )}

@@ -1,4 +1,4 @@
-import { Button, TextField, Tooltip } from "@mui/material";
+import { Button, TextField, Tooltip, CircularProgress } from "@mui/material";
 import React, { useState, useEffect } from "react";
 import { useForm, useFieldArray } from "react-hook-form";
 import { useMutation, useQuery } from "@apollo/client";
@@ -28,6 +28,7 @@ const EditStep2 = ({ setCurrentStep, badgeId }) => {
   const [UpdateRequirements] = useMutation(UPDATE_REQUIREMENTS_MUTATION, {
     refetchQueries: [{ query: LOAD_BADGES }]
   });
+  const [isLoading, setIsLoading] = useState(false);
   const [deleteRequirements] = useMutation(DELETE_REQUIREMENT, {
     refetchQueries: [{ query: LOAD_BADGES }]
   });
@@ -46,10 +47,10 @@ const EditStep2 = ({ setCurrentStep, badgeId }) => {
 
   useEffect(() => {
     if (reqData && reqData.requirements_definitions) {
-      const ids = reqData.requirements_definitions.map((req) => req.id);
+      const ids = reqData?.requirements_definitions?.map((req) => req.id);
       setRequirementId(ids);
     }
-  }, [reqData]);
+  }, [reqData?.requirements_definitions]);
 
   console.log(requirementId);
 
@@ -60,19 +61,19 @@ const EditStep2 = ({ setCurrentStep, badgeId }) => {
 
   useEffect(() => {
     if (data && data.badges_versions_last) {
-      const { requirements } = data.badges_versions_last[0];
+      const { requirements } = data?.badges_versions_last[0];
       if (requirements) {
         const parsedRequirements = JSON.parse(requirements);
         parsedRequirements.forEach((requirement, index) => {
-          setValue(`requirements[${index}].title`, requirement.title);
+          setValue(`requirements[${index}].title`, requirement?.title);
           setValue(
             `requirements[${index}].description`,
-            requirement.description
+            requirement?.description
           );
         });
       }
     }
-  }, [data.badges_versions_last, data]);
+  }, []);
 
   const deleteReq = (id) => {
     deleteRequirements({
@@ -81,11 +82,18 @@ const EditStep2 = ({ setCurrentStep, badgeId }) => {
       }
     });
   };
+
   const secondStepSubmit = async (formData) => {
     try {
-      requirementId.forEach(async (id, index) => {
+      setIsLoading(true);
+
+      for (let index = 0; index < requirementId.length; index++) {
+        const id = requirementId[index];
         const newDescription = formData.requirements[index].description;
         const newTitle = formData.requirements[index].title;
+
+        // Simulate a delay based on the index (500ms for the first item, 1000ms for the second, 1500ms for the third, and so on...)
+        await new Promise((resolve) => setTimeout(resolve, (index + 1) * 1));
 
         await UpdateRequirements({
           variables: {
@@ -97,11 +105,13 @@ const EditStep2 = ({ setCurrentStep, badgeId }) => {
         });
 
         console.log(`Requirement with id ${id} updated.`);
-      });
+      }
 
       console.log("Badge and Requirements updated:", formData);
-      setCurrentStep(2);
-      navigate("/badges");
+      setTimeout(() => {
+        setCurrentStep(2);
+        navigate("/badges");
+      }, 600);
     } catch (error) {
       console.log("Error updating badge and requirements:", error);
     }
@@ -175,6 +185,17 @@ const EditStep2 = ({ setCurrentStep, badgeId }) => {
           </Button>
         </Tooltip>
       </form>
+      {isLoading && (
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            marginTop: "16px"
+          }}
+        >
+          <CircularProgress />
+        </div>
+      )}
     </>
   );
 };
