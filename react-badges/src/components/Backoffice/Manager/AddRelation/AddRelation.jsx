@@ -6,7 +6,7 @@ import {
   GET_ENGINEERS_BY_MANAGER
 } from "../../../../containers/state/ManagersQueries";
 import { useNavigate } from "react-router-dom";
-import { Button } from "@mui/material";
+import { Button, Checkbox, FormControlLabel } from "@mui/material";
 import { useParams } from "react-router-dom";
 
 const AddRelation = () => {
@@ -43,15 +43,18 @@ const AddRelation = () => {
   const handleSubmit = () => {
     if (engineerIds.length > 0) {
       engineerIds.forEach((engineerId) => {
-        addRelation({
-          variables: {
-            manager: parseInt(managerId),
-            engineer: engineerId
-          }
-        });
+        if (managerId !== engineerId) {
+          addRelation({
+            variables: {
+              manager: parseInt(managerId),
+              engineer: engineerId
+            }
+          });
+        }
       });
       navigate("/managers");
     } else {
+      navigate("/managers");
       console.log("No engineer selected");
     }
   };
@@ -71,24 +74,34 @@ const AddRelation = () => {
   );
 
   return (
-    <div>
-      <h4>Managers</h4>
+    <div className="add-relation">
+      <h2>Available Engineers</h2>
       {filteredEngineers ? (
-        filteredEngineers.map((record) => (
-          <div key={record.id}>
-            <input
-              type="checkbox"
-              id={record.id}
-              value={record.id}
-              onChange={(e) => handleCheckboxChange(e.target.value)}
-            />
-            <label htmlFor={record.id}>{record.name}</label>
-          </div>
-        ))
+        filteredEngineers.map((record) => {
+          const isDifferentManager = parseInt(managerId) !== record.id;
+          if (!isDifferentManager) {
+            return null;
+          }
+          return (
+            <div key={record.id}>
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={engineerIds.includes(record.id)}
+                    onChange={() => handleCheckboxChange(record.id)}
+                  />
+                }
+                label={record.name}
+              />
+            </div>
+          );
+        })
       ) : (
-        <p>No managers available</p>
+        <p>No engineers available</p>
       )}
-      <Button onClick={handleSubmit}>Submit</Button>
+      <Button onClick={handleSubmit} variant="contained" color="success">
+        Submit
+      </Button>
     </div>
   );
 };

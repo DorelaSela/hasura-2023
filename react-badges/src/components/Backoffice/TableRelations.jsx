@@ -7,8 +7,11 @@ import {
   TableContainer,
   TableHead,
   TableRow,
-  Typography
+  Typography,
+  IconButton
 } from "@mui/material";
+import DeleteIcon from "@mui/icons-material/Delete";
+import EditIcon from "@mui/icons-material/Edit";
 import { useNavigate } from "react-router-dom";
 
 const TableRelations = ({ list, relationId, deleteRelations, dataType }) => {
@@ -20,6 +23,10 @@ const TableRelations = ({ list, relationId, deleteRelations, dataType }) => {
 
   const addRelations = () => {
     navigate(`/engineers/addRelations/${relationId}`);
+  };
+
+  const editRelations = (id) => {
+    navigate(`/engineers/editRelations/${relationId}/${id}`);
   };
 
   if (list.length === 0) {
@@ -45,7 +52,7 @@ const TableRelations = ({ list, relationId, deleteRelations, dataType }) => {
           <TableRow>
             <TableCell>Name</TableCell>
             <TableCell>Delete</TableCell>
-            <TableCell>Edit</TableCell>
+            {dataType === "engineer" && <TableCell>Edit</TableCell>}
           </TableRow>
         </TableHead>
         <TableBody>
@@ -54,17 +61,29 @@ const TableRelations = ({ list, relationId, deleteRelations, dataType }) => {
               <TableCell>{item.name}</TableCell>
               <TableCell>
                 {dataType === "engineer" ? (
-                  <Button
+                  <IconButton
+                    color="error"
                     onClick={() => deleteRelations({ relationId, id: item.id })}
                   >
-                    DELETE
-                  </Button>
+                    <DeleteIcon />
+                  </IconButton>
                 ) : (
-                  <Button
+                  <IconButton
+                    color="error"
                     onClick={() => deleteRelations({ relationId, id: item.id })}
                   >
-                    Delete
-                  </Button>
+                    <DeleteIcon />
+                  </IconButton>
+                )}
+              </TableCell>
+              <TableCell>
+                {dataType === "engineer" && (
+                  <IconButton
+                    color="primary"
+                    onClick={() => editRelations(item.id)}
+                  >
+                    <EditIcon />
+                  </IconButton>
                 )}
               </TableCell>
             </TableRow>
@@ -72,9 +91,17 @@ const TableRelations = ({ list, relationId, deleteRelations, dataType }) => {
         </TableBody>
       </Table>
       {dataType === "manager" ? (
-        <Button onClick={handleAddRelation}>Add new relation</Button>
+        <Button onClick={handleAddRelation} variant="contained"  className="button-table" >
+          Add new relation
+        </Button>
       ) : (
-        <Button onClick={addRelations}>Add new relation</Button>
+        <Button
+          onClick={addRelations}
+          variant="contained"
+          className="button-table"
+        >
+          Add new relation
+        </Button>
       )}
     </TableContainer>
   );

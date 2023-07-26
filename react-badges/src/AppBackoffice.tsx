@@ -21,13 +21,16 @@ import CreateBadge from "./components/Backoffice/Badges/CreateBadge";
 import EditEngineer from "./components/Backoffice/Engineers/EditEngineers/EditEngineer";
 import AddRelations from "./components/Backoffice/Engineers/AddRelations/AddRelations";
 import AddRelation from "./components/Backoffice/Manager/AddRelation/AddRelation";
+
 import EditBadge from "./components/Backoffice/Badges/EditBadge";
-import EditStep1 from "./components/Backoffice/Badges/EditStep1";
+
+
+import EditRelations from "./components/Backoffice/Engineers/EditRelations/EditRelations";
 
 const menuItems = [
   {
     link: "managers",
-    text: "managers",
+    text: "Managers",
     icon: <ManagersIcon />
   },
   {
@@ -88,12 +91,25 @@ const AppBackoffice: React.FC = () => (
           element: <EditBadge />
         },
         {
+
           path: "/engineers/edit/:id",
           element: <EditEngineer />
         },
         {
           path: "/engineers/addRelations/:id",
           element: <AddRelations />
+        },
+        {
+          path: "/engineers/editRelations/:id/:managerId",
+          element: <EditRelations />
+        },
+        {
+          path: "badges",
+          element: <Badges />
+        },
+        {
+          path: "/create",
+          element: <CreateBadge />
         }
       ] as RouteProps[]
     }

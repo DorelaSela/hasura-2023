@@ -9,11 +9,13 @@ import {
   Typography,
   Box,
   Collapse,
-  IconButton,
-  Button
+  IconButton
 } from "@mui/material";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
+import DeleteIcon from "@mui/icons-material/Delete";
+import EditIcon from "@mui/icons-material/Edit";
+import "../Backoffice/style/style.css";
 import { GET_ENGINEERS_BY_MANAGER } from "../../containers/state/ManagersQueries";
 import { GET_MANAGERS_BY_ENGINEER } from "../../containers/state/EngineersQueries";
 import { useMutation } from "@apollo/client";
@@ -60,24 +62,25 @@ const TableForm = ({ data, onDelete, dataType, onEdit, onDeleteRelations }) => {
   };
 
   return (
-    <TableContainer>
+    <TableContainer className="custom-table">
       <Table aria-label="custom table">
         <TableHead>
           <TableRow>
             <TableCell />
-            <TableCell>Name</TableCell>
-            <TableCell>Delete</TableCell>
-            <TableCell>Edit</TableCell>
+            <TableCell className="cell-text">Name</TableCell>
+            <TableCell className="cell-text">Delete</TableCell>
+            <TableCell className="cell-text">Edit</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
           {data.map((item, index) => (
             <React.Fragment key={item.id}>
               <TableRow>
-                <TableCell>
+                <TableCell className="cell-text">
                   <IconButton
                     aria-label="expand row"
                     size="small"
+                    className="expand-button"
                     onClick={() => handleRowClick(index, item.id)}
                   >
                     {openRows.includes(index) ? (
@@ -87,18 +90,23 @@ const TableForm = ({ data, onDelete, dataType, onEdit, onDeleteRelations }) => {
                     )}
                   </IconButton>
                 </TableCell>
-                <TableCell>{item.name}</TableCell>
+                <TableCell className="cell-text">{item.name}</TableCell>
                 <TableCell>
-                  <Button onClick={() => onDelete(item.id)}>Delete</Button>
+                  <IconButton color="error" onClick={() => onDelete(item.id)}>
+                    <DeleteIcon />
+                  </IconButton>
                 </TableCell>
                 <TableCell>
-                  <Button onClick={() => onEdit(item.id)}>Edit</Button>
+                  <IconButton color="primary" onClick={() => onEdit(item.id)}>
+                    <EditIcon />
+                  </IconButton>
                 </TableCell>
               </TableRow>
               <TableRow>
                 <TableCell
                   style={{ paddingBottom: 0, paddingTop: 0 }}
                   colSpan={4}
+                  className="cell-text"
                 >
                   <Collapse
                     in={openRows.includes(index)}

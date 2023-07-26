@@ -1,6 +1,15 @@
-import { Button, TextField } from "@mui/material";
 import React, { useState, useEffect } from "react";
-import { StepLabel, Step, Stepper } from "@mui/material";
+import {
+  TextField,
+  StepLabel,
+  Step,
+  Stepper,
+  Button,
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select
+} from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { useQuery, useMutation } from "@apollo/client";
 import {
@@ -13,11 +22,12 @@ import {
 const CreateEngineers = () => {
   const [name, setName] = useState("");
   const [activeStep, setActiveStep] = useState(0);
-  const [managers, setManagers] = useState(null);
+  const [managers, setManagers] = useState("");
   const [id, setId] = useState(null);
+  const [error, setError] = useState(false);
   const getManagers = useQuery(GET_MANAGERS);
   const navigate = useNavigate();
-  const [insertEngineers, { error, data }] = useMutation(
+  const [insertEngineers, { error: errorEnginneers, data }] = useMutation(
     CREATE_ENGINEERS_MUTATION,
     {
       refetchQueries: [{ query: LOAD_ENGINEERS }]
@@ -27,7 +37,7 @@ const CreateEngineers = () => {
 
   const steps = ["Create name", "Choose relation"];
 
-  if (error) {
+  if (errorEnginneers) {
     console.log(error);
   }
 
@@ -43,23 +53,37 @@ const CreateEngineers = () => {
     setActiveStep((prevStep) => prevStep + 1);
   };
 
+  const handleInputChange = (e) => {
+    setName(e.target.value);
+    setError(false);
+  };
+
   const handleSubmit = () => {
-    addRelation({
-      variables: {
-        engineer: id,
-        manager: managers
-      }
-    });
-    navigate("/engineers");
+    if (!managers) {
+      navigate("/engineers");
+    } else {
+      addRelation({
+        variables: {
+          engineer: id,
+          manager: managers
+        }
+      });
+      navigate("/engineers");
+    }
   };
 
   const addEngineer = () => {
-    insertEngineers({
-      variables: {
-        name: name
-      }
-    });
-    handleNext();
+    if (!name) {
+      setError(true);
+    } else {
+      insertEngineers({
+        variables: {
+          name: name
+        }
+      }).then(() => {
+        handleNext();
+      });
+    }
   };
 
   const renderForm = () => {
@@ -70,23 +94,51 @@ const CreateEngineers = () => {
             type="text"
             label="Name"
             value={name}
-            onChange={(e) => setName(e.target.value)}
+            className="create-textfield"
+            onChange={handleInputChange}
+            error={error}
+            helperText={error ? "Please enter a name" : ""}
           />
-          <Button onClick={addEngineer}>Next</Button>
+          <Button
+            onClick={addEngineer}
+            variant="contained"
+            className="next-button"
+          >
+            Next
+          </Button>
         </div>
       );
     } else if (activeStep === 1) {
       return (
         <div>
-          <h4>Managers</h4>
-          <select onChange={(e) => setManagers(e.target.value)}>
-            {getManagers.data.managers.map((record) => (
-              <option key={record.id} value={record.id}>
-                {record.name}
-              </option>
-            ))}
-          </select>
-          <Button onClick={handleSubmit}>Submit</Button>
+          <h2>Available Managers</h2>
+          <FormControl fullWidth variant="outlined">
+            <InputLabel>Select a Manager</InputLabel>
+            <Select
+              value={managers}
+              onChange={(e) => setManagers(e.target.value)}
+              label="Select a Manager"
+              className="manager-select"
+            >
+              <MenuItem value="">
+                <em>Select a Manager</em>
+              </MenuItem>
+              {getManagers.data.managers.map((record) => (
+                <MenuItem key={record.id} value={record.id}>
+                  {record.name}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+          <Button
+            onClick={handleSubmit}
+            variant="contained"
+            style={{
+              margin: "1rem"
+            }}
+          >
+            Submit
+          </Button>
         </div>
       );
     } else {
@@ -96,7 +148,13 @@ const CreateEngineers = () => {
 
   return (
     <div>
-      <Stepper alternativeLabel activeStep={activeStep}>
+      <Stepper
+        alternativeLabel
+        activeStep={activeStep}
+        style={{
+          margin: "1.5rem"
+        }}
+      >
         {steps.map((label) => (
           <Step key={label}>
             <StepLabel>{label}</StepLabel>

@@ -18,6 +18,14 @@ export const GET_MANAGERS = gql`
     }
   }
 `;
+export const GET_MANAGERS_WITH_ID = gql`
+  query getManagers($id: Int!) {
+    managers(where: { id: { _eq: $id } }) {
+      id
+      name
+    }
+  }
+`;
 
 export const CREATE_ENGINEERS_MUTATION = gql`
   mutation CreateEngineer($name: String!) {
@@ -82,6 +90,28 @@ export const DELETE_RELATIONS = gql`
       returning {
         engineer
         manager
+      }
+    }
+  }
+`;
+
+export const USER_RELATION = gql`
+  query userRelation($id: Int!) {
+    users_relations(where: { engineer: { _eq: $id } }) {
+      manager
+    }
+  }
+`;
+
+export const EDIT_RELATIONS = gql`
+  mutation editRelations($idE: Int!, $oldM: Int!, $newM: Int!) {
+    update_users_relations(
+      where: { engineer: { _eq: $idE }, manager: { _eq: $oldM } }
+      _set: { manager: $newM }
+    ) {
+      returning {
+        manager
+        engineer
       }
     }
   }
