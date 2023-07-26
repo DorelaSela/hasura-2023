@@ -56,9 +56,9 @@ const EditManager = () => {
         onChange={(e) => setName(e.target.value)}
       />
       <br /> <br />
-      <TextField value={manager.id} label="ID" disabled />
+      <TextField value={manager?.id} label="ID" disabled />
       <br /> <br />
-      <TextField value={manager.is_deleted} label="Is deleted" disabled />
+      <TextField value={manager?.is_deleted} label="Is deleted" disabled />
       <br /> <br />
       <Button variant="contained" onClick={handleEdit} color="success">
         Save

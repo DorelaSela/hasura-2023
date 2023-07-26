@@ -28,28 +28,31 @@ const CreateBadge = () => {
     CREATE_BADGE_MUTATION,
     { refetchQueries: [{ query: LOAD_BADGES }] }
   );
-  const [create_badges_version] = useMutation(CREATE_BADGE_VERSION, {
+  const [create_badge_version] = useMutation(CREATE_BADGE_VERSION, {
     refetchQueries: [{ query: LOAD_BADGES }]
   });
 
   useEffect(() => {
     if (data) {
-      create_badges_version({
+      create_badge_version({
         variables: {
-          id: data?.insert_badges_definitions?.returning[0]?.id,
-          is_deleted: false
+          id: data?.insert_badges_definitions?.returning[0]?.id
         }
       });
+
       navigate("/badges");
     }
   }, [data]);
 
   const onSubmit = (formData) => {
-    const { title, description } = formData;
+    const { title, description, requirementTitle, requirementDescription } =
+      formData;
     insert_badges_definitions({
       variables: {
         title: title,
-        description: description
+        description: description,
+        requirementTitle: requirementTitle,
+        requirementDescription: requirementDescription
       }
     });
   };
@@ -93,7 +96,25 @@ const CreateBadge = () => {
               })}
               sx={{ marginBottom: "8px" }}
             />
-            <Button type="submit">Add</Button>
+            <TextField
+              label="Requirement Title"
+              name="requirementTitle"
+              {...register("requirementTitle", {
+                required: true
+              })}
+              sx={{ marginBottom: "8px" }}
+            />
+            <TextField
+              label="Requirement Title"
+              name="requirementDescription"
+              {...register("requirementDescription", {
+                required: true
+              })}
+              sx={{ marginBottom: "8px" }}
+            />
+            <Box>
+              <Button type="submit">Add</Button>
+            </Box>
           </Box>
         </form>
       </CardContent>

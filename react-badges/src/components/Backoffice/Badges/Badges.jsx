@@ -5,33 +5,61 @@ import {
   DELETE_BADGE
 } from "../../../containers/state/BadgesQueries";
 import { Box, Button, Card, Typography, Fab } from "@mui/material";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const Badges = () => {
-  const { data } = useQuery(LOAD_BADGES);
+  const navigate = useNavigate();
+  const [showRequirements, setShowRequirements] = useState({});
   const [badges, setBadges] = useState([]);
-  const [deleteBadge, { loading, error }] = useMutation(DELETE_BADGE, {
-    refetchQueries: [{ query: LOAD_BADGES }]
-  });
+  const [requirement, setRequirements] = useState([]);
+  const [deleteBadge] = useMutation(DELETE_BADGE);
+  const { data, loading, error } = useQuery(LOAD_BADGES);
 
   useEffect(() => {
-    if (data) {
-      console.log(data);
-      setBadges(data.badges_versions_last);
+    if (data && data?.badges_versions_last) {
+      const badgesWithRequirements = data?.badges_versions_last?.map(
+        (badge) => {
+          const requirements = JSON.parse(badge?.requirements);
+          return {
+            ...badge,
+            requirements: requirements
+          };
+        }
+      );
+      setBadges(badgesWithRequirements || []);
+
+      const initialVisibility = {};
+      badgesWithRequirements.forEach((badge) => {
+        initialVisibility[badge.id] = false;
+      });
+      setShowRequirements(initialVisibility);
     }
-  }, [data]);
+  }, [data, data?.badges_versions_last]);
 
-  console.log(data);
-
-  const deleteBadgeHandler = (id) => {
+  const deleteBadgeHandler = (badgeId) => {
     deleteBadge({
       variables: {
-        badge_def_id: id,
-        is_deleted: true
-      }
-    });
-    console.log(id);
-   
+        badge_def_id: badgeId
+      },
+      refetchQueries: [{ query: LOAD_BADGES }]
+    })
+      .then((result) => {
+        console.log("Badge deleted successfully:");
+      })
+      .catch((error) => {
+        console.error("Error deleting badge:", error);
+      });
+  };
+
+  const handleEditClick = (id) => {
+    navigate(`/edit/${id}`);
+  };
+
+  const toggleRequirements = (id) => {
+    setShowRequirements((prevState) => ({
+      ...prevState,
+      [id]: !prevState[id]
+    }));
   };
 
   if (loading) {
@@ -46,7 +74,7 @@ const Badges = () => {
     <div>
       <Box>
         {badges &&
-          badges.map((badge, index) => {
+          badges?.map((badge, index) => {
             return (
               <Card
                 key={index}
@@ -68,15 +96,31 @@ const Badges = () => {
                 >
                   <Typography variant="h1"> {badge.title}</Typography>
                   <Typography>{badge.description}</Typography>
-                  {/* <ol>
-                {badge.requirements.map((requirement, index) => (
-                  <li key={index}>{requirement.description}</li>
-                ))}
-              </ol> */}
                 </Box>
                 <Button onClick={() => deleteBadgeHandler(badge.id)}>
                   Delete
                 </Button>
+                <Button onClick={() => handleEditClick(badge.id)}>Edit</Button>
+                <Button onClick={() => toggleRequirements(badge.id)}>
+                  {requirement[badge.badgeId]
+                    ? "Hide Requirements"
+                    : "Show Requirements"}
+                </Button>
+                {showRequirements[badge.id] && (
+                  <div>
+                    <Typography variant="h2">Requirements:</Typography>
+                    <ol>
+                      {badge.requirements
+                        ?.sort((a, b) => a.id - b.id) // Sort the requirements by requirement.id
+                        .map((requirement, index) => (
+                          <li key={index}>
+                            <Typography>{requirement.title}</Typography>
+                            <Typography>{requirement.description}</Typography>
+                          </li>
+                        ))}
+                    </ol>
+                  </div>
+                )}
               </Card>
             );
           })}
