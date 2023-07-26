@@ -23,8 +23,10 @@ const EditManager = () => {
   );
 
   useEffect(() => {
-    setName(manager?.name);
-  }, [manager?.name]);
+    if (data?.managers && manager?.name) {
+      setName(manager?.name);
+    }
+  }, [data?.managers, manager]);
 
   const handleEdit = () => {
     editManagersName({
@@ -45,7 +47,7 @@ const EditManager = () => {
   }
 
   return (
-    <div>
+    <div className="edit-textfield">
       <br /> <br />
       <TextField
         type="text"
@@ -58,8 +60,8 @@ const EditManager = () => {
       <br /> <br />
       <TextField value={manager.is_deleted} label="Is deleted" disabled />
       <br /> <br />
-      <Button variant="contained" onClick={handleEdit}>
-        Done
+      <Button variant="contained" onClick={handleEdit} color="success">
+        Save
       </Button>
     </div>
   );

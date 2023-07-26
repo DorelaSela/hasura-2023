@@ -1,0 +1,44 @@
+.custom-table {
+  padding-left: 3rem;
+}
+
+.button-table {
+  margin-left: 25rem;
+  margin-top: 1rem;
+}
+
+.edit-textfield {
+  padding: 15rem;
+  margin-top: -10rem;
+}
+
+.manager-select {
+  width: 45%;
+}
+
+.button-save {
+  margin-top: 6rem;
+}
+
+.create-textfield {
+  position: relative;
+  margin-top: 2rem;
+  margin-left: 20rem;
+}
+
+.next-button {
+  position: relative;
+  margin-top: 7rem;
+  margin-left: -13rem;
+}
+
+.createnew-button {
+  position: relative;
+  margin: 2rem;
+  margin-left: 60rem;
+}
+
+.edit-relations,
+.add-relation {
+  padding: 2rem;
+}

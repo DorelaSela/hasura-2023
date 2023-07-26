@@ -26,7 +26,7 @@ import EditRelations from "./components/Backoffice/Engineers/EditRelations/EditR
 const menuItems = [
   {
     link: "managers",
-    text: "managers",
+    text: "Managers",
     icon: <ManagersIcon />
   },
   {
@@ -83,7 +83,7 @@ const AppBackoffice: React.FC = () => (
           element: <AddRelations />
         },
         {
-          path: "/engineers/editRelations/:id",
+          path: "/engineers/editRelations/:id/:managerId",
           element: <EditRelations />
         },
         {
