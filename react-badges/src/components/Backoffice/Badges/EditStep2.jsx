@@ -1,4 +1,14 @@
-import { Button, TextField, Tooltip, CircularProgress } from "@mui/material";
+import {
+  Button,
+  TextField,
+  Tooltip,
+  CircularProgress,
+  Card,
+  CardContent,
+  CardActions,
+  Fab,
+  Alert
+} from "@mui/material";
 import React, { useState, useEffect } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { useMutation, useQuery } from "@apollo/client";
@@ -16,6 +26,7 @@ const EditStep2 = ({ setCurrentStep, badgeId }) => {
   const { handleSubmit, control, setValue } = useForm();
   const navigate = useNavigate();
 
+  const [areRequirementsEmpty, setAreRequirementsEmpty] = useState(false);
   const [editingField, setEditingField] = useState(-1);
   const [requirements, setRequirements] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -35,6 +46,10 @@ const EditStep2 = ({ setCurrentStep, badgeId }) => {
       id: badgeId
     }
   });
+
+  useEffect(() => {
+    setAreRequirementsEmpty(requirements.length === 0);
+  }, [requirements]);
 
   useEffect(() => {
     if (data && data.badges_versions_last) {
@@ -135,76 +150,110 @@ const EditStep2 = ({ setCurrentStep, badgeId }) => {
   return (
     <>
       <form onSubmit={handleSubmit(onSubmit)}>
-        {requirements.map((req, index) => (
-          <React.Fragment key={req.id}>
-            <Controller
-              name={`requirements[${index}].title`}
-              control={control}
-              defaultValue={req.title}
-              rules={{ required: true }}
-              render={({ field }) => (
-                <TextField
-                  label={`Requirement ${index + 1} Title`}
-                  multiline
-                  rows={1}
-                  {...field}
-                  style={{ marginBottom: "16px", width: "100%" }}
-                  disabled={editingField !== index}
-                />
-              )}
-            />
-            <Controller
-              name={`requirements[${index}].description`}
-              control={control}
-              defaultValue={req.description}
-              rules={{ required: true }}
-              render={({ field }) => (
-                <TextField
-                  label={`Requirement ${index + 1} Description`}
-                  multiline
-                  rows={2}
-                  {...field}
-                  style={{ marginBottom: "16px", width: "100%" }}
-                  disabled={editingField !== index}
-                />
-              )}
-            />
-            {/* UPDATE REQUIREMENTS */}
-            {editingField === index ? (
-              <Tooltip title="Save Requirement">
-                <Button
-                  variant="outlined"
-                  color="primary"
-                  onClick={() => {
-                    setEditingField(-1);
-                    setIsEditing(false); // CANT SUBMIT IF NOT SAVE
+        <div
+          style={{
+            display: "flex",
+            flexWrap: "wrap",
+            justifyContent: "center"
+          }}
+        >
+          {requirements.map((req, index) => (
+            <div
+              key={req.id}
+              style={{
+                marginBottom: "16px",
+                flexBasis: "50%",
+                marginRight: "5px"
+              }}
+            >
+              <Card variant="outlined" style={{ borderColor: "#333" }}>
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "center",
+                    marginTop: "16px"
                   }}
                 >
-                  Save
-                </Button>
-              </Tooltip>
-            ) : (
-              <Tooltip title="Edit Requirement">
-                <Button
-                  variant="outlined"
-                  color="primary"
-                  onClick={() => {
-                    setEditingField(index);
-                    setIsEditing(true); // CAN SUBMIT WHEN IS SAVE
-                  }}
-                >
-                  Edit
-                </Button>
-              </Tooltip>
-            )}
-            {/* DELETE REQUIREMENT */}
-            <DeleteRequirementButton
-              requirementId={req.id}
-              badgeId={badgeId}
-              onDelete={() => handleDeleteRequirement(req.id)}
-            />
-          </React.Fragment>
-        ))}
+                  {isLoading && <CircularProgress />}
+                </div>
+                <CardContent>
+                  <Controller
+                    name={`requirements[${index}].title`}
+                    control={control}
+                    defaultValue={req.title}
+                    rules={{ required: true }}
+                    render={({ field }) => (
+                      <TextField
+                        label={`Requirement ${index + 1} Title`}
+                        multiline
+                        rows={1}
+                        {...field}
+                        style={{ marginBottom: "8px", width: "100%" }}
+                        disabled={editingField !== index}
+                      />
+                    )}
+                  />
+                  <Controller
+                    name={`requirements[${index}].description`}
+                    control={control}
+                    defaultValue={req.description}
+                    rules={{ required: true }}
+                    render={({ field }) => (
+                      <TextField
+                        label={`Requirement ${index + 1} Description`}
+                        multiline
+                        rows={2}
+                        {...field}
+                        style={{
+                          marginBottom: "8px",
+                          width: "100%",
+                          marginTop: "10px"
+                        }}
+                        disabled={editingField !== index}
+                      />
+                    )}
+                  />
+                </CardContent>
+                <CardActions style={{ justifyContent: "center" }}>
+                  {/* UPDATE REQUIREMENTS */}
+                  {editingField === index ? (
+                    <Tooltip title="Save Requirement">
+                      <Button
+                        variant="outlined"
+                        color="primary"
+                        onClick={() => {
+                          setEditingField(-1);
+                          setIsEditing(false); // CANT SUBMIT IF NOT SAVE
+                        }}
+                      >
+                        Save
+                      </Button>
+                    </Tooltip>
+                  ) : (
+                    <Tooltip title="Edit Requirement">
+                      <Button
+                        variant="outlined"
+                        color="primary"
+                        onClick={() => {
+                          setEditingField(index);
+                          setIsEditing(true);
+                        }}
+                      >
+                        Edit
+                      </Button>
+                    </Tooltip>
+                  )}
+                  {/* DELETE REQUIREMENT */}
+                  <DeleteRequirementButton
+                    requirementId={req.id}
+                    badgeId={badgeId}
+                    onDelete={() => handleDeleteRequirement(req.id)}
+                  />
+                </CardActions>
+              </Card>
+            </div>
+          ))}
+        </div>
         {/* Add Requirement Form */}
         {addingRequirement && (
           <AddRequirementForm
@@ -215,40 +264,50 @@ const EditStep2 = ({ setCurrentStep, badgeId }) => {
 
         {/* Add Button */}
         {!addingRequirement && (
-          <Tooltip title="Add Requirement">
-            <Button
-              variant="outlined"
-              color="primary"
-              onClick={() => setAddingRequirement(true)}
-            >
-              Add
-            </Button>
-          </Tooltip>
+          <div style={{ position: "fixed", bottom: "16px", left: "100px" }}>
+            <Tooltip title="Add Requirement">
+              <Fab color="primary" onClick={() => setAddingRequirement(true)}>
+                +
+              </Fab>
+            </Tooltip>
+          </div>
         )}
-        <br></br>
-        <Tooltip title="Submit">
-          <Button
-            className="button"
-            type="submit"
-            variant="outlined"
-            color="primary"
-            disabled={isEditing}
-          >
-            Finish
-          </Button>
-        </Tooltip>
-      </form>
-      {isLoading && (
+
         <div
           style={{
             display: "flex",
-            justifyContent: "center",
+            justifyContent: "flex-end",
             marginTop: "16px"
           }}
         >
-          <CircularProgress />
+          <div style={{ position: "fixed", bottom: "16px", right: "16px" }}>
+            <Tooltip title="Submit">
+              <Button
+                className="button"
+                type="submit"
+                variant="outlined"
+                color="primary"
+                disabled={isEditing}
+              >
+                Finish
+              </Button>
+            </Tooltip>
+          </div>
         </div>
-      )}
+      </form>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          marginTop: "16px"
+        }}
+      >
+        {areRequirementsEmpty && (
+          <Alert variant="outlined" severity="info" style={{ width: "50%" }}>
+            All requirements have been deleted!
+          </Alert>
+        )}
+      </div>
     </>
   );
 };

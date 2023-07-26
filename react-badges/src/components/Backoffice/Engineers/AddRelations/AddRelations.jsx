@@ -6,7 +6,7 @@ import {
   GET_MANAGERS_BY_ENGINEER
 } from "../../../../containers/state/EngineersQueries";
 import { useQuery, useMutation } from "@apollo/client";
-import { Button, Checkbox, FormControlLabel } from "@mui/material";
+import { Button, Checkbox, FormControlLabel, Alert } from "@mui/material";
 
 const AddRelations = () => {
   const [managerIds, setManagerIds] = useState([]);
@@ -95,7 +95,9 @@ const AddRelations = () => {
           );
         })
       ) : (
-        <p>No managers available</p>
+        <Alert variant="outlined" severity="info">
+          No managers available
+        </Alert>
       )}
       <Button onClick={handleSubmit} color="success" variant="contained">
         Submit

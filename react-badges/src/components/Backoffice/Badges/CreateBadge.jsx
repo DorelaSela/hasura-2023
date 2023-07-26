@@ -4,7 +4,9 @@ import {
   CardContent,
   TextField,
   Typography,
-  Box
+  Box,
+  Snackbar,
+  Alert
 } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useMutation } from "@apollo/client";
@@ -39,7 +41,6 @@ const CreateBadge = () => {
           id: data?.insert_badges_definitions?.returning[0]?.id
         }
       });
-
       navigate("/badges");
     }
   }, [data]);
@@ -57,6 +58,10 @@ const CreateBadge = () => {
     });
   };
 
+  const handleCloseSnackbar = () => {
+    setOpenSnackbar(false);
+  };
+
   if (loading) {
     return <p>Loading...</p>;
   }
@@ -66,59 +71,96 @@ const CreateBadge = () => {
   }
 
   return (
-    <Card sx={{ padding: "16px", marginBottom: "16px", margin: "16px" }}>
-      <CardContent>
-        <Typography sx={{ marginBottom: "8px" }} variant="h1">
-          Create Badge
-        </Typography>
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: "column",
-              gap: "8px",
-              justifyContent: "space-evenly"
-            }}
-          >
-            <TextField
-              label="Title"
-              name="title"
-              {...register("title", {
-                required: true
-              })}
-              sx={{ marginBottom: "8px" }}
-            />
-            <TextField
-              label="Description"
-              name="description"
-              {...register("description", {
-                required: true
-              })}
-              sx={{ marginBottom: "8px" }}
-            />
-            <TextField
-              label="Requirement Title"
-              name="requirementTitle"
-              {...register("requirementTitle", {
-                required: true
-              })}
-              sx={{ marginBottom: "8px" }}
-            />
-            <TextField
-              label="Requirement Title"
-              name="requirementDescription"
-              {...register("requirementDescription", {
-                required: true
-              })}
-              sx={{ marginBottom: "8px" }}
-            />
-            <Box>
-              <Button type="submit">Add</Button>
-            </Box>
-          </Box>
-        </form>
-      </CardContent>
-    </Card>
+    <>
+      <Box
+        display="flex"
+        justifyContent="center"
+        alignItems="center"
+        height="60vh" // Adjust the height as needed
+      >
+        <Card
+          sx={{
+            padding: "16px",
+            marginBottom: "16px",
+            width: "50%"
+          }}
+        >
+          <CardContent>
+            <Typography sx={{ marginBottom: "8px" }} variant="h1">
+              Create Badge
+            </Typography>
+            <form onSubmit={handleSubmit(onSubmit)}>
+              <Box
+                sx={{
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: "8px",
+                  justifyContent: "space-evenly"
+                }}
+              >
+                <TextField
+                  label="Title"
+                  name="title"
+                  {...register("title", {
+                    required: "Title is required"
+                  })}
+                  sx={{ marginBottom: "8px" }}
+                />
+                {errors.title && (
+                  <Typography variant="body2" color="error">
+                    {errors.title.message}
+                  </Typography>
+                )}
+                <TextField
+                  label="Description"
+                  name="description"
+                  {...register("description", {
+                    required: "Description is required"
+                  })}
+                  sx={{ marginBottom: "8px" }}
+                />
+                {errors.description && (
+                  <Typography variant="body2" color="error">
+                    {errors.description.message}
+                  </Typography>
+                )}
+                <TextField
+                  label="Requirement Title"
+                  name="requirementTitle"
+                  {...register("requirementTitle", {
+                    required: "Requirement Title is required"
+                  })}
+                  sx={{ marginBottom: "8px" }}
+                />
+                {errors.requirementTitle && (
+                  <Typography variant="body2" color="error">
+                    {errors.requirementTitle.message}
+                  </Typography>
+                )}
+                <TextField
+                  label="Requirement Description"
+                  name="requirementDescription"
+                  {...register("requirementDescription", {
+                    required: "Requirement Description is required"
+                  })}
+                  sx={{ marginBottom: "8px" }}
+                />
+                {errors.requirementDescription && (
+                  <Typography variant="body2" color="error">
+                    {errors.requirementDescription.message}
+                  </Typography>
+                )}
+                <Box display="flex" justifyContent="center">
+                  {" "}
+                  {/* Center the button */}
+                  <Button type="submit">Add</Button>
+                </Box>
+              </Box>
+            </form>
+          </CardContent>
+        </Card>
+      </Box>
+    </>
   );
 };
 

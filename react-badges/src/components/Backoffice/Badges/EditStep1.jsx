@@ -1,4 +1,4 @@
-import { Button, TextField, Tooltip } from "@mui/material";
+import { Card, CardContent, Button, Tooltip, TextField } from "@mui/material";
 import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useMutation, useQuery } from "@apollo/client";
@@ -65,36 +65,38 @@ const EditStep1 = ({ setCurrentStep, badgeId }) => {
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
-          maxWidth: "200px",
-          margin: "auto"
+          justifyContent: "center",
+          height: "50vh"
         }}
       >
         <TextField
           label="Title"
           name="title"
           multiline
-          rows={1}
+          rows={2}
           {...register("title", { required: true })}
-          style={{ marginBottom: "16px", width: "100%" }}
+          style={{ marginBottom: "16px", width: "50%" }}
         />
         <TextField
           label="Description"
           name="description"
           multiline
-          rows={4}
+          rows={6}
           {...register("description", { required: true })}
-          style={{ marginBottom: "16px", width: "100%" }}
+          style={{ marginBottom: "16px", width: "50%" }}
         />
-        <Tooltip title="Next">
-          <Button
-            className="button"
-            type="submit"
-            variant="outlined"
-            color="primary"
-          >
-            Next
-          </Button>
-        </Tooltip>
+        <div style={{ position: "fixed", bottom: "16px", right: "16px" }}>
+          <Tooltip title="Next">
+            <Button
+              className="button"
+              type="submit"
+              variant="outlined"
+              color="primary"
+            >
+              Next
+            </Button>
+          </Tooltip>
+        </div>
       </form>
     </>
   );

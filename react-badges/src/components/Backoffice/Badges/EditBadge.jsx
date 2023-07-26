@@ -54,31 +54,36 @@ const EditBadge = () => {
   }
 
   return (
-    // <Card sx={{ padding: "16px", marginBottom: "16px", margin: "16px" }}>
     <CardContent>
-      <Typography sx={{ marginBottom: "8px" }} variant="h1">
-        Edit Badge - Requirements
-      </Typography>
       <Box
         sx={{
           display: "flex",
           flexDirection: "column",
           gap: "8px",
-          justifyContent: "space-evenly"
+          justifyContent: "space-evenly",
+          alignItems: "center"
         }}
       >
-        <Stepper activeStep={currentStep - 1}>
-          <Step>
+        <Typography
+          sx={{ marginBottom: "16px", marginTop: "20px" }}
+          variant="h1"
+        >
+          Edit Badge - Requirements
+        </Typography>
+        <Stepper
+          activeStep={currentStep - 1}
+          sx={{ marginBottom: "16px", width: "80%" }}
+        >
+          <Step sx={{ "& .MuiStepLabel-label": { fontSize: "14px" } }}>
             <StepLabel>Edit Badge </StepLabel>
           </Step>
-          <Step>
+          <Step sx={{ "& .MuiStepLabel-label": { fontSize: "14px" } }}>
             <StepLabel>Edit Requirements</StepLabel>
           </Step>
         </Stepper>
-        {showStep(currentStep)}
       </Box>
+      {showStep(currentStep)}
     </CardContent>
-    // </Card>
   );
 };
 

@@ -1,7 +1,10 @@
 import { Button, Tooltip } from "@mui/material";
 import React from "react";
 import { useMutation } from "@apollo/client";
-import { DELETE_REQUIREMENT, LOAD_BADGES } from "../../../containers/state/BadgesQueries";
+import {
+  DELETE_REQUIREMENT,
+  LOAD_BADGES
+} from "../../../containers/state/BadgesQueries";
 
 const DeleteRequirementButton = ({ requirementId, badgeId, onDelete }) => {
   const [deleteRequirement] = useMutation(DELETE_REQUIREMENT, {
@@ -24,8 +27,8 @@ const DeleteRequirementButton = ({ requirementId, badgeId, onDelete }) => {
 
   return (
     <Tooltip title="Remove Requirement">
-      <Button variant="outlined" color="primary" onClick={handleDelete}>
-        -
+      <Button variant="outlined" color="secondary" onClick={handleDelete}>
+        Remove
       </Button>
     </Tooltip>
   );

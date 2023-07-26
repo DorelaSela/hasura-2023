@@ -6,7 +6,7 @@ import {
   GET_ENGINEERS_BY_MANAGER
 } from "../../../../containers/state/ManagersQueries";
 import { useNavigate } from "react-router-dom";
-import { Button, Checkbox, FormControlLabel } from "@mui/material";
+import { Button, Checkbox, FormControlLabel, Alert } from "@mui/material";
 import { useParams } from "react-router-dom";
 
 const AddRelation = () => {
@@ -76,7 +76,7 @@ const AddRelation = () => {
   return (
     <div className="add-relation">
       <h2>Available Engineers</h2>
-      {filteredEngineers ? (
+      {filteredEngineers && filteredEngineers.length > 0 ? (
         filteredEngineers.map((record) => {
           const isDifferentManager = parseInt(managerId) !== record.id;
           if (!isDifferentManager) {
@@ -97,7 +97,9 @@ const AddRelation = () => {
           );
         })
       ) : (
-        <p>No engineers available</p>
+        <Alert variant="outlined" severity="info">
+          No engineers available
+        </Alert>
       )}
       <Button onClick={handleSubmit} variant="contained" color="success">
         Submit

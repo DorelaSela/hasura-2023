@@ -4,7 +4,7 @@ import {
   LOAD_BADGES,
   DELETE_BADGE
 } from "../../../containers/state/BadgesQueries";
-import { Box, Button, Card, Typography, Fab } from "@mui/material";
+import { Box, Button, Card, Typography, Fab, Alert } from "@mui/material";
 import { Link, useNavigate } from "react-router-dom";
 
 const Badges = () => {
@@ -14,6 +14,8 @@ const Badges = () => {
   const [requirement, setRequirements] = useState([]);
   const [deleteBadge] = useMutation(DELETE_BADGE);
   const { data, loading, error } = useQuery(LOAD_BADGES);
+  const [areRequirementsEmpty, setAreRequirementsEmpty] = useState(false);
+  const [allBadgesDeleted, setAllBadgesDeleted] = useState(false);
 
   useEffect(() => {
     if (data && data?.badges_versions_last) {
@@ -33,6 +35,14 @@ const Badges = () => {
         initialVisibility[badge.id] = false;
       });
       setShowRequirements(initialVisibility);
+
+      if (badgesWithRequirements.length === 0) {
+        setAllBadgesDeleted(true);
+      } else {
+        setAllBadgesDeleted(false);
+      }
+    } else {
+      setAllBadgesDeleted(true);
     }
   }, [data, data?.badges_versions_last]);
 
@@ -43,7 +53,7 @@ const Badges = () => {
       },
       refetchQueries: [{ query: LOAD_BADGES }]
     })
-      .then((result) => {
+      .then(() => {
         console.log("Badge deleted successfully:");
       })
       .catch((error) => {
@@ -56,10 +66,22 @@ const Badges = () => {
   };
 
   const toggleRequirements = (id) => {
-    setShowRequirements((prevState) => ({
-      ...prevState,
-      [id]: !prevState[id]
-    }));
+    const badgeRequirements = badges.find(
+      (badge) => badge.id === id
+    )?.requirements;
+    if (!badgeRequirements || badgeRequirements.length === 0) {
+      setAreRequirementsEmpty(true);
+    } else {
+      setShowRequirements((prevState) => ({
+        ...prevState,
+        [id]: !prevState[id]
+      }));
+      setRequirements((prevState) => ({
+        ...prevState,
+        [id]: !prevState[id]
+      }));
+      setAreRequirementsEmpty(false);
+    }
   };
 
   if (loading) {
@@ -71,74 +93,113 @@ const Badges = () => {
   }
 
   return (
-    <div>
-      <Box>
-        {badges &&
-          badges?.map((badge, index) => {
-            return (
-              <Card
-                key={index}
-                sx={{
-                  padding: "16px",
-                  marginBottom: "16px",
-                  marginTop: "16px",
-                  marginLeft: "16px",
-                  marginRight: "16px"
-                }}
+    <Box
+      display="flex"
+      justifyContent="center"
+      alignItems="center"
+      flexDirection="column"
+      flexBasis="50%"
+    >
+      {allBadgesDeleted && (
+        <Alert variant="outlined" severity="info">
+          There are no badges available.
+        </Alert>
+      )}
+      {badges &&
+        badges?.map((badge, index) => {
+          return (
+            <Card
+              key={index}
+              sx={{
+                padding: "16px",
+                marginBottom: "16px",
+                marginTop: "16px",
+                marginLeft: "16px",
+                width: "55%",
+                marginRight: "16px",
+                display: "flex",
+                flexDirection: "column",
+                gap: "8px",
+                alignItems: "center" // Center the items inside the card
+              }}
+            >
+              <Box
+                display="flex"
+                flexDirection="column"
+                gap="8px"
+                justifyContent="center"
+                alignItems="center"
               >
-                <Box
-                  sx={{
-                    display: "flex",
-                    flexDirection: "column",
-                    gap: "8px",
-                    justifyContent: "space-evenly"
-                  }}
+                <Typography variant="h1"> {badge.title}</Typography>
+                <Typography>{badge.description}</Typography>
+              </Box>
+              <Box
+                display="flex"
+                justifyContent="center"
+                gap="8px"
+                marginTop="16px"
+              >
+                <Button
+                  onClick={() => deleteBadgeHandler(badge.id)}
+                  variant="outlined"
+                  color="secondary"
                 >
-                  <Typography variant="h1"> {badge.title}</Typography>
-                  <Typography>{badge.description}</Typography>
-                </Box>
-                <Button onClick={() => deleteBadgeHandler(badge.id)}>
                   Delete
                 </Button>
-                <Button onClick={() => handleEditClick(badge.id)}>Edit</Button>
-                <Button onClick={() => toggleRequirements(badge.id)}>
-                  {requirement[badge.badgeId]
+                <Button
+                  onClick={() => handleEditClick(badge.id)}
+                  variant="outlined"
+                  color="primary"
+                >
+                  Edit
+                </Button>
+                <Button
+                  onClick={() => toggleRequirements(badge.id)}
+                  variant="outlined"
+                  color="primary"
+                >
+                  {requirement[badge.id]
                     ? "Hide Requirements"
                     : "Show Requirements"}
                 </Button>
-                {showRequirements[badge.id] && (
-                  <div>
-                    <Typography variant="h2">Requirements:</Typography>
-                    <ol>
-                      {badge.requirements
-                        ?.sort((a, b) => a.id - b.id) // Sort the requirements by requirement.id
-                        .map((requirement, index) => (
-                          <li key={index}>
-                            <Typography>{requirement.title}</Typography>
-                            <Typography>{requirement.description}</Typography>
-                          </li>
-                        ))}
-                    </ol>
-                  </div>
-                )}
-              </Card>
-            );
-          })}
-        <Fab
-          component={Link}
-          to="/create"
-          color="primary"
-          aria-label="add"
-          style={{
-            position: "fixed",
-            bottom: "16px",
-            right: "16px"
-          }}
-        >
-          <h1>+</h1>
-        </Fab>
-      </Box>
-    </div>
+              </Box>
+              {showRequirements[badge.id] && (
+                <div>
+                  <Typography variant="h2">Requirements:</Typography>
+                  <ol>
+                    {badge.requirements
+                      ?.sort((a, b) => a.id - b.id) // Sort the requirements by requirement.id
+                      .map((requirement, index) => (
+                        <li key={index}>
+                          <Typography>{requirement.title}</Typography>
+                          <Typography>{requirement.description}</Typography>
+                        </li>
+                      ))}
+                  </ol>
+                  {areRequirementsEmpty && (
+                    <Alert variant="outlined" severity="info">
+                      There are no requirements for this badge.
+                    </Alert>
+                  )}
+                </div>
+              )}
+            </Card>
+          );
+        })}
+      <Fab
+        component={Link}
+        to="/create"
+        color="primary"
+        aria-label="add"
+        style={{
+          position: "fixed",
+          bottom: "16px",
+          right: "16px"
+        }}
+      >
+        <h1>+</h1>
+      </Fab>
+    </Box>
   );
 };
 

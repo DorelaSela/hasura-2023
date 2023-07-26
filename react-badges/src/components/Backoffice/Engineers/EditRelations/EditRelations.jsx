@@ -12,7 +12,8 @@ import {
   FormControl,
   InputLabel,
   MenuItem,
-  Select
+  Select,
+  Alert
 } from "@mui/material";
 import { useParams, useNavigate } from "react-router-dom";
 
@@ -97,7 +98,7 @@ const EditRelations = () => {
       <h2>Edit Relations</h2>
       <h3>Engineer: {engineer.name}</h3>
       <h3>Current Manager: {currentManager?.managers[0].name}</h3>
-      {filteredManagers.length > 0 ? (
+      {filteredManagers && filteredManagers.length > 0 ? (
         <div>
           <h3>Choose a new Manager:</h3>
           <FormControl fullWidth variant="outlined">
@@ -123,7 +124,9 @@ const EditRelations = () => {
           </FormControl>
         </div>
       ) : (
-        <h2>No managers available</h2>
+        <Alert variant="outlined" severity="info">
+          No managers available
+        </Alert>
       )}
       <Button
         variant="contained"
