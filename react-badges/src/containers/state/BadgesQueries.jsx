@@ -121,6 +121,7 @@ export const INSERT_REQUIREMENT_MUTATION = gql`
     ) {
       affected_rows
       returning {
+        id
         badge_id
         description
         title
