@@ -76,10 +76,10 @@ const AddManagers = () => {
     if (engineerIds.length > 0) {
       const uniqueEngineerIds = engineerIds.filter(
         (engineerId) =>
-          !r1.data.engineers.some(
+          !r1.data?.engineers?.some(
             (engineer) =>
               engineer.id === engineerId &&
-              engineer.relations.some((relation) => relation.managerId === id)
+              engineer?.relations?.some((relation) => relation.managerId === id)
           )
       );
       uniqueEngineerIds.forEach((engineerId) => {
@@ -133,13 +133,16 @@ const AddManagers = () => {
           <h2>Available Engineers</h2>
           {r1.data.engineers.map((record) => (
             <div key={record.id}>
-              <input
-                type="checkbox"
-                id={record.id}
-                value={record.id}
-                onChange={(e) => handleCheckboxChange(e.target.value)}
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={engineerIds.includes(record.id)}
+                    onChange={() => handleCheckboxChange(record.id)}
+                    name={record.name}
+                  />
+                }
+                label={record.name}
               />
-              <label htmlFor={record.id}>{record.name}</label>
             </div>
           ))}
           <Button variant="contained" onClick={handleSubmit}>

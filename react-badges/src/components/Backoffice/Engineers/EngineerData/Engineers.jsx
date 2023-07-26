@@ -16,7 +16,9 @@ const Engineers = () => {
   const [deleteRelationEngineers] = useMutation(DELETE_ENGINEERS, {
     refetchQueries: [{ query: LOAD_ENGINEERS }]
   });
-  const [deleteRelations] = useMutation(DELETE_RELATIONS);
+  const [deleteRelations] = useMutation(DELETE_RELATIONS, {
+    refetchQueries: [{ query: LOAD_ENGINEERS }]
+  });
   const navigate = useNavigate();
 
   if (error) {
