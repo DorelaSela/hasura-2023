@@ -75,15 +75,19 @@ const EditRelations = () => {
   );
   console.log(filteredManagers);
 
-  const handleEditRelations = async () => {
-    editRelations({
-      variables: {
-        idE: parseInt(engineerId),
-        oldM: parseInt(managerId),
-        newM: parseInt(selectedManagerId)
-      }
-    });
-    navigate("/engineers");
+  const handleEditRelations = () => {
+    if (!filteredManagers) {
+      editRelations({
+        variables: {
+          idE: parseInt(engineerId),
+          oldM: parseInt(managerId),
+          newM: parseInt(selectedManagerId)
+        }
+      });
+      navigate("/engineers");
+    } else {
+      navigate("/engineers");
+    }
   };
 
   console.log(selectedManagerId);
