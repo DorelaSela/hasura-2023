@@ -17,7 +17,6 @@ import {
 import { useParams, useNavigate } from "react-router-dom";
 
 const EditRelations = () => {
-  const [editRelations, { loading, error }] = useMutation(EDIT_RELATIONS);
   const { data: engineersData } = useQuery(LOAD_ENGINEERS);
   const { data: managersData, loading: managerLoading } =
     useQuery(GET_MANAGERS);
@@ -31,6 +30,14 @@ const EditRelations = () => {
     variables: {
       id: parseInt(managerId)
     }
+  });
+  const [editRelations, { loading, error }] = useMutation(EDIT_RELATIONS, {
+    refetchQueries: [
+      { query: LOAD_ENGINEERS },
+      { query: GET_MANAGERS },
+      { query: GET_MANAGERS_WITH_ID, variables: { id: parseInt(managerId) } },
+      { query: USER_RELATION, variables: { id: parseInt(engineerId) } }
+    ]
   });
   const navigate = useNavigate();
   const [selectedManagerId, setSelectedManagerId] = useState([]);
@@ -68,7 +75,7 @@ const EditRelations = () => {
   );
   console.log(filteredManagers);
 
-  const handleEditRelations = () => {
+  const handleEditRelations = async () => {
     editRelations({
       variables: {
         idE: parseInt(engineerId),
