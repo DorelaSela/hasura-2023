@@ -76,7 +76,7 @@ const EditRelations = () => {
   console.log(filteredManagers);
 
   const handleEditRelations = () => {
-    if (filteredManagers.length > 0) {
+    if (filteredManagers.length > 0 && !selectedManagerId) {
       editRelations({
         variables: {
           idE: parseInt(engineerId),
