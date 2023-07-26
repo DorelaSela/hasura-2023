@@ -1,7 +1,3 @@
-h2 {
-  font-style: italic;
-}
-
 .custom-table {
   padding-left: 3rem;
 }
@@ -12,7 +8,8 @@ h2 {
 }
 
 .edit-textfield {
-  padding: 3rem;
+  padding: 15rem;
+  margin-top: -10rem;
 }
 
 .manager-select {
@@ -26,7 +23,7 @@ h2 {
 .create-textfield {
   position: relative;
   margin-top: 2rem;
-  margin-left: 0.5rem;
+  margin-left: 20rem;
 }
 
 .next-button {

@@ -19,7 +19,6 @@ import { useParams, useNavigate } from "react-router-dom";
 const EditRelations = () => {
   const [editRelations, { loading, error }] = useMutation(EDIT_RELATIONS);
   const { data: engineersData } = useQuery(LOAD_ENGINEERS);
-
   const { data: managersData, loading: managerLoading } =
     useQuery(GET_MANAGERS);
   const { id: engineerId } = useParams();
@@ -27,7 +26,7 @@ const EditRelations = () => {
   const {
     data: currentManager,
     loading: currentManagerLoading,
-    error: errorManager
+    error: errorManagers
   } = useQuery(GET_MANAGERS_WITH_ID, {
     variables: {
       id: parseInt(managerId)
@@ -36,20 +35,19 @@ const EditRelations = () => {
   const navigate = useNavigate();
   const [selectedManagerId, setSelectedManagerId] = useState([]);
 
-  console.log(currentManager);
-
   const { data: userData, loading: userLoading } = useQuery(USER_RELATION, {
     variables: {
       id: parseInt(engineerId)
     }
   });
+  console.log(currentManager);
 
   if (userLoading || managerLoading || currentManagerLoading || loading) {
     return <p>Loading...</p>;
   }
 
-  if (error || errorManager) {
-    return <p>Error: {error?.message || errorManager?.message}</p>;
+  if (error || errorManagers) {
+    return <p>Error: {error?.message || errorManagers?.message}</p>;
   }
 
   const engineer = engineersData?.engineers?.find(
@@ -118,7 +116,6 @@ const EditRelations = () => {
       )}
       <Button
         variant="contained"
-        color="success"
         onClick={handleEditRelations}
         className="button-save"
       >

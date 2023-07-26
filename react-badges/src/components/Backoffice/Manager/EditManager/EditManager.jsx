@@ -23,8 +23,10 @@ const EditManager = () => {
   );
 
   useEffect(() => {
-    setName(manager?.name);
-  }, [manager?.name]);
+    if (data?.managers && manager?.name) {
+      setName(manager?.name);
+    }
+  }, [data?.managers, manager]);
 
   const handleEdit = () => {
     editManagersName({

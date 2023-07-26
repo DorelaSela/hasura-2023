@@ -10,7 +10,7 @@ import { Button, Checkbox, FormControlLabel } from "@mui/material";
 
 const AddRelations = () => {
   const [managerIds, setManagerIds] = useState([]);
-  const [addRelation, { loading, error }] = useMutation(ADD_RELATIONS);
+  const [addRelation] = useMutation(ADD_RELATIONS);
   const { id: engineerId } = useParams();
   const navigate = useNavigate();
   const [
