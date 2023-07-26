@@ -110,7 +110,7 @@ export const LOAD_REQUIREMENT_ID = gql`
   }
 `;
 
-const INSERT_REQUIREMENT_MUTATION = gql`
+export const INSERT_REQUIREMENT_MUTATION = gql`
   mutation InsertRequirement(
     $description: String!
     $title: String!

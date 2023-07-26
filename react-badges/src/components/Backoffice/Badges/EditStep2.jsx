@@ -6,7 +6,8 @@ import {
   LOAD_BADGE,
   UPDATE_REQUIREMENTS_MUTATION,
   LOAD_BADGES,
-  DELETE_REQUIREMENT
+  DELETE_REQUIREMENT,
+  INSERT_REQUIREMENT_MUTATION
 } from "../../../containers/state/BadgesQueries";
 import { useNavigate } from "react-router-dom";
 
@@ -18,11 +19,17 @@ const EditStep2 = ({ setCurrentStep, badgeId }) => {
   const [requirements, setRequirements] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
+  const [addingRequirement, setAddingRequirement] = useState(false);
+  const [newTitle, setNewTitle] = useState("");
+  const [newDescription, setNewDescription] = useState("");
 
   const [updateRequirements] = useMutation(UPDATE_REQUIREMENTS_MUTATION, {
     refetchQueries: [{ query: LOAD_BADGES }]
   });
   const [deleteRequirements] = useMutation(DELETE_REQUIREMENT, {
+    refetchQueries: [{ query: LOAD_BADGES }]
+  });
+  const [addRequirements] = useMutation(INSERT_REQUIREMENT_MUTATION, {
     refetchQueries: [{ query: LOAD_BADGES }]
   });
 
@@ -46,6 +53,29 @@ const EditStep2 = ({ setCurrentStep, badgeId }) => {
       }
     }
   }, [data, setValue]);
+
+  const addNewRequirement = async () => {
+    try {
+      const { data } = await addRequirements({
+        variables: {
+          badgeId: badgeId,
+          title: newTitle,
+          description: newDescription
+        }
+      });
+      const newRequirementId =
+        data.insert_requirements_definitions.returning[0].id;
+      setRequirements((prevRequirements) => [
+        ...prevRequirements,
+        { id: newRequirementId, title: newTitle, description: newDescription }
+      ]);
+      setAddingRequirement(false);
+      setNewTitle("");
+      setNewDescription("");
+    } catch (error) {
+      console.log("Error adding new requirement:", error);
+    }
+  };
 
   const deleteRequirement = async (id) => {
     try {
@@ -194,6 +224,66 @@ const EditStep2 = ({ setCurrentStep, badgeId }) => {
             </Tooltip>
           </React.Fragment>
         ))}
+        {addingRequirement && (
+          <>
+            <Controller
+              name="newRequirementTitle"
+              control={control}
+              defaultValue=""
+              rules={{ required: true }}
+              render={({ field }) => (
+                <TextField
+                  label="New Requirement Title"
+                  multiline
+                  rows={1}
+                  {...field}
+                  value={newTitle}
+                  onChange={(e) => setNewTitle(e.target.value)}
+                  style={{ marginBottom: "16px", width: "100%" }}
+                />
+              )}
+            />
+            <Controller
+              name="newRequirementDescription"
+              control={control}
+              defaultValue=""
+              rules={{ required: true }}
+              render={({ field }) => (
+                <TextField
+                  label="New Requirement Description"
+                  multiline
+                  rows={2}
+                  {...field}
+                  value={newDescription}
+                  onChange={(e) => setNewDescription(e.target.value)}
+                  style={{ marginBottom: "16px", width: "100%" }}
+                />
+              )}
+            />
+            <Tooltip title="Add Requirement">
+              <Button
+                variant="outlined"
+                color="primary"
+                onClick={addNewRequirement}
+              >
+                Add
+              </Button>
+            </Tooltip>
+          </>
+        )}
+
+        {/* Add Button */}
+        {!addingRequirement && (
+          <Tooltip title="Add Requirement">
+            <Button
+              variant="outlined"
+              color="primary"
+              onClick={() => setAddingRequirement(true)}
+            >
+              Add
+            </Button>
+          </Tooltip>
+        )}
         <br></br>
         <Tooltip title="Submit">
           <Button
