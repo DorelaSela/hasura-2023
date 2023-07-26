@@ -1,42 +1,29 @@
 import { Button, TextField, Tooltip, CircularProgress } from "@mui/material";
 import React, { useState, useEffect } from "react";
-import { useForm, useFieldArray } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 import { useMutation, useQuery } from "@apollo/client";
 import {
   LOAD_BADGE,
   UPDATE_REQUIREMENTS_MUTATION,
-  LOAD_REQUIREMENT_ID,
   LOAD_BADGES,
   DELETE_REQUIREMENT
 } from "../../../containers/state/BadgesQueries";
 import { useNavigate } from "react-router-dom";
-import { getVariableValues } from "graphql";
 
 const EditStep2 = ({ setCurrentStep, badgeId }) => {
-  const {
-    register,
-    handleSubmit,
-    setValue,
-    getValues,
-    formState: { errors },
-    control
-  } = useForm();
+  const { handleSubmit, control, setValue } = useForm();
   const navigate = useNavigate();
 
-  const [requirementId, setRequirementId] = useState([]);
+  const [editingField, setEditingField] = useState(-1);
+  const [requirements, setRequirements] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
 
-  const [UpdateRequirements] = useMutation(UPDATE_REQUIREMENTS_MUTATION, {
+  const [updateRequirements] = useMutation(UPDATE_REQUIREMENTS_MUTATION, {
     refetchQueries: [{ query: LOAD_BADGES }]
   });
-  const [isLoading, setIsLoading] = useState(false);
   const [deleteRequirements] = useMutation(DELETE_REQUIREMENT, {
     refetchQueries: [{ query: LOAD_BADGES }]
-  });
-
-  const { data: reqData, loading: reqLoading } = useQuery(LOAD_REQUIREMENT_ID, {
-    variables: {
-      badge_id: badgeId
-    }
   });
 
   const { data, loading } = useQuery(LOAD_BADGE, {
@@ -46,140 +33,175 @@ const EditStep2 = ({ setCurrentStep, badgeId }) => {
   });
 
   useEffect(() => {
-    if (reqData && reqData.requirements_definitions) {
-      const ids = reqData?.requirements_definitions?.map((req) => req.id);
-      setRequirementId(ids);
-    }
-  }, [reqData?.requirements_definitions]);
-
-  console.log(requirementId);
-
-  const { fields, remove, append } = useFieldArray({
-    control, // Replace "control" with your actual form control object
-    name: "requirements"
-  });
-
-  useEffect(() => {
     if (data && data.badges_versions_last) {
       const { requirements } = data?.badges_versions_last[0];
       if (requirements) {
         const parsedRequirements = JSON.parse(requirements);
-        parsedRequirements.forEach((requirement, index) => {
-          setValue(`requirements[${index}].title`, requirement?.title);
-          setValue(
-            `requirements[${index}].description`,
-            requirement?.description
-          );
+        setRequirements(parsedRequirements);
+        parsedRequirements.forEach((req, index) => {
+          setValue(`requirements[${index}].title`, req.title);
+          setValue(`requirements[${index}].description`, req.description);
+          setValue(`requirements[${index}].id`, req.id);
         });
       }
     }
-  }, []);
+  }, [data, setValue]);
 
-  const deleteReq = (id) => {
-    deleteRequirements({
-      variables: {
-        id
-      }
-    });
+  const deleteRequirement = async (id) => {
+    try {
+      await deleteRequirements({
+        variables: {
+          id: parseInt(id),
+          badgeId: badgeId
+        }
+      });
+      setRequirements((prevRequirements) =>
+        prevRequirements.filter((req) => req.id !== id)
+      );
+    } catch (error) {
+      console.log("Error deleting requirement:", error);
+    }
   };
 
-  const secondStepSubmit = async (formData) => {
+  const updateRequirement = async (id, formData) => {
     try {
       setIsLoading(true);
 
-      for (let index = 0; index < requirementId.length; index++) {
-        const id = requirementId[index];
-        const newDescription = formData.requirements[index].description;
-        const newTitle = formData.requirements[index].title;
+      const updatedRequirement = requirements.find((req) => req.id === id);
+      console.log(updatedRequirement);
+      if (updatedRequirement) {
+        updatedRequirement.title = formData.title;
+        updatedRequirement.description = formData.description;
 
-        // Simulate a delay based on the index (500ms for the first item, 1000ms for the second, 1500ms for the third, and so on...)
-        await new Promise((resolve) => setTimeout(resolve, (index + 1) * 1));
-
-        await UpdateRequirements({
+        await updateRequirements({
           variables: {
-            id: id,
+            id: parseInt(id),
             badgeId: badgeId,
-            newDescription: newDescription,
-            newTitle: newTitle
+            newDescription: formData.description,
+            newTitle: formData.title
           }
         });
 
         console.log(`Requirement with id ${id} updated.`);
       }
 
-      console.log("Badge and Requirements updated:", formData);
-      setTimeout(() => {
-        setCurrentStep(2);
-        navigate("/badges");
-      }, 600);
+      setIsLoading(false);
+      setEditingField(-1);
     } catch (error) {
+      setIsLoading(false);
+      console.log("Error updating requirement:", error);
+    }
+  };
+
+  const onSubmit = async (formData) => {
+    try {
+      setIsLoading(true);
+      const formRequirements = formData.requirements;
+      for (let index = 0; index < requirements.length; index++) {
+        const requirement = requirements[index];
+        const formRequirement = formRequirements[index];
+        await updateRequirement(requirement.id, formRequirement);
+      }
+
+      console.log("Badge and Requirements updated:", formData);
+      setIsLoading(false);
+      setCurrentStep(2);
+      navigate("/badges");
+    } catch (error) {
+      setIsLoading(false);
       console.log("Error updating badge and requirements:", error);
     }
   };
 
-  useEffect(() => {
-    append({});
-  }, [append]);
-
-  if (loading || reqLoading) {
+  if (loading) {
     return <p>Loading...</p>;
   }
-  console.log(fields);
+
   return (
     <>
-      <form onSubmit={handleSubmit(secondStepSubmit)}>
-        {fields.map((req, index) => {
-          if (index < fields.length - 1) {
-            return (
-              <React.Fragment key={req.id}>
+      <form onSubmit={handleSubmit(onSubmit)}>
+        {requirements.map((req, index) => (
+          <React.Fragment key={req.id}>
+            <Controller
+              name={`requirements[${index}].title`}
+              control={control}
+              defaultValue={req.title}
+              rules={{ required: true }}
+              render={({ field }) => (
                 <TextField
                   label={`Requirement ${index + 1} Title`}
-                  name={`requirements[${index}].title`}
                   multiline
                   rows={1}
-                  {...register(`requirements[${index}].title`, {
-                    required: true
-                  })}
+                  {...field}
                   style={{ marginBottom: "16px", width: "100%" }}
+                  disabled={editingField !== index}
                 />
+              )}
+            />
+            <Controller
+              name={`requirements[${index}].description`}
+              control={control}
+              defaultValue={req.description}
+              rules={{ required: true }}
+              render={({ field }) => (
                 <TextField
                   label={`Requirement ${index + 1} Description`}
-                  name={`requirements[${index}].description`}
                   multiline
                   rows={2}
-                  {...register(`requirements[${index}].description`, {
-                    required: true
-                  })}
+                  {...field}
                   style={{ marginBottom: "16px", width: "100%" }}
+                  disabled={editingField !== index}
                 />
-                <Tooltip title="Remove Requirement">
-                  <Button
-                    variant="outlined"
-                    color="primary"
-                    onClick={() => {
-                      remove(index);
-                      deleteReq(req.id);
-                    }}
-                  >
-                    -
-                  </Button>
-                </Tooltip>
-              </React.Fragment>
-            );
-          }
-          return null;
-        })}
-        <Tooltip title="Add Requirement" onClick={() => append({})}>
-          <Button variant="outlined" color="primary">
-            Add Requirement
-          </Button>
-        </Tooltip>
+              )}
+            />
+            {/* UPDATE REQUIREMENTS */}
+            {editingField === index ? (
+              <Tooltip title="Save Requirement">
+                <Button
+                  variant="outlined"
+                  color="primary"
+                  onClick={() => {
+                    setEditingField(-1);
+                    setIsEditing(false); // CANT SUBMIT IF NOT SAVE
+                  }}
+                >
+                  Save
+                </Button>
+              </Tooltip>
+            ) : (
+              <Tooltip title="Edit Requirement">
+                <Button
+                  variant="outlined"
+                  color="primary"
+                  onClick={() => {
+                    setEditingField(index);
+                    setIsEditing(true); // CAN SUBMIT WHEN IS SAVE
+                  }}
+                >
+                  Edit
+                </Button>
+              </Tooltip>
+            )}
+            {/* DELETE REQUIREMENT */}
+            <Tooltip title="Remove Requirement">
+              <Button
+                variant="outlined"
+                color="primary"
+                onClick={() => deleteRequirement(req.id)}
+              >
+                -
+              </Button>
+            </Tooltip>
+          </React.Fragment>
+        ))}
+        <br></br>
         <Tooltip title="Submit">
           <Button
             className="button"
             type="submit"
             variant="outlined"
             color="primary"
+            disabled={isEditing}
           >
             Finish
           </Button>

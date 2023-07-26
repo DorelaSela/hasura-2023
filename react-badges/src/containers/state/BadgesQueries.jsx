@@ -130,11 +130,11 @@ const INSERT_REQUIREMENT_MUTATION = gql`
 `;
 
 export const DELETE_REQUIREMENT = gql`
-  mutation MyMutation($id: Int!) {
+  mutation MyMutation($id: Int!, $badgeId: Int!) {
     delete_requirements_definitions(where: { id: { _eq: $id } }) {
       affected_rows
     }
-    create_badge_version(args: { badge_def_id: $id, is_deleted: false }) {
+    create_badge_version(args: { badge_def_id: $badgeId, is_deleted: false }) {
       id
     }
   }
