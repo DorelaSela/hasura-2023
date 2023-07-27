@@ -141,21 +141,18 @@ const Badges = () => {
               >
                 <Button
                   onClick={() => deleteBadgeHandler(badge.id)}
-                  variant="outlined"
                   color="secondary"
                 >
                   Delete
                 </Button>
                 <Button
                   onClick={() => handleEditClick(badge.id)}
-                  variant="outlined"
                   color="primary"
                 >
                   Edit
                 </Button>
                 <Button
                   onClick={() => toggleRequirements(badge.id)}
-                  variant="outlined"
                   color="primary"
                 >
                   {requirement[badge.id]
