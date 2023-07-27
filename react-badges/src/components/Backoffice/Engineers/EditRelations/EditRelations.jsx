@@ -104,7 +104,9 @@ const EditRelations = () => {
           <FormControl fullWidth variant="outlined">
             <InputLabel id="manager-select-label">Select a manager:</InputLabel>
             <Select
-              className="manager-select"
+              style={{
+                width: "30%"
+              }}
               value={selectedManagerId}
               onChange={(e) => setSelectedManagerId(e.target.value)}
               label="Select a manager:"
