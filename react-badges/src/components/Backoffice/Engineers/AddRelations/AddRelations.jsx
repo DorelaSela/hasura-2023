@@ -6,7 +6,15 @@ import {
   GET_MANAGERS_BY_ENGINEER
 } from "../../../../containers/state/EngineersQueries";
 import { useQuery, useMutation } from "@apollo/client";
-import { Button, Checkbox, FormControlLabel, Alert } from "@mui/material";
+import {
+  Card,
+  CardContent,
+  Typography,
+  Box,
+  Button,
+  FormControlLabel,
+  Checkbox
+} from "@mui/material";
 
 const AddRelations = () => {
   const [managerIds, setManagerIds] = useState([]);
@@ -72,37 +80,54 @@ const AddRelations = () => {
   );
 
   return (
-    <div className="add-relation">
-      <h2>Available Managers</h2>
-      {filteredManagers ? (
-        filteredManagers.map((record) => {
-          const isDifferentEngineer = parseInt(engineerId) !== record.id;
-          if (!isDifferentEngineer) {
-            return null;
-          }
-          return (
-            <div key={record.id}>
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    checked={managerIds.includes(record.id)}
-                    onChange={() => handleCheckboxChange(record.id)}
+    <Box
+      sx={{
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        height: "80vh"
+      }}
+    >
+      <Card
+        sx={{
+          width: "30%",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center"
+        }}
+      >
+        <CardContent>
+          <Typography variant="h2">Available Managers</Typography>
+          {filteredManagers ? (
+            filteredManagers.map((record) => {
+              const isDifferentEngineer = parseInt(engineerId) !== record.id;
+              if (!isDifferentEngineer) {
+                return null;
+              }
+              return (
+                <div key={record.id}>
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        checked={managerIds.includes(record.id)}
+                        onChange={() => handleCheckboxChange(record.id)}
+                      />
+                    }
+                    label={record.name}
                   />
-                }
-                label={record.name}
-              />
-            </div>
-          );
-        })
-      ) : (
-        <Alert variant="outlined" severity="info">
-          No managers available
-        </Alert>
-      )}
-      <Button onClick={handleSubmit} color="success" variant="contained">
-        Submit
-      </Button>
-    </div>
+                </div>
+              );
+            })
+          ) : (
+            <p>No managers available</p>
+          )}
+          <Button onClick={handleSubmit} color="success" variant="contained">
+            Submit
+          </Button>
+        </CardContent>
+      </Card>
+    </Box>
   );
 };
 

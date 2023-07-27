@@ -15,7 +15,6 @@ import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
-import "../Backoffice/style/style.css";
 import { GET_ENGINEERS_BY_MANAGER } from "../../containers/state/ManagersQueries";
 import { GET_MANAGERS_BY_ENGINEER } from "../../containers/state/EngineersQueries";
 import { useMutation } from "@apollo/client";
@@ -62,25 +61,28 @@ const TableForm = ({ data, onDelete, dataType, onEdit, onDeleteRelations }) => {
   };
 
   return (
-    <TableContainer className="custom-table">
+    <TableContainer
+      style={{
+        paddingLeft: "3rem"
+      }}
+    >
       <Table aria-label="custom table">
         <TableHead>
           <TableRow>
             <TableCell />
-            <TableCell className="cell-text">Name</TableCell>
-            <TableCell className="cell-text">Delete</TableCell>
-            <TableCell className="cell-text">Edit</TableCell>
+            <TableCell>Name</TableCell>
+            <TableCell>Delete</TableCell>
+            <TableCell>Edit</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
           {data.map((item, index) => (
             <React.Fragment key={item.id}>
               <TableRow>
-                <TableCell className="cell-text">
+                <TableCell>
                   <IconButton
                     aria-label="expand row"
                     size="small"
-                    className="expand-button"
                     onClick={() => handleRowClick(index, item.id)}
                   >
                     {openRows.includes(index) ? (
@@ -90,7 +92,7 @@ const TableForm = ({ data, onDelete, dataType, onEdit, onDeleteRelations }) => {
                     )}
                   </IconButton>
                 </TableCell>
-                <TableCell className="cell-text">{item.name}</TableCell>
+                <TableCell>{item.name}</TableCell>
                 <TableCell>
                   <IconButton color="error" onClick={() => onDelete(item.id)}>
                     <DeleteIcon />

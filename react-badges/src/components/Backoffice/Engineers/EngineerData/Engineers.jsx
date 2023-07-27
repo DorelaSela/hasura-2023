@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Button } from "@mui/material";
+import { Fab } from "@mui/material";
 import { useQuery } from "@apollo/client";
 import {
   LOAD_ENGINEERS,
@@ -72,13 +72,18 @@ const Engineers = () => {
         onEdit={handleEdit}
         onDeleteRelations={handleDeleteRelations}
       />
-      <Button
-        variant="contained"
+
+      <Fab
+        color="primary"
         onClick={handleNavigate}
-        className="createnew-button"
+        style={{
+          position: "fixed",
+          bottom: "16px",
+          right: "16px"
+        }}
       >
-        Create New Engineer
-      </Button>
+        <h1>+</h1>
+      </Fab>
     </div>
   );
 };

@@ -6,7 +6,14 @@ import {
   LOAD_MANAGERS
 } from "../../../../containers/state/ManagersQueries";
 import { useNavigate } from "react-router-dom";
-import { TextField, Button } from "@mui/material";
+import {
+  Card,
+  CardContent,
+  TextField,
+  Typography,
+  Box,
+  Button
+} from "@mui/material";
 import { useParams } from "react-router-dom";
 
 const EditManager = () => {
@@ -47,23 +54,39 @@ const EditManager = () => {
   }
 
   return (
-    <div className="edit-textfield">
-      <br /> <br />
-      <TextField
-        type="text"
-        label="Name"
-        value={name}
-        onChange={(e) => setName(e.target.value)}
-      />
-      <br /> <br />
-      <TextField value={manager?.id} label="ID" disabled />
-      <br /> <br />
-      <TextField value={manager?.is_deleted} label="Is deleted" disabled />
-      <br /> <br />
-      <Button variant="contained" onClick={handleEdit} color="success">
-        Save
-      </Button>
-    </div>
+    <Box
+      display="flex"
+      justifyContent="center"
+      alignItems="center"
+      height="100vh"
+    >
+      <Card sx={{ padding: "16px", width: "400px", textAlign: "center" }}>
+        <CardContent
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            gap: "16px",
+            justifyContent: "center",
+            alignItems: "center"
+          }}
+        >
+          <Typography variant="h5" gutterBottom>
+            Enter Your Name
+          </Typography>
+          <TextField
+            type="text"
+            label="Name"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+          />
+          <TextField value={manager?.id} label="ID" disabled />
+          <TextField value={manager?.is_deleted} label="Is deleted" disabled />
+          <Button variant="contained" onClick={handleEdit} color="success">
+            Save
+          </Button>
+        </CardContent>
+      </Card>
+    </Box>
   );
 };
 

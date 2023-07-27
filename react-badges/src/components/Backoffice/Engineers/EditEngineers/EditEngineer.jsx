@@ -4,7 +4,7 @@ import {
   UPDATE_ENGINEERS,
   LOAD_ENGINEERS
 } from "../../../../containers/state/EngineersQueries";
-import { Button, TextField } from "@mui/material";
+import { Button, TextField, Box, Typography } from "@mui/material";
 import { useNavigate, useParams } from "react-router-dom";
 
 const EditEngineer = () => {
@@ -55,27 +55,38 @@ const EditEngineer = () => {
   })();
 
   return (
-    <div className="edit-textfield">
-      <br />
-      <TextField
-        value={name}
-        type="text"
-        label="Name"
-        onChange={(e) => setName(e.target.value)}
-      />
-      <br /> <br />
-      <TextField value={getEngineerbyId.id} label="ID" disabled />
-      <br /> <br />
-      <TextField
-        value={getEngineerbyId.is_deleted}
-        label="Is deleted"
-        disabled
-      />
-      <br /> <br />
-      <Button onClick={handleSaveEdit} variant="contained" color="success">
-        Save
-      </Button>
-    </div>
+    <Box
+      display="flex"
+      flexDirection="column"
+      alignItems="center"
+      justifyContent="center"
+      height="80vh"
+    >
+      <Typography variant="h1" sx={{ marginBottom: "1rem" }}>
+        Edit Engineers
+      </Typography>
+      <div className="edit-textfield">
+        <br />
+        <TextField
+          value={name}
+          type="text"
+          label="Name"
+          onChange={(e) => setName(e.target.value)}
+        />
+        <br /> <br />
+        <TextField value={getEngineerbyId.id} label="ID" disabled />
+        <br /> <br />
+        <TextField
+          value={getEngineerbyId.is_deleted}
+          label="Is deleted"
+          disabled
+        />
+        <br /> <br />
+        <Button onClick={handleSaveEdit} variant="contained" color="success">
+          Save
+        </Button>
+      </div>
+    </Box>
   );
 };
 

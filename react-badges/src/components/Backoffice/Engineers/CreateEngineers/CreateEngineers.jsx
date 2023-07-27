@@ -8,7 +8,11 @@ import {
   FormControl,
   InputLabel,
   MenuItem,
-  Select
+  Select,
+  Box,
+  Typography,
+  Card,
+  CardContent
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { useQuery, useMutation } from "@apollo/client";
@@ -89,24 +93,28 @@ const CreateEngineers = () => {
   const renderForm = () => {
     if (activeStep === 0) {
       return (
-        <div>
-          <TextField
-            type="text"
-            label="Name"
-            value={name}
-            className="create-textfield"
-            onChange={handleInputChange}
-            error={error}
-            helperText={error ? "Please enter a name" : ""}
-          />
-          <Button
-            onClick={addEngineer}
-            variant="contained"
-            className="next-button"
-          >
-            Next
-          </Button>
-        </div>
+        <Card sx={{ padding: "16px", width: "400px", textAlign: "center" }}>
+          <CardContent>
+            <Typography variant="h5" gutterBottom>
+              Enter Your Name
+            </Typography>
+            <TextField
+              type="text"
+              label="Name"
+              value={name}
+              onChange={handleInputChange}
+              fullWidth
+            />
+            <Button
+              sx={{ marginTop: "16px" }}
+              variant="contained"
+              onClick={addEngineer}
+              color="primary"
+            >
+              Next
+            </Button>
+          </CardContent>
+        </Card>
       );
     } else if (activeStep === 1) {
       return (
@@ -118,7 +126,6 @@ const CreateEngineers = () => {
               value={managers}
               onChange={(e) => setManagers(e.target.value)}
               label="Select a Manager"
-              className="manager-select"
             >
               <MenuItem value="">
                 <em>Select a Manager</em>
@@ -147,22 +154,30 @@ const CreateEngineers = () => {
   };
 
   return (
-    <div>
-      <Stepper
-        alternativeLabel
-        activeStep={activeStep}
-        style={{
-          margin: "1.5rem"
-        }}
+    <>
+      <Box
+        display="flex"
+        flexDirection="column"
+        alignItems="center"
+        justifyContent="center"
       >
-        {steps.map((label) => (
-          <Step key={label}>
-            <StepLabel>{label}</StepLabel>
-          </Step>
-        ))}
-      </Stepper>
-      <form>{renderForm()}</form>
-    </div>
+        <Typography variant="h1" sx={{ marginBottom: "1rem" }}>
+          Create Manager
+        </Typography>
+        <Stepper
+          alternativeLabel
+          activeStep={activeStep}
+          sx={{ marginBottom: "16px", width: "90%" }}
+        >
+          {steps.map((label) => (
+            <Step key={label}>
+              <StepLabel>{label}</StepLabel>
+            </Step>
+          ))}
+        </Stepper>
+        <form>{renderForm()}</form>
+      </Box>
+    </>
   );
 };
 

@@ -6,7 +6,15 @@ import {
   GET_ENGINEERS_BY_MANAGER
 } from "../../../../containers/state/ManagersQueries";
 import { useNavigate } from "react-router-dom";
-import { Button, Checkbox, FormControlLabel, Alert } from "@mui/material";
+import {
+  Button,
+  Checkbox,
+  FormControlLabel,
+  Card,
+  CardContent,
+  Typography,
+  Box
+} from "@mui/material";
 import { useParams } from "react-router-dom";
 
 const AddRelation = () => {
@@ -74,37 +82,52 @@ const AddRelation = () => {
   );
 
   return (
-    <div className="add-relation">
-      <h2>Available Engineers</h2>
-      {filteredEngineers && filteredEngineers.length > 0 ? (
-        filteredEngineers.map((record) => {
-          const isDifferentManager = parseInt(managerId) !== record.id;
-          if (!isDifferentManager) {
-            return null;
-          }
-          return (
-            <div key={record.id}>
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    checked={engineerIds.includes(record.id)}
-                    onChange={() => handleCheckboxChange(record.id)}
+    <Box
+      display="flex"
+      justifyContent="center"
+      alignItems="center"
+      height="100vh"
+    >
+      <Card sx={{ padding: "16px", width: "400px", textAlign: "center" }}>
+        <CardContent
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            gap: "16px",
+            justifyContent: "center",
+            alignItems: "center"
+          }}
+        >
+          <Typography variant="h2">Available Engineers</Typography>
+          {filteredEngineers ? (
+            filteredEngineers.map((record) => {
+              const isDifferentManager = parseInt(managerId) !== record.id;
+              if (!isDifferentManager) {
+                return null;
+              }
+              return (
+                <div key={record.id}>
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        checked={engineerIds.includes(record.id)}
+                        onChange={() => handleCheckboxChange(record.id)}
+                      />
+                    }
+                    label={record.name}
                   />
-                }
-                label={record.name}
-              />
-            </div>
-          );
-        })
-      ) : (
-        <Alert variant="outlined" severity="info">
-          No engineers available
-        </Alert>
-      )}
-      <Button onClick={handleSubmit} variant="contained" color="success">
-        Submit
-      </Button>
-    </div>
+                </div>
+              );
+            })
+          ) : (
+            <p>No engineers available</p>
+          )}
+          <Button onClick={handleSubmit} variant="contained" color="success">
+            Submit
+          </Button>
+        </CardContent>
+      </Card>
+    </Box>
   );
 };
 

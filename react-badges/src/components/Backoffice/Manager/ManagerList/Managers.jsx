@@ -7,7 +7,7 @@ import {
 } from "../../../../containers/state/ManagersQueries";
 import { useNavigate } from "react-router-dom";
 import TableForm from "../../TableForm";
-import { Button } from "@mui/material";
+import { Fab } from "@mui/material";
 
 const Managers = () => {
   const { loading, data, error } = useQuery(LOAD_MANAGERS);
@@ -71,13 +71,19 @@ const Managers = () => {
         onEdit={handleEdit}
         onDeleteRelations={handleDeleteRelation}
       />
-      <Button
-        variant="contained"
+
+      <Fab
+        color="primary"
         onClick={handleNavigate}
         className="createnew-button"
+        style={{
+          position: "fixed",
+          bottom: "16px",
+          right: "16px"
+        }}
       >
-        Create New Manager
-      </Button>
+        <h1>+</h1>
+      </Fab>
     </div>
   );
 };

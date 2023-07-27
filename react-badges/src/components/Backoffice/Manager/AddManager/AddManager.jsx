@@ -7,13 +7,17 @@ import {
 } from "../../../../containers/state/ManagersQueries";
 import { useNavigate } from "react-router-dom";
 import {
-  StepLabel,
-  Step,
   Stepper,
+  Step,
+  StepLabel,
+  Typography,
+  Box,
   TextField,
   Button,
-  Checkbox,
-  FormControlLabel
+  Card,
+  CardContent,
+  FormControlLabel,
+  Checkbox
 } from "@mui/material";
 import { LOAD_MANAGERS } from "../../../../containers/state/ManagersQueries";
 
@@ -108,47 +112,83 @@ const AddManagers = () => {
   const renderForm = () => {
     if (activeStep === 0) {
       return (
-        <div>
-          <TextField
-            type="text"
-            className="create-textfield"
-            label="Name"
-            value={name}
-            onChange={handleInputChange}
-            error={error}
-            helperText={error ? "Please enter a name" : ""}
-          />
-          <Button
-            variant="contained"
-            onClick={handleAddManager}
-            className="next-button"
+        <Card
+          sx={{
+            position: "fixed",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)"
+          }}
+        >
+          <CardContent
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: "16px",
+              width: "400px",
+              height: "200px"
+            }}
           >
-            Next
-          </Button>
-        </div>
+            <TextField
+              type="text"
+              label="Name"
+              value={name}
+              onChange={handleInputChange}
+              error={error}
+              helperText={error ? "Please enter a name" : ""}
+            />
+            <Button variant="contained" onClick={handleAddManager}>
+              Next
+            </Button>
+          </CardContent>
+        </Card>
       );
     } else if (activeStep === 1) {
       return (
-        <div>
-          <h2>Available Engineers</h2>
-          {r1.data.engineers.map((record) => (
-            <div key={record.id}>
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    checked={engineerIds.includes(record.id)}
-                    onChange={() => handleCheckboxChange(record.id)}
-                    name={record.name}
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            height: "80vh"
+          }}
+        >
+          <Card
+            sx={{
+              width: "30%",
+              position: "fixed",
+              top: "50%",
+              left: "50%",
+              transform: "translate(-50%, -50%)",
+              zIndex: 9999,
+              alignItems: "center",
+              justifyContent: "center"
+            }}
+          >
+            <CardContent>
+              <Typography variant="h2">Available Engineers</Typography>
+              {r1.data.engineers.map((record) => (
+                <div key={record.id}>
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        checked={engineerIds.includes(record.id)}
+                        onChange={() => handleCheckboxChange(record.id)}
+                        name={record.name}
+                      />
+                    }
+                    label={record.name}
                   />
-                }
-                label={record.name}
-              />
-            </div>
-          ))}
-          <Button variant="contained" onClick={handleSubmit}>
-            Submit
-          </Button>
-        </div>
+                </div>
+              ))}
+              <Button variant="contained" onClick={handleSubmit}>
+                Submit
+              </Button>
+            </CardContent>
+          </Card>
+        </Box>
       );
     } else {
       alert("Success");
@@ -156,13 +196,20 @@ const AddManagers = () => {
   };
 
   return (
-    <div>
+    <Box
+      display="flex"
+      flexDirection="column"
+      alignItems="center"
+      justifyContent="center"
+      height="28vh"
+    >
+      <Typography variant="h1" sx={{ marginBottom: "1rem" }}>
+        Create Manager
+      </Typography>
       <Stepper
         alternativeLabel
         activeStep={activeStep}
-        style={{
-          margin: "1rem"
-        }}
+        sx={{ marginBottom: "16px", width: "80%" }}
       >
         {steps.map((label) => (
           <Step key={label}>
@@ -172,7 +219,7 @@ const AddManagers = () => {
       </Stepper>
 
       <form>{renderForm()}</form>
-    </div>
+    </Box>
   );
 };
 
