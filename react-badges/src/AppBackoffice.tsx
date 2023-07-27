@@ -8,7 +8,6 @@ import {
 } from "@mui/icons-material";
 
 import AppEntrypoint, { BackofficeIcon } from "./containers/AppEntrypoint";
-import ManagerEngineer from "./views/backoffice/ManagerEngineer";
 
 import { DrawerMenu } from "./layouts/BasicLayout";
 import Managers from "./components/Backoffice/Manager/ManagerList/Managers";
@@ -23,7 +22,6 @@ import AddRelations from "./components/Backoffice/Engineers/AddRelations/AddRela
 import AddRelation from "./components/Backoffice/Manager/AddRelation/AddRelation";
 
 import EditBadge from "./components/Backoffice/Badges/EditBadge";
-
 
 import EditRelations from "./components/Backoffice/Engineers/EditRelations/EditRelations";
 
@@ -91,7 +89,6 @@ const AppBackoffice: React.FC = () => (
           element: <EditBadge />
         },
         {
-
           path: "/engineers/edit/:id",
           element: <EditEngineer />
         },
