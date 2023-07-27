@@ -94,19 +94,27 @@ const EditRelations = () => {
   console.log(selectedManagerId);
 
   return (
-    <div className="edit-relations">
+    <div
+      style={{
+        textAlign: "center"
+      }}
+    >
       <h2>Edit Relations</h2>
       <h3>Engineer: {engineer.name}</h3>
       <h3>Current Manager: {currentManager?.managers[0].name}</h3>
       {filteredManagers && filteredManagers.length > 0 ? (
         <div>
           <h3>Choose a new Manager:</h3>
-          <FormControl fullWidth variant="outlined">
+          <FormControl
+            fullWidth
+            variant="outlined"
+            style={{
+              width: "30%",
+              marginRight: "3rem"
+            }}
+          >
             <InputLabel id="manager-select-label">Select a manager:</InputLabel>
             <Select
-              style={{
-                width: "30%"
-              }}
               value={selectedManagerId}
               onChange={(e) => setSelectedManagerId(e.target.value)}
               label="Select a manager:"
@@ -134,6 +142,9 @@ const EditRelations = () => {
         variant="contained"
         onClick={handleEditRelations}
         className="button-save"
+        style={{
+          marginTop: "2rem"
+        }}
       >
         Save
       </Button>
